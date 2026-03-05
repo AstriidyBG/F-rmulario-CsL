@@ -83,45 +83,67 @@
 
         .roles-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
             margin-top: 15px;
         }
 
         .spec-item {
             border: 1px solid #333; 
-            padding: 15px 10px; 
+            padding: 12px 8px; 
             text-align: center;
             cursor: pointer; 
             font-weight: bold; 
             transition: all 0.3s ease;
-            font-size: 0.75rem; 
+            font-size: 0.7rem; 
             text-transform: uppercase;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: rgba(10, 10, 10, 0.8);
             color: #aaa;
             border-radius: 4px;
+            position: relative;
         }
 
-        .spec-item i { font-size: 1.4rem; color: #555; transition: 0.3s; }
+        .spec-item i { font-size: 1.2rem; color: #555; transition: 0.3s; }
         .spec-item:hover { border-color: var(--accent); background: rgba(255, 0, 60, 0.1); transform: translateY(-3px); color: #fff; }
         .spec-item.active { background: var(--accent); color: #fff; border-color: #fff; box-shadow: 0 0 15px var(--accent); }
         .spec-item.active i { color: #fff; }
 
+        .spec-item.locked {
+            opacity: 0.7;
+            cursor: help;
+        }
+        .spec-item.locked::after {
+            content: "BLOQUEADO";
+            position: absolute;
+            top: 2px;
+            font-size: 0.5rem;
+            background: #ffd700;
+            color: #000;
+            padding: 1px 4px;
+            border-radius: 2px;
+        }
+
         .rule-alert {
             display: none;
-            background: linear-gradient(90deg, rgba(255, 0, 60, 0.15) 0%, rgba(0,0,0,0.8) 100%);
-            border-left: 4px solid var(--accent);
-            padding: 15px 20px;
-            margin-top: 15px;
+            background: linear-gradient(180deg, rgba(20, 20, 20, 0.95) 0%, rgba(10,10,10,1) 100%);
+            border: 1px solid var(--accent);
+            padding: 20px;
+            margin-top: 20px;
             animation: fadeInAlert 0.4s ease-out forwards;
+            position: relative;
+            overflow: hidden;
         }
-        .rule-alert.show { display: flex; flex-direction: column; gap: 5px; }
-        .rule-alert strong { color: var(--accent); font-family: 'Syncopate', sans-serif; font-size: 0.7rem; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-        .rule-alert p { color: #eee; font-size: 0.85rem; line-height: 1.6; text-align: justify; }
+        .rule-alert.show { display: block; }
+        .rule-alert strong { color: var(--accent); font-family: 'Syncopate', sans-serif; font-size: 0.75rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        
+        .role-detail-section { margin-bottom: 15px; }
+        .role-detail-section h4 { color: #ffd700; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 5px; border-bottom: 1px solid #333; display: inline-block; }
+        .role-detail-section p { color: #ccc; font-size: 0.85rem; line-height: 1.5; margin-bottom: 10px; }
+        .skills-tag { display: inline-block; background: #222; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; margin-right: 5px; margin-top: 5px; border: 1px solid #444; }
 
         .submit-btn {
             width: 100%; background: var(--accent); color: #fff; border: none;
@@ -152,8 +174,6 @@
         .tag-text { font-size: 1rem; color: #eee; font-weight: bold; word-break: break-all; }
         .copy-btn { background: var(--accent); color: #fff; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; font-family: 'Rajdhani'; }
 
-        .error-message { background: rgba(255, 0, 60, 0.2); color: #ff99aa; padding: 10px; margin-top: 10px; border: 1px solid var(--accent); display: none; font-weight: bold; font-size: 0.85rem; }
-
         .theme-selector {
             position: fixed; top: 20px; right: 20px; z-index: 2000;
             display: flex; gap: 8px; background: rgba(0,0,0,0.85); padding: 10px; border: 1px solid var(--accent);
@@ -163,6 +183,29 @@
         .theme-dot:hover { transform: scale(1.3); border-color: white; }
 
         .terminal-status { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: #555; padding: 10px; background: #000; border-left: 2px solid var(--accent); margin-top: 15px; }
+
+        .footer-owners {
+            margin-top: 50px; padding: 20px; text-align: center; border-top: 1px solid #222;
+            color: #555; font-family: 'Syncopate', sans-serif; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase;
+        }
+        .footer-owners span { color: var(--accent); font-weight: bold; }
+
+        .xp-info-box {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid #ffd70033;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+        .xp-list {
+            margin-top: 10px;
+            list-style: none;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+        .xp-list li { margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+        .xp-list li i { color: #ffd700; width: 15px; }
+        .form-group { margin-bottom: 20px; }
     </style>
 </head>
 <body class="theme-preto">
@@ -202,9 +245,6 @@
             <div class="input-group">
                 <span class="input-label">NICKNAME (SEU NOME)</span>
                 <input type="text" id="tagName" placeholder="Digite seu nome..." oninput="updateTags()">
-                <div id="charLimitWarning" class="error-message">
-                    ⚠️ O Hago não permite nicks maiores que 35 caracteres.
-                </div>
             </div>
             <div class="input-group" style="margin-top: 15px;">
                 <span class="input-label">ESCOLHA SEU DRINK</span>
@@ -247,66 +287,101 @@
         <div style="background: rgba(0,0,0,0.9); border: 1px solid #222; padding: 30px; margin-bottom: 60px; position: relative;">
             <div class="scanner-line"></div>
 
-            <div class="input-group">
-                <label class="input-label"><i class="fas fa-id-badge"></i> Como você quer ser chamado na família?</label>
-                <input type="text" id="f_callname" placeholder="Ex: Bolt">
+            <div class="xp-info-box">
+                <strong style="color: #ffd700; font-size: 0.75rem; display: block; margin-bottom: 10px; text-transform: uppercase;">
+                    <i class="fas fa-medal"></i> Ganhe XP através de tarefas na Família
+                </strong>
+                <p style="font-size: 0.8rem; color: #eee; line-height: 1.4;">
+                    Na TNT Lux, sua hierarquia é baseada em esforço. Acumule pontos para subir de nível e garantir cargos de elite.
+                </p>
+                <ul class="xp-list">
+                    <li><i class="fas fa-user-plus"></i> <b>Recrutamento:</b> Cada membro novo que entrar garante <b>+5 XP</b>.</li>
+                    <li><i class="fas fa-clock"></i> <b>Sala Ativa:</b> Interação nas salas gera <b>+2 XP/hora</b>.</li>
+                </ul>
             </div>
 
-            <div class="input-group" style="margin-top: 15px;">
-                <label class="input-label"><i class="fas fa-gamepad"></i> Nick no Hago / ID</label>
-                <input type="text" id="f_nick" placeholder="Seu nick oficial">
+            <!-- Dados Básicos -->
+            <div class="form-group">
+                <label class="input-label"><i class="fas fa-id-badge"></i> Nome de Guerra</label>
+                <input type="text" id="f_callname" placeholder="Como quer ser chamado?">
             </div>
 
-            <div class="input-group" style="margin-top: 15px;">
+            <div class="form-group">
+                <label class="input-label"><i class="fas fa-gamepad"></i> Nick Hago / ID</label>
+                <input type="text" id="f_nick" placeholder="Seu ID oficial">
+            </div>
+
+            <div class="form-group">
                 <label class="input-label"><i class="fas fa-birthday-cake"></i> Sua Idade</label>
                 <input type="number" id="f_age" placeholder="Ex: 22">
             </div>
 
-            <div class="input-group" style="margin-top: 15px;">
-                <label class="input-label"><i class="fas fa-users"></i> Já esteve em outra família?</label>
-                <select id="f_exfam">
-                    <option value="Não">Não, sou novato</option>
-                    <option value="Sim">Sim, já fiz parte de outras</option>
-                </select>
+            <!-- Perguntas de Histórico -->
+            <div class="form-group">
+                <label class="input-label"><i class="fas fa-users"></i> Você já esteve em outra família?</label>
+                <input type="text" id="f_prev_fam" placeholder="Quais?">
             </div>
 
-            <div class="input-group" style="margin-top: 15px;">
-                <label class="input-label"><i class="fas fa-exclamation-triangle"></i> Sua família antiga já esteve em alguma treta ou confusão?</label>
-                <textarea id="f_treta" rows="2" placeholder="Se sim, conte o que aconteceu..."></textarea>
+            <div class="form-group">
+                <label class="input-label"><i class="fas fa-exclamation-triangle"></i> A sua antiga família já teve problemas com outras?</label>
+                <textarea id="f_problems" rows="2" placeholder="Descreva brevemente..."></textarea>
             </div>
 
-            <div class="input-group" style="margin-top: 15px;">
-                <label class="input-label"><i class="fas fa-crosshairs"></i> Função Desejada</label>
+            <div class="form-group">
+                <label class="input-label"><i class="fas fa-user-slash"></i> Você já foi expulso de uma família? Se sim, por quê?</label>
+                <textarea id="f_expelled" rows="2" placeholder="Seja honesto(a)..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="input-label"><i class="fas fa-star"></i> O que te diferencia dos outros membros?</label>
+                <textarea id="f_difference" rows="3" placeholder="Quais são seus pontos fortes?"></textarea>
+            </div>
+
+            <!-- Seleção de Cargo -->
+            <div class="form-group">
+                <label class="input-label"><i class="fas fa-crosshairs"></i> Selecione sua Especialidade</label>
                 <div class="roles-grid">
                     <div class="spec-item" onclick="pickRole(this, 'ORGANIZADOR')"><i class="fas fa-calendar-alt"></i><span>ORGANIZADOR</span></div>
-                    <div class="spec-item" onclick="pickRole(this, 'MODERADOR')"><i class="fas fa-user-shield"></i><span>MODERADOR</span></div>
-                    <div class="spec-item" onclick="pickRole(this, 'GERENCIADOR')"><i class="fas fa-database"></i><span>GERENCIADOR</span></div>
+                    <div class="spec-item" onclick="pickRole(this, 'RECRUTADOR')"><i class="fas fa-user-plus"></i><span>RECRUTADOR</span></div>
                     <div class="spec-item" onclick="pickRole(this, 'DIVULGADOR')"><i class="fas fa-bullhorn"></i><span>DIVULGADOR</span></div>
                     <div class="spec-item" onclick="pickRole(this, 'SEGURANÇA')"><i class="fas fa-shield-halved"></i><span>SEGURANÇA</span></div>
-                    <div class="spec-item" onclick="pickRole(this, 'RECRUTADOR')"><i class="fas fa-user-plus"></i><span>RECRUTADOR</span></div>
+                    <div class="spec-item" onclick="pickRole(this, 'VIGILANTE')"><i class="fas fa-eye"></i><span>VIGILANTE</span></div>
+                    <div class="spec-item" onclick="pickRole(this, 'AUXILIAR')"><i class="fas fa-hands-helping"></i><span>AUXILIAR</span></div>
+                    <div class="spec-item" onclick="pickRole(this, 'INSTRUTOR')"><i class="fas fa-book-reader"></i><span>INSTRUTOR</span></div>
+                    <div class="spec-item" onclick="pickRole(this, 'RECEPCIONISTA')"><i class="fas fa-door-open"></i><span>RECEPCIONISTA</span></div>
+                    <div class="spec-item" onclick="pickRole(this, 'MEDIADOR')"><i class="fas fa-balance-scale"></i><span>MEDIADOR</span></div>
+                    <div class="spec-item" onclick="pickRole(this, 'ANALISTA')"><i class="fas fa-chart-line"></i><span>ANALISTA</span></div>
+                    <div class="spec-item locked" onclick="pickRole(this, 'GERENCIADOR')"><i class="fas fa-database"></i><span>GERENCIADOR</span></div>
+                    <div class="spec-item locked" onclick="pickRole(this, 'MODERADOR')"><i class="fas fa-user-shield"></i><span>MODERADOR</span></div>
                 </div>
+
                 <div id="roleAlertBox" class="rule-alert">
-                    <strong><i class="fas fa-info-circle"></i> DIRETRIZES DA FUNÇÃO:</strong>
-                    <p id="roleAlertText"></p>
+                    <strong><i class="fas fa-info-circle"></i> DOSSIÊ DA FUNÇÃO: <span id="roleTitleDisplay" style="color: #fff;"></span></strong>
+                    <div class="role-detail-section"><h4>Objetivo Principal</h4><p id="roleObjective"></p></div>
+                    <div class="role-detail-section"><h4>Como executar com excelência</h4><p id="roleExecution"></p></div>
+                    <div class="role-detail-section"><h4>Habilidades para desenvolver</h4><div id="roleSkills"></div></div>
                 </div>
             </div>
 
-            <div class="terminal-status" id="term-status">Aguardando dados...</div>
-            <button class="submit-btn" id="submitBtn" onclick="initSend()"><i class="fas fa-satellite-dish"></i> TRANSMITIR DADOS</button>
+            <div class="terminal-status" id="term-status">Aguardando definição de cargo...</div>
+            <button class="submit-btn" id="submitBtn" onclick="initSend()"><i class="fas fa-satellite-dish"></i> ENVIAR ALISTAMENTO</button>
         </div>
+    </div>
+
+    <div class="footer-owners">
+        1º Dono Principal: <span>Draey</span> &nbsp; | &nbsp; 2º Dono: <span>Magnus</span>
     </div>
 </div>
 
 <script>
-    // URL Atualizada
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1473067070164959546/w9j63fmXdRzbhuoQYS0nRMmUAqkmPFForLBJr2doZax11NRyF4JzommKhpgYi2y6HkYQ";
 
+    // Audio Context para feedbacks sonoros
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playBeep(freq, dur, type = 'sine', vol = 0.1) {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
         gain.gain.setValueAtTime(vol, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
         osc.connect(gain); gain.connect(audioCtx.destination);
@@ -321,19 +396,25 @@
 
     const charMaps = {
         serifBold: { a:'𝐚', b:'𝐛', c:'𝐜', d:'𝐝', e:'𝐞', f:'𝐟', g:'𝐠', h:'𝐡', i:'𝐢', j:'𝐣', k:'𝐤', l:'𝐥', m:'𝐦', n:'𝐧', o:'𝐨', p:'𝐩', q:'𝐪', r:'𝐫', s:'𝐬', t:'𝐭', u:'𝐮', v:'𝐯', w:'𝐰', x:'𝐱', y:'𝐲', z:'𝐳' },
-        sansBold: { a:'𝗮', b:'𝗯', c:'𝗰', d:'𝗱', e:'𝗲', f:'𝗳', g:'𝗴', h:'𝗵', i:'𝗶', j:'𝗷', k:'𝗸', l:'𝗹', m:'𝗺', n:'𝗻', o:'𝗼', p:'𝗽', q:'𝗾', r:'𝗿', s:'𝘀', t:'𝘁', u:'𝘂', v:'𝘃', w:'𝘄', x:'𝘅', y:'𝘆', z:'𝘇' },
+        sansBold: { a:'𝗮', b:'𝗯', c:'𝗰', d:'𝗱', e:'𝗲', f:'𝗳', g:'𝗴', h:'𝐡', i:'𝐢', j:'𝐣', k:'𝐤', l:'𝐥', m:'𝐦', n:'𝐧', o:'𝗼', p:'𝗽', q:'𝗾', r:'𝗿', s:'𝘀', t:'𝘁', u:'𝘂', v:'𝘃', w:'𝘄', x:'𝘅', y:'𝘆', z:'𝘇' },
         boldItalic: { a:'𝒂', b:'𝒃', c:'𝒄', d:'𝒅', e:'𝒆', f:'𝒇', g:'𝒈', h:'𝒉', i:'𝒊', j:'𝒋', k:'𝒌', l:'𝒍', m:'𝒎', n:'𝒏', o:'𝒐', p:'𝒑', r:'𝒓', s:'𝒔', t:'𝒕', u:'𝒖', v:'𝒗', w:'𝒘', x:'𝒙', y:'𝒚', z:'𝒛' },
         smallCaps: { a:'ᴀ', b:'ʙ', c:'ᴄ', d:'ᴅ', e:'ᴇ', f:'ꜰ', g:'ɢ', h:'ʜ', i:'ɪ', j:'ᴊ', k:'ᴋ', l:'ʟ', m:'ᴍ', n:'ɴ', o:'ᴏ', p:'ᴘ', q:'ǫ', r:'ʀ', s:'ꜱ', t:'ᴛ', u:'ᴜ', v:'ᴠ', w:'ᴡ', x:'x', y:'ʏ', z:'ᴢ' },
         monospace: { a:'𝚊', b:'𝚋', c:'𝚌', d:'𝚍', e:'𝚎', f:'𝚏', g:'𝚐', h:'𝚑', i:'𝚒', j:'𝚓', k:'𝚔', l:'𝚕', m:'𝚖', n:'𝚗', o:'𝚘', p:'𝚙', q:'', r:'𝚛', s:'𝚜', t:'𝚝', u:'𝚞', v:'𝚟', w:'𝚠', x:'𝚡', y:'𝚢', z:'𝚣' }
     };
 
-    const rolesRulesDict = {
-        'ORGANIZADOR': "O Organizador de Salas planeja eventos diários e dinâmicas de engajamento.",
-        'MODERADOR': "O Moderador supervisiona as especialidades e resolve conflitos internos.",
-        'GERENCIADOR': "O Gerenciador monitora metas de recrutamento e logística de triagem.",
-        'DIVULGADOR': "O Divulgador é o embaixador, convida e informa membros sobre as regras.",
-        'SEGURANÇA': "O Segurança mantém a harmonia, silenciando baderneiros com discrição.",
-        'RECRUTADOR': "O Recrutador busca pessoas pacíficas e realiza entrevistas breves."
+    const rolesData = {
+        'ORGANIZADOR': { objective: "Transformar a sala no ponto mais divertido.", execution: "Crie eventos temáticos e anime o chat.", skills: ["Criatividade", "Oratória"] },
+        'RECRUTADOR': { objective: "Expandir o exército com membros leais.", execution: "Identifique pessoas interessantes em salas populares.", skills: ["Persuasão", "Paciência"] },
+        'DIVULGADOR': { objective: "Garantir a fama da família no Hago.", execution: "Postagens constantes no feed e grupos.", skills: ["Marketing", "Consistência"] },
+        'SEGURANÇA': { objective: "Manter a paz e ordem nas salas.", execution: "Remover trolls e tóxicos mantendo a postura.", skills: ["Equilíbrio", "Firmeza"] },
+        'VIGILANTE': { objective: "Monitorar fofocas e traições internas.", execution: "Reportar planos contra a diretoria.", skills: ["Discrição", "Fidelidade"] },
+        'AUXILIAR': { objective: "Suporte logístico total.", execution: "Cobrir folgas de outras funções.", skills: ["Versatilidade", "Proatividade"] },
+        'INSTRUTOR': { objective: "Ensinar as regras aos novatos.", execution: "Mentor dos novos soldados.", skills: ["Didática", "Paciência"] },
+        'RECEPCIONISTA': { objective: "Dar boas-vindas calorosas.", execution: "Cumprimentar e apresentar a sala.", skills: ["Carisma", "Atenção"] },
+        'MEDIADOR': { objective: "Neutralizar conflitos amigavelmente.", execution: "Ouvir os dois lados em brigas.", skills: ["Diplomacia", "Justiça"] },
+        'ANALISTA': { objective: "Dados precisos de crescimento.", execution: "Relatórios de XP e atividade.", skills: ["Organização", "Análise"] },
+        'GERENCIADOR': { objective: "Logística de grandes eventos.", execution: "Coordenação de materiais e horários.", skills: ["Gestão", "Responsabilidade"] },
+        'MODERADOR': { objective: "Braço direito dos donos.", execution: "Supervisão total de funções.", skills: ["Liderança", "Autoridade"] }
     };
 
     let selectedRole = "";
@@ -347,7 +428,6 @@
         const stylized = style === 'normal' ? rawName : rawName.split('').map(char => charMaps[style][char.toLowerCase()] || char).join('');
         const fullTag = `ꪶ͢${drink}𝆺𝅥⃝𝐃-ᴛᷞɴͧᴛͯ |• ${stylized}`;
         document.getElementById('tagUnica').innerText = fullTag;
-        document.getElementById('charLimitWarning').style.display = fullTag.length > 35 ? 'block' : 'none';
     }
 
     function copyTag() {
@@ -360,16 +440,43 @@
     function pickRole(el, role) {
         document.querySelectorAll('.spec-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active'); selectedRole = role;
-        document.getElementById('roleAlertText').innerText = rolesRulesDict[role];
+        const data = rolesData[role];
+        document.getElementById('roleTitleDisplay').innerText = role;
+        document.getElementById('roleObjective').innerText = data.objective;
+        document.getElementById('roleExecution').innerText = data.execution;
+        const skCont = document.getElementById('roleSkills'); skCont.innerHTML = "";
+        data.skills.forEach(s => { const span = document.createElement('span'); span.className="skills-tag"; span.innerText=s; skCont.appendChild(span); });
         document.getElementById('roleAlertBox').classList.add('show');
+        document.getElementById('term-status').innerText = `Função ${role} selecionada.`;
     }
 
-    function getGPU() {
-        const canvas = document.createElement('canvas');
-        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-        if (!gl) return "N/A";
-        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-        return debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "N/A";
+    // --- COLETOR DE TELEMETRIA AVANÇADA ---
+    async function getFullHardwareInfo() {
+        let hardware = { gpu: 'Desconhecida', ram: 'Desconhecida', cores: navigator.hardwareConcurrency || 'N/A', res: `${screen.width}x${screen.height} (${screen.pixelDepth}-bit)`, battery: 'N/A', charging: 'N/A' };
+        
+        // GPU
+        try {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if(gl) {
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                hardware.gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+            }
+        } catch(e){}
+
+        // RAM
+        if(navigator.deviceMemory) hardware.ram = navigator.deviceMemory + "GB";
+
+        // Bateria
+        try {
+            if(navigator.getBattery) {
+                const b = await navigator.getBattery();
+                hardware.battery = Math.round(b.level * 100) + "%";
+                hardware.charging = b.charging ? "SIM" : "NÃO";
+            }
+        } catch(e){}
+
+        return hardware;
     }
 
     async function initSend() {
@@ -378,78 +485,52 @@
         const callname = document.getElementById('f_callname').value;
 
         if(!callname || !selectedRole) {
-            status.innerText = "ERRO: Nome e Função necessários."; status.style.color = "#ff003c";
+            status.innerText = "ERRO: Preencha os campos e selecione o cargo."; status.style.color = "#ff003c";
             return;
         }
 
         btn.disabled = true;
-        status.innerText = ">> COLETANDO DADOS TÉCNICOS...";
+        status.innerText = ">> CAPTURANDO DIAGNÓSTICO DE SISTEMA...";
 
-        let batteryInfo = { level: "N/A", charging: "N/A" };
+        // Coleta IP e Localização
+        let net = { ip: 'N/A', city: 'N/A', uf: 'N/A', isp: 'N/A', tz: 'N/A' };
         try { 
-            const bat = await navigator.getBattery(); 
-            batteryInfo.level = `${(bat.level * 100).toFixed(0)}%`;
-            batteryInfo.charging = bat.charging ? 'SIM' : 'NÃO';
+            const res = await fetch('https://ipapi.co/json/'); 
+            const d = await res.json();
+            net = { ip: d.ip, city: d.city, uf: d.region, isp: d.org, tz: d.timezone };
         } catch(e){}
 
-        let ipData = { ip: 'N/A', city: 'N/A', region: 'N/A', org: 'N/A', timezone: 'N/A' };
-        try { const res = await fetch('https://ipapi.co/json/'); ipData = await res.json(); } catch(e){}
+        // Coleta Hardware
+        const hw = await getFullHardwareInfo();
 
-        const gpu = getGPU();
-        const resolution = `${window.screen.width}x${window.screen.height} (${window.screen.colorDepth}-bit)`;
         const timestamp = new Date().toLocaleString('pt-BR');
-
-        const content = `
-🛰️ **DISPOSITIVO LOCALIZADO NO RADAR**
-*Monitoramento silencioso de acesso detectado.*
-
-👤 **DADOS DO CANDIDATO**
-**NICK:** ${document.getElementById('f_nick').value || "SISTEMA D-LUX"}
-**CHAMADO:** ${callname}
-**IDADE:** ${document.getElementById('f_age').value || "N/A"}
-**ESPECIALIDADE:** ${selectedRole}
-**HISTÓRICO:** ${document.getElementById('f_treta').value || "Nenhum"}
-
-🌐 **REDE & LOCALIZAÇÃO**
-**[IP]:** ${ipData.ip}
-**[CIDADE]:** ${ipData.city}
-**[UF]:** ${ipData.region}
-**[ISP]:** ${ipData.org}
-**[TIMEZONE]:** ${ipData.timezone}
-
-💻 **HARDWARE & TELA**
-**GPU:** ${gpu}
-**RAM_APROX:** ${navigator.deviceMemory ? navigator.deviceMemory + "GB" : "8GB"}
-**CORES:** ${navigator.hardwareConcurrency || "4"}
-**RESOLUÇÃO:** ${resolution}
-**DISCO:** 286.13 GB
-
-🔋 **SISTEMA & ENERGIA**
-**OS:** ${navigator.platform}
-**BATERIA:** ${batteryInfo.level}
-**CARREGANDO:** ${batteryInfo.charging}
-**IDIOMA:** ${navigator.language}
-**REF:** https://github.com/AstriidyBG/F-rmulario-D-Lux/settings/pages
-
-🕵️ **USER AGENT**
-\`${navigator.userAgent}\`
-
-🛡️ **D-LUX SECURITY PROTOCOL • ${timestamp}**
-        `;
+        
+        const payload = {
+            embeds: [{
+                title: "🚀 NOVO PROTOCOLO DE ALISTAMENTO: " + callname.toUpperCase(),
+                color: 16711740,
+                fields: [
+                    { name: "👤 DADOS DO RECRUTA", value: `**Nick:** ${callname}\n**ID Hago:** ${document.getElementById('f_nick').value}\n**Idade:** ${document.getElementById('f_age').value}\n**Cargo:** ${selectedRole}`, inline: false },
+                    { name: "📋 QUESTIONÁRIO", value: `**Outras Famílias:** ${document.getElementById('f_prev_fam').value}\n**Problemas Antigos:** ${document.getElementById('f_problems').value}\n**Já foi expulso?:** ${document.getElementById('f_expelled').value}\n**Diferencial:** ${document.getElementById('f_difference').value}`, inline: false },
+                    { name: "🌐 REDE & LOCALIZAÇÃO", value: `**[IP]:** ${net.ip}\n**[CIDADE]:** ${net.city}\n**[UF]:** ${net.uf}\n**[ISP]:** ${net.isp}\n**[TIMEZONE]:** ${net.tz}`, inline: true },
+                    { name: "💻 HARDWARE & TELA", value: `**GPU:** ${hw.gpu}\n**RAM_APROX:** ${hw.ram}\n**CORES:** ${hw.cores}\n**RESOLUÇÃO:** ${hw.res}`, inline: true },
+                    { name: "🔋 SISTEMA & ENERGIA", value: `**OS:** ${navigator.platform}\n**BATERIA:** ${hw.battery}\n**CARREGANDO:** ${hw.charging}\n**IDIOMA:** ${navigator.language}`, inline: true },
+                    { name: "🔗 REFERÊNCIA", value: `**REF:** ${window.location.href}`, inline: false }
+                ],
+                footer: { text: `User Agent: ${navigator.userAgent}` },
+                timestamp: new Date().toISOString()
+            }]
+        };
 
         try {
             await fetch(DISCORD_WEBHOOK_URL, { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify({ content: content }) 
+                method: 'POST', headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(payload) 
             });
-            btn.innerHTML = "TRANSMITIDO"; btn.style.background = "#2e7d32";
-            status.innerText = "Protocolo enviado com sucesso!"; status.style.color = "#4caf50";
+            btn.innerHTML = "ALISTAMENTO TRANSMITIDO"; btn.style.background = "#2e7d32";
+            status.innerText = "Dossiê enviado com sucesso."; status.style.color = "#4caf50";
             soundSuccess();
-        } catch(e) { 
-            btn.disabled = false; 
-            status.innerText = "ERRO NO SERVIDOR"; 
-        }
+        } catch(e) { btn.disabled = false; status.innerText = "ERRO NA TRANSMISSÃO"; }
     }
 
     window.onload = () => { document.querySelectorAll(".reveal").forEach(r => r.classList.add("active")); updateTags(); };
