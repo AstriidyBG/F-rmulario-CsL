@@ -1,215 +1,1376 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CONSTELAÇÃO SANGRENTA - Recrutamento Hago</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>CsL - TERMINAL RESTRITO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #020202;
-            --text-main: #e0e0e0;
-            --blood-red: #8b0000;
+            --bg-color: #030000;
+            --main-red: #d30000;
+            --main-red-glow: rgba(211, 0, 0, 0.6);
+            --dark-red: #5a0000;
+            --metal-gray: #1a1a1a;
+            --light-gray: #a8a8a8;
+            --glow: 0 0 10px rgba(211, 0, 0, 0.7), 0 0 20px rgba(211, 0, 0, 0.4), 0 0 30px rgba(211, 0, 0, 0.2);
+            --scanline-color: rgba(255, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            overflow-x: hidden;
+            background-color: var(--bg-color);
+            color: var(--main-red);
             font-family: 'Share Tech Mono', monospace;
-            margin: 0;
-            padding: 0;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .font-cyber { font-family: 'Orbitron', sans-serif; }
-        .hidden { display: none !important; }
-        
-        /* --- VHS EFFECTS --- */
-        .vhs-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                        linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
-            background-size: 100% 3px, 3px 100%;
-            z-index: 9999; pointer-events: none;
+        /* --- BACKGROUNDS & OVERLAYS --- */
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.15;
+        }
+
+        .scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, var(--scanline-color) 51%);
+            background-size: 100% 4px;
+            z-index: 998;
+            pointer-events: none;
+        }
+
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.95) 100%);
+            z-index: 997;
+            pointer-events: none;
+            animation: pulse-vignette 4s infinite alternate;
+        }
+
+        .crt-flicker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,0,0,0.02);
+            z-index: 999;
+            pointer-events: none;
             animation: flicker 0.15s infinite;
+            opacity: 0;
         }
-        .noise {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 9998; opacity: 0.08;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
-        }
-        .scanline {
-            width: 100%; height: 100px; z-index: 9999;
-            background: linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-            position: absolute; bottom: 100%;
-            animation: scanline 10s linear infinite; pointer-events: none;
-        }
-        @keyframes flicker { 0% { opacity: 0.9; } 50% { opacity: 0.8; } 100% { opacity: 0.95; } }
-        @keyframes scanline { 0% { top: -100px; } 100% { top: 100%; } }
-        
-        .blood-glow { text-shadow: 0 0 10px #ff0000, 0 0 20px #8b0000; }
 
-        .cyber-card {
-            background: #000000; border: 1px solid #333;
-            box-shadow: 4px 4px 0px #111; transition: all 0.2s ease;
+        /* --- AUDIO CONTROLS --- */
+        #audio-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: none;
+            gap: 15px;
         }
-        .cyber-card:hover { border-color: #fff; box-shadow: 6px 6px 0px #fff; }
-        
+
+        .audio-btn {
+            background: rgba(20, 0, 0, 0.8);
+            border: 1px solid var(--dark-red);
+            color: var(--main-red);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            padding: 8px 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 2px;
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .audio-btn:active {
+            transform: scale(0.95);
+        }
+
+        .audio-btn.active {
+            background: rgba(211, 0, 0, 0.15);
+            border-color: var(--main-red);
+            box-shadow: var(--glow);
+            text-shadow: 0 0 5px var(--main-red);
+        }
+
+        /* --- SCREENS --- */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            z-index: 10;
+            padding: 5% 5%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: var(--main-red) transparent;
+        }
+
+        .screen::-webkit-scrollbar {
+            width: 6px;
+        }
+        .screen::-webkit-scrollbar-track {
+            background: rgba(20, 0, 0, 0.5);
+            border-left: 1px solid var(--dark-red);
+        }
+        .screen::-webkit-scrollbar-thumb {
+            background: var(--main-red);
+            box-shadow: 0 0 10px var(--main-red);
+        }
+
+        .active-screen {
+            display: flex;
+            animation: screen-on 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* --- COMPONENTS --- */
+        h1, h2 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            text-transform: uppercase;
+            text-shadow: var(--glow);
+            margin-bottom: 25px;
+            letter-spacing: 3px;
+        }
+
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+        }
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 red;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 blue;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        .typewriter-container {
+            width: 100%;
+            max-width: 650px;
+            min-height: 150px;
+            border-left: 3px solid var(--main-red);
+            margin-bottom: 30px;
+            background: rgba(20, 0, 0, 0.6);
+            padding: 25px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 0 15px rgba(211,0,0,0.1);
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+        }
+
+        .typewriter-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #ffcccc;
+            white-space: pre-wrap;
+            letter-spacing: 0.5px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background-color: var(--main-red);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 4px;
+            box-shadow: 0 0 10px var(--main-red);
+        }
+
         .cyber-btn {
-            background: #000; color: #fff; border: 1px solid #fff;
-            text-transform: uppercase; font-family: 'Share Tech Mono', monospace;
-            font-weight: bold; cursor: pointer; transition: all 0.2s;
-            box-shadow: 3px 3px 0px #444; display: flex; align-items: center; justify-content: center;
+            background: rgba(15, 0, 0, 0.85);
+            border: 1px solid var(--dark-red);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 16px 45px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9), 0 0 10px rgba(211,0,0,0.2);
+            width: 100%;
+            max-width: 320px;
+            margin-top: 20px;
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            outline: none;
         }
-        .cyber-btn:hover:not(:disabled) { background: #fff; color: #000; box-shadow: 5px 5px 0px #888; }
-        
-        .input-field {
-            background: #050505; border: 1px solid #333; color: white;
-            padding: 12px; width: 100%; outline: none; transition: 0.3s;
-        }
-        .input-field:focus { border-color: #ff0000; background: #0a0000; }
 
-        @keyframes crtOpen { 0% { transform: scaleY(0.005) scaleX(0); opacity: 0; } 50% { transform: scaleY(0.005) scaleX(1); opacity: 1; } 100% { transform: scaleY(1) scaleX(1); opacity: 1; } }
-        .animate-crt-open { animation: crtOpen 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        .cyber-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(211, 0, 0, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .cyber-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 2px;
+            background: var(--main-red);
+            box-shadow: 0 0 10px var(--main-red);
+        }
+
+        .cyber-btn:hover, .cyber-btn:active {
+            background: rgba(40, 0, 0, 0.9);
+            border-color: var(--main-red);
+            color: #fff;
+            box-shadow: 0 0 25px rgba(211, 0, 0, 0.4), inset 0 0 20px rgba(211, 0, 0, 0.3);
+            text-shadow: 0 0 8px #fff;
+            transform: translateY(-2px);
+        }
+
+        .cyber-btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        /* --- SPECIFIC SCREENS --- */
+        #boot-screen {
+            justify-content: center;
+        }
+        
+        .system-warning-icon {
+            font-size: 60px;
+            color: var(--main-red);
+            margin-bottom: 20px;
+            animation: pulse-red 1s infinite;
+            text-shadow: var(--glow);
+        }
+
+        /* Rules Screen */
+        .rules-container {
+            width: 100%;
+            max-width: 650px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .rule-item {
+            background: rgba(15, 0, 0, 0.7);
+            border: 1px solid var(--dark-red);
+            padding: 15px 20px;
+            font-size: 14px;
+            border-left: 4px solid var(--main-red);
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            letter-spacing: 0.5px;
+        }
+
+        .rule-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--main-red);
+            transform: translateX(-100%);
+            animation: scan-horizontal 3s infinite;
+            box-shadow: 0 0 5px var(--main-red);
+        }
+
+        .floating-alert {
+            position: absolute;
+            color: rgba(211, 0, 0, 0.2);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            pointer-events: none;
+            white-space: nowrap;
+            animation: float-around 12s infinite linear;
+            text-shadow: 0 0 5px rgba(211,0,0,0.2);
+        }
+
+        /* =========================================================
+           UI DO FORMULÁRIO (TOTALMENTE REFORMULADA)
+        ========================================================= */
+        .form-container {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            padding-bottom: 60px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+        }
+
+        .input-group label {
+            color: var(--main-red);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-shadow: 0 0 5px rgba(211,0,0,0.3);
+        }
+
+        .input-group label::before {
+            content: '[+]\00a0';
+            color: var(--light-gray);
+            font-weight: normal;
+        }
+
+        /* Input Text & Number */
+        .cyber-input {
+            background: rgba(10, 0, 0, 0.8);
+            border: 1px solid var(--dark-red);
+            border-left: 3px solid var(--main-red);
+            color: #fff;
+            font-family: 'Share Tech Mono', monospace;
+            padding: 16px 20px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: inset 0 0 15px rgba(0,0,0,1);
+            border-radius: 0;
+            -webkit-appearance: none;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+            position: relative;
+            letter-spacing: 1px;
+        }
+
+        .cyber-input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .cyber-input:focus {
+            background: rgba(30, 0, 0, 0.9);
+            border-color: var(--main-red);
+            box-shadow: inset 0 0 20px rgba(211, 0, 0, 0.15), 0 0 15px rgba(211, 0, 0, 0.3);
+            border-left-width: 5px;
+        }
+
+        /* Custom Radio/Select logic */
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            width: 100%;
+        }
+
+        .radio-option {
+            background: rgba(15, 0, 0, 0.8);
+            border: 1px solid var(--dark-red);
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--light-gray);
+            position: relative;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
+        }
+
+        .radio-option:hover {
+            border-color: var(--main-red);
+            color: #fff;
+            background: rgba(30, 0, 0, 0.6);
+            box-shadow: inset 0 0 15px rgba(211, 0, 0, 0.2);
+        }
+
+        .radio-option.selected {
+            background: rgba(211, 0, 0, 0.15);
+            border-color: var(--main-red);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(211, 0, 0, 0.3), inset 0 0 20px rgba(211, 0, 0, 0.2);
+            text-shadow: 0 0 8px #fff;
+            font-weight: bold;
+        }
+
+        .radio-option.selected::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 3px;
+            background: var(--main-red);
+            box-shadow: 0 0 10px var(--main-red);
+        }
+
+        /* Container de Divisões Dinâmico */
+        .division-container {
+            display: none;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+            margin-top: 15px;
+            padding: 40px 25px 30px 25px; /* Top padding extra para o título */
+            background: linear-gradient(180deg, rgba(15,0,0,0.8) 0%, rgba(5,0,0,0.9) 100%);
+            border: 1px solid var(--dark-red);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 30px rgba(211,0,0,0.05);
+            animation: form-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Bordas High-Tech do Container */
+        .division-container::before, .division-container::after {
+            content: ''; position: absolute; width: 40px; height: 40px; 
+            border-color: var(--main-red); border-style: solid; pointer-events: none;
+            box-shadow: 0 0 10px var(--main-red-glow);
+        }
+        .division-container::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+        .division-container::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+        .div-title {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-color);
+            padding: 0 15px;
+            color: var(--main-red);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            letter-spacing: 3px;
+            font-weight: 900;
+            text-shadow: 0 0 10px var(--main-red);
+            border-left: 2px solid var(--main-red);
+            border-right: 2px solid var(--main-red);
+            box-shadow: 0 0 15px rgba(0,0,0,0.9);
+            text-transform: uppercase;
+        }
+
+        /* Textareas */
+        textarea.cyber-input {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        /* Btn wrapper fix */
+        .btn-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* Loading Screen */
+        .radar-box {
+            width: 160px;
+            height: 160px;
+            border: 2px solid var(--main-red);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(211,0,0,0.3), inset 0 0 20px rgba(211,0,0,0.2);
+            margin-bottom: 35px;
+        }
+        .radar-box::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(from 0deg, transparent 70%, rgba(211,0,0,0.9) 100%);
+            transform-origin: 0 0;
+            animation: radar-spin 1.5s linear infinite;
+        }
+        .radar-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 1px;
+            height: 100%;
+            background: rgba(211,0,0,0.6);
+            box-shadow: 0 0 10px var(--main-red);
+        }
+        .radar-cross {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(211,0,0,0.6);
+            box-shadow: 0 0 10px var(--main-red);
+        }
+
+        /* Final Screen */
+        .metal-plate {
+            background: linear-gradient(135deg, #151515, #080808, #111);
+            border: 1px solid var(--dark-red);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 30px rgba(0,0,0,0.8);
+            max-width: 90%;
+            border-radius: 2px;
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+        }
+        .metal-plate::before {
+            content: '';
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px dashed rgba(211, 0, 0, 0.4);
+            pointer-events: none;
+        }
+        .neon-text {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--main-red), 0 0 40px var(--main-red), 0 0 80px var(--main-red);
+            font-size: 22px;
+            line-height: 1.6;
+            font-weight: 900;
+            animation: neon-flicker 1.5s infinite alternate;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse-vignette {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        @keyframes flicker {
+            0% { opacity: 0.02; }
+            50% { opacity: 0.05; }
+            100% { opacity: 0.02; }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        @keyframes screen-on {
+            0% { opacity: 0; transform: scale(0.95); filter: brightness(3) contrast(2) blur(5px); }
+            50% { filter: brightness(1.5) contrast(1.5) blur(2px); }
+            100% { opacity: 1; transform: scale(1); filter: none; }
+        }
+        @keyframes form-reveal {
+            0% { opacity: 0; transform: translateY(20px); clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); }
+            100% { opacity: 1; transform: translateY(0); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 40px red; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        @keyframes radar-spin {
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes scan-horizontal {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(21px, 9999px, 91px, 0); transform: skew(0.66deg); }
+            5% { clip: rect(61px, 9999px, 57px, 0); transform: skew(0.85deg); }
+            10% { clip: rect(98px, 9999px, 86px, 0); transform: skew(0.79deg); }
+            15% { clip: rect(4px, 9999px, 5px, 0); transform: skew(0.19deg); }
+            20% { clip: rect(43px, 9999px, 53px, 0); transform: skew(0.53deg); }
+            25% { clip: rect(10px, 9999px, 92px, 0); transform: skew(0.95deg); }
+            30% { clip: rect(6px, 9999px, 20px, 0); transform: skew(0.82deg); }
+            35% { clip: rect(81px, 9999px, 16px, 0); transform: skew(0.71deg); }
+            40% { clip: rect(8px, 9999px, 88px, 0); transform: skew(0.18deg); }
+            45% { clip: rect(32px, 9999px, 21px, 0); transform: skew(0.5deg); }
+            50% { clip: rect(72px, 9999px, 78px, 0); transform: skew(0.96deg); }
+            55% { clip: rect(1px, 9999px, 96px, 0); transform: skew(0.54deg); }
+            60% { clip: rect(54px, 9999px, 45px, 0); transform: skew(0.48deg); }
+            65% { clip: rect(18px, 9999px, 60px, 0); transform: skew(0.79deg); }
+            70% { clip: rect(68px, 9999px, 63px, 0); transform: skew(0.57deg); }
+            75% { clip: rect(59px, 9999px, 62px, 0); transform: skew(0.66deg); }
+            80% { clip: rect(34px, 9999px, 2px, 0); transform: skew(0.24deg); }
+            85% { clip: rect(30px, 9999px, 26px, 0); transform: skew(0.29deg); }
+            90% { clip: rect(83px, 9999px, 80px, 0); transform: skew(0.1deg); }
+            95% { clip: rect(93px, 9999px, 92px, 0); transform: skew(0.49deg); }
+            100% { clip: rect(65px, 9999px, 49px, 0); transform: skew(0.73deg); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(25px, 9999px, 12px, 0); transform: skew(0.23deg); }
+            5% { clip: rect(53px, 9999px, 65px, 0); transform: skew(0.14deg); }
+            10% { clip: rect(15px, 9999px, 84px, 0); transform: skew(0.25deg); }
+            15% { clip: rect(62px, 9999px, 96px, 0); transform: skew(0.47deg); }
+            20% { clip: rect(14px, 9999px, 45px, 0); transform: skew(0.49deg); }
+            25% { clip: rect(30px, 9999px, 75px, 0); transform: skew(0.15deg); }
+            30% { clip: rect(87px, 9999px, 43px, 0); transform: skew(0.3deg); }
+            35% { clip: rect(65px, 9999px, 18px, 0); transform: skew(0.99deg); }
+            40% { clip: rect(59px, 9999px, 7px, 0); transform: skew(0.44deg); }
+            45% { clip: rect(38px, 9999px, 85px, 0); transform: skew(0.66deg); }
+            50% { clip: rect(91px, 9999px, 49px, 0); transform: skew(0.75deg); }
+            55% { clip: rect(9px, 9999px, 64px, 0); transform: skew(0.53deg); }
+            60% { clip: rect(21px, 9999px, 35px, 0); transform: skew(0.31deg); }
+            65% { clip: rect(72px, 9999px, 5px, 0); transform: skew(0.67deg); }
+            70% { clip: rect(11px, 9999px, 34px, 0); transform: skew(0.2deg); }
+            75% { clip: rect(4px, 9999px, 20px, 0); transform: skew(0.25deg); }
+            80% { clip: rect(84px, 9999px, 93px, 0); transform: skew(0.42deg); }
+            85% { clip: rect(69px, 9999px, 55px, 0); transform: skew(0.18deg); }
+            90% { clip: rect(32px, 9999px, 40px, 0); transform: skew(0.22deg); }
+            95% { clip: rect(52px, 9999px, 89px, 0); transform: skew(0.11deg); }
+            100% { clip: rect(88px, 9999px, 78px, 0); transform: skew(0.72deg); }
+        }
+        @keyframes float-around {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(100px, 50px); }
+            50% { transform: translate(-50px, 150px); }
+            75% { transform: translate(-100px, -50px); }
+            100% { transform: translate(0, 0); }
+        }
+        @keyframes neon-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--main-red), 0 0 40px var(--main-red), 0 0 80px var(--main-red);
+                opacity: 1;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+                opacity: 0.5;
+            }
+        }
+        
+        /* Mobile specific fixes */
+        @media (max-width: 768px) {
+            h1, h2 { font-size: 22px; }
+            .cyber-btn { padding: 14px 20px; font-size: 15px; }
+            .screen { padding: 8% 5%; }
+            .metal-plate { padding: 25px 15px; }
+            .neon-text { font-size: 18px; }
+            .division-container { padding: 35px 15px 20px 15px; }
+            .radio-group { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+            .input-group label { font-size: 11px; }
+        }
+        @media (max-width: 400px) {
+            .radio-group { grid-template-columns: 1fr; }
+        }
+
+        #screen-tear {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #fff;
+            mix-blend-mode: overlay;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="vhs-effects">
-        <div class="vhs-overlay"></div>
-        <div class="scanline"></div>
-        <div class="noise"></div>
+    <!-- Overlays globais -->
+    <canvas id="matrix-canvas"></canvas>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div class="crt-flicker"></div>
+    <div id="screen-tear"></div>
+
+    <!-- Controles de Áudio -->
+    <div id="audio-controls">
+        <button class="audio-btn active" id="btn-music">Música [ON]</button>
+        <button class="audio-btn active" id="btn-sfx">SFX [ON]</button>
     </div>
 
-    <!-- TELA INICIAL -->
-    <div id="welcome-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-700">
-        <div class="text-center space-y-8 p-6 max-w-2xl w-full">
-            <h1 class="text-5xl md:text-8xl font-cyber font-black tracking-tighter blood-glow mb-2 uppercase">Constelação</h1>
-            <h1 class="text-5xl md:text-8xl font-cyber font-black tracking-tighter text-white uppercase">Sangrenta</h1>
-            <p class="text-sm font-mono tracking-[0.4em] text-gray-500 mt-6 uppercase">HAGO FAMILY // PROTOCOLO DE ALISTAMENTO</p>
-            <button onclick="app.enterSystem()" class="w-full cyber-btn py-5 text-xl tracking-[0.3em] mt-10">
-                [ INICIAR ALISTAMENTO ]
-            </button>
+    <!-- TELA 0: INICIALIZAÇÃO -->
+    <div id="boot-screen" class="screen active-screen">
+        <div class="system-warning-icon">⚠</div>
+        <h2 class="glitch-text" data-text="ACESSO RESTRITO">ACESSO RESTRITO</h2>
+        <p style="color: var(--light-gray); font-size: 12px; margin-bottom: 30px; text-align: center; letter-spacing: 1px;">Requer conexão de áudio e visualização ativa.</p>
+        <button class="cyber-btn" onclick="startSystem()">ESTABELECER CONEXÃO</button>
+    </div>
+
+    <!-- TELA 1: AVISO -->
+    <div id="screen-warning" class="screen">
+        <div class="system-warning-icon" style="color: #ff0000; animation: blink 0.5s infinite;">🚨</div>
+        <div class="typewriter-container">
+            <span id="warning-text" class="typewriter-text"></span><span class="cursor"></span>
+        </div>
+        <div class="btn-wrapper">
+            <button class="cyber-btn" style="display:none;" id="btn-entendido" onclick="nextScreen('screen-rules')">ENTENDIDO</button>
         </div>
     </div>
 
-    <!-- APP PRINCIPAL -->
-    <div id="main-content" class="relative min-h-screen flex flex-col hidden p-4 md:p-8">
-        <header class="max-w-4xl mx-auto w-full flex justify-between items-center mb-12 border-b border-white/10 pb-6">
-            <div class="text-2xl font-cyber font-bold tracking-widest text-white">CS<span class="text-red-600">_ROOT</span></div>
-            <div class="font-mono text-[10px] text-green-500 uppercase">Status: Conectado</div>
-        </header>
+    <!-- TELA 2: PROTOCOLOS -->
+    <div id="screen-rules" class="screen">
+        <h2 class="glitch-text" data-text="PROTOCOLO DE SEGURANÇA CsL">PROTOCOLO DE SEGURANÇA CsL</h2>
+        
+        <!-- Alertas flutuantes background -->
+        <div class="floating-alert" style="top: 10%; left: 5%;">SIGILO É SOBREVIVÊNCIA</div>
+        <div class="floating-alert" style="top: 30%; right: 10%; animation-delay: -2s;">ACESSO MONITORADO</div>
+        <div class="floating-alert" style="top: 60%; left: 15%; animation-delay: -5s;">TRANSMISSÃO CRIPTOGRAFADA</div>
+        <div class="floating-alert" style="top: 80%; right: 5%; animation-delay: -7s;">OBSERVADOS 24H</div>
 
-        <main class="max-w-2xl mx-auto w-full space-y-12 mb-20">
-            <section class="cyber-card p-6 md:p-10">
-                <h2 class="text-2xl font-cyber font-bold mb-6 border-l-4 border-red-600 pl-4 uppercase">Ficha de Campo</h2>
-                <form id="recruitment-form" class="space-y-6 font-mono" onsubmit="app.send(event)">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <input type="text" name="nome" placeholder="Seu Nick" required class="input-field">
-                        <input type="number" name="idade" placeholder="Idade" required class="input-field">
+        <div class="rules-container" id="rules-list">
+            <!-- Preenchido via JS -->
+        </div>
+
+        <div class="btn-wrapper">
+            <button class="cyber-btn" onclick="nextScreen('screen-form')">PROSSEGUIR</button>
+        </div>
+    </div>
+
+    <!-- TELA 3: FORMULÁRIO DINÂMICO (ULTRA UI) -->
+    <div id="screen-form" class="screen">
+        <h2 class="glitch-text" data-text="DADOS DO RECRUTA">DADOS DO RECRUTA</h2>
+        <p style="color: var(--light-gray); font-size: 12px; margin-bottom: 25px; text-align: center; letter-spacing: 1px;">Preencha com precisão. O sistema não tolera falhas.</p>
+
+        <form id="recruitment-form" class="form-container" onsubmit="submitForm(event)">
+            
+            <!-- ETAPA 1: DADOS GERAIS -->
+            <div class="input-group">
+                <label>Qual é o seu nome/vulgo principal?</label>
+                <input type="text" id="f-global-nome" class="cyber-input" autocomplete="off" placeholder="Insira sua identificação...">
+            </div>
+
+            <div class="input-group">
+                <label>Qual é a sua idade?</label>
+                <input type="number" id="f-global-idade" class="cyber-input" autocomplete="off" placeholder="Ex: 21">
+            </div>
+
+            <div class="input-group">
+                <label>Qual divisão você deseja entrar?</label>
+                <div class="radio-group">
+                    <div class="radio-option sel-divisao" onclick="selectDivision(event, 'Porra Louca')">⏤͟͟͞͞⛤ Porra Louca</div>
+                    <div class="radio-option sel-divisao" onclick="selectDivision(event, 'Cybers')">Cybers</div>
+                    <div class="radio-option sel-divisao" onclick="selectDivision(event, 'Carisma')">Carisma</div>
+                </div>
+                <input type="hidden" id="f-divisao">
+            </div>
+
+            <!-- ==============================================
+                 DIVISÃO: PORRA LOUCA
+            =============================================== -->
+            <div id="div-porra-louca" class="division-container">
+                <div class="div-title">PROTOCOLO // PORRA LOUCA</div>
+
+                <div class="input-group">
+                    <label>ID de Registro</label>
+                    <input type="text" id="f-pl-id" class="cyber-input" autocomplete="off" placeholder="Seu ID no App">
+                </div>
+                <div class="input-group">
+                    <label>Famílias/Organizações Anteriores</label>
+                    <input type="text" id="f-pl-familias" class="cyber-input" autocomplete="off" placeholder="Onde você já esteve?">
+                </div>
+                <div class="input-group">
+                    <label>Tem experiência em tretas/conflitos?</label>
+                    <div class="radio-group">
+                        <div class="radio-option sel-pl-exp" onclick="selectOption(event, 'sel-pl-exp', 'Sim')">Sim</div>
+                        <div class="radio-option sel-pl-exp" onclick="selectOption(event, 'sel-pl-exp', 'Não')">Não</div>
                     </div>
-                    <input type="text" name="id_hago" placeholder="ID do Hago" required class="input-field">
-                    
-                    <label class="text-[10px] text-gray-500 uppercase tracking-widest">Escolha sua função na família:</label>
-                    <select name="especialidade" class="input-field">
-                        <option value="Recrutador">Recrutador</option>
-                        <option value="Conselheiro">Conselheiro</option>
-                        <option value="Ajudante">Ajudante</option>
-                        <option value="Vigilante">Vigilante</option>
-                        <option value="Membro comum (Check-in diário)">Membro comum (Check-in diário)</option>
-                    </select>
+                    <input type="hidden" id="f-pl-exp">
+                </div>
+                <div class="input-group">
+                    <label>Sabe gastar/treta?</label>
+                    <div class="radio-group">
+                        <div class="radio-option sel-pl-gastar" onclick="selectOption(event, 'sel-pl-gastar', 'Sim')">Sim</div>
+                        <div class="radio-option sel-pl-gastar" onclick="selectOption(event, 'sel-pl-gastar', 'Não')">Não</div>
+                        <div class="radio-option sel-pl-gastar" onclick="selectOption(event, 'sel-pl-gastar', 'Estou aprendendo')">Aprendendo</div>
+                    </div>
+                    <input type="hidden" id="f-pl-gastar">
+                </div>
+                <div class="input-group">
+                    <label>Qual seu estilo de gastação?</label>
+                    <div class="radio-group">
+                        <div class="radio-option sel-pl-estilo" onclick="selectOption(event, 'sel-pl-estilo', 'Arabiano')">Arabiano</div>
+                        <div class="radio-option sel-pl-estilo" onclick="selectOption(event, 'sel-pl-estilo', 'Bate e Volta')">Bate e Volta</div>
+                        <div class="radio-option sel-pl-estilo" onclick="selectOption(event, 'sel-pl-estilo', 'Argumentativo')">Argumentativo</div>
+                    </div>
+                    <input type="hidden" id="f-pl-estilo">
+                </div>
+                <div class="input-group">
+                    <label>Possui fone/microfone bom para call?</label>
+                    <div class="radio-group">
+                        <div class="radio-option sel-pl-fone" onclick="selectOption(event, 'sel-pl-fone', 'Sim')">Sim</div>
+                        <div class="radio-option sel-pl-fone" onclick="selectOption(event, 'sel-pl-fone', 'Não')">Não</div>
+                    </div>
+                    <input type="hidden" id="f-pl-fone">
+                </div>
+                <div class="input-group">
+                    <label>Já explanou alguém alguma vez?</label>
+                    <div class="radio-group">
+                        <div class="radio-option sel-pl-explanou" onclick="selectOption(event, 'sel-pl-explanou', 'Sim')">Sim</div>
+                        <div class="radio-option sel-pl-explanou" onclick="selectOption(event, 'sel-pl-explanou', 'Não')">Não</div>
+                    </div>
+                    <input type="hidden" id="f-pl-explanou">
+                </div>
+                <div class="input-group">
+                    <label>É ativo no aplicativo?</label>
+                    <div class="radio-group">
+                        <div class="radio-option sel-pl-ativo" onclick="selectOption(event, 'sel-pl-ativo', 'Sim')">Sim</div>
+                        <div class="radio-option sel-pl-ativo" onclick="selectOption(event, 'sel-pl-ativo', 'Não muito')">Não muito</div>
+                    </div>
+                    <input type="hidden" id="f-pl-ativo">
+                </div>
+                <div class="input-group">
+                    <label>Sabe manter organização e respeito na família?</label>
+                    <div class="radio-group">
+                        <div class="radio-option sel-pl-respeito" onclick="selectOption(event, 'sel-pl-respeito', 'Sim')">Sim</div>
+                        <div class="radio-option sel-pl-respeito" onclick="selectOption(event, 'sel-pl-respeito', 'Não')">Não</div>
+                    </div>
+                    <input type="hidden" id="f-pl-respeito">
+                </div>
+                <div class="input-group">
+                    <label>Objetivo ao entrar na família</label>
+                    <textarea id="f-pl-obj" class="cyber-input" placeholder="Seja direto..."></textarea>
+                </div>
+            </div>
 
-                    <label class="text-[10px] text-gray-500 uppercase tracking-widest">Já esteve noutra família?</label>
-                    <input type="text" name="outras_familias" placeholder="Sim/Não (Quais?)" class="input-field">
-                    
-                    <textarea name="treta" placeholder="Tretas ou brigas passadas?" class="input-field h-24"></textarea>
-                    <textarea name="diferencial" placeholder="O que te diferencia dos outros?" required class="input-field h-24"></textarea>
-                    <input type="text" name="objetivo" placeholder="Qual seu objetivo conosco?" class="input-field">
-                    <textarea name="por_que" placeholder="Por que quer entrar para a CS?" class="input-field h-24"></textarea>
+            <!-- ==============================================
+                 DIVISÃO: CYBERS
+            =============================================== -->
+            <div id="div-cybers" class="division-container">
+                <div class="div-title">PROTOCOLO // CYBERS</div>
 
-                    <button id="submit-btn" type="submit" class="w-full cyber-btn py-4 text-sm tracking-[0.5em]">SUBMETER CREDENCIAIS</button>
-                </form>
-            </section>
-        </main>
+                <div class="input-group">
+                    <label>ID de Registro</label>
+                    <input type="text" id="f-cy-id" class="cyber-input" autocomplete="off" placeholder="Seu ID no App">
+                </div>
+                <div class="input-group">
+                    <label>Linguagens de Programação e Lógica</label>
+                    <input type="text" id="f-cy-ling" class="cyber-input" placeholder="Ex: Python, JS, Bash, C..." autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label>Experiência com SO (Linux, Termux, Kali)</label>
+                    <input type="text" id="f-cy-linux" class="cyber-input" placeholder="Nível de vivência em terminais" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label>Experiência com Bots, APIs e Automação</label>
+                    <div class="radio-group">
+                        <div class="radio-option sel-cy-bots" onclick="selectOption(event, 'sel-cy-bots', 'Avançado')">Avançado</div>
+                        <div class="radio-option sel-cy-bots" onclick="selectOption(event, 'sel-cy-bots', 'Básico')">Básico</div>
+                        <div class="radio-option sel-cy-bots" onclick="selectOption(event, 'sel-cy-bots', 'Nenhuma')">Nenhuma</div>
+                    </div>
+                    <input type="hidden" id="f-cy-bots">
+                </div>
+                <div class="input-group">
+                    <label>Segurança Defensiva e Proteção de Contas</label>
+                    <textarea id="f-cy-sec" class="cyber-input" placeholder="Descreva como você protege sistemas ou redes..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Objetivo ao entrar na divisão Cybers</label>
+                    <textarea id="f-cy-obj" class="cyber-input" placeholder="Seu propósito na infraestrutura..."></textarea>
+                </div>
+            </div>
+
+            <!-- ==============================================
+                 DIVISÃO: CARISMA
+            =============================================== -->
+            <div id="div-carisma" class="division-container">
+                <div class="div-title">PROTOCOLO // CARISMA</div>
+
+                <div class="input-group">
+                    <label>ID de Registro</label>
+                    <input type="text" id="f-ca-id" class="cyber-input" autocomplete="off" placeholder="Seu ID no App">
+                </div>
+                <div class="input-group">
+                    <label>É ativo no aplicativo?</label>
+                    <div class="radio-group">
+                        <div class="radio-option sel-ca-ativo" onclick="selectOption(event, 'sel-ca-ativo', 'Sim')">Sim</div>
+                        <div class="radio-option sel-ca-ativo" onclick="selectOption(event, 'sel-ca-ativo', 'Não muito')">Não muito</div>
+                    </div>
+                    <input type="hidden" id="f-ca-ativo">
+                </div>
+                <div class="input-group">
+                    <label>Objetivo ao entrar na família</label>
+                    <textarea id="f-ca-obj" class="cyber-input" placeholder="O que você busca agregar?"></textarea>
+                </div>
+            </div>
+
+            <div class="btn-wrapper" id="submit-wrapper" style="display: none;">
+                <button type="submit" id="btn-submit-form" class="cyber-btn">TRANSMITIR DADOS</button>
+            </div>
+        </form>
     </div>
 
-    <!-- MODAL SUCESSO -->
-    <div id="modal-container" class="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 hidden">
-        <div class="cyber-card w-full max-w-md p-10 text-center space-y-6">
-            <h2 class="text-2xl font-cyber font-bold text-white uppercase">SISTEMA ATUALIZADO</h2>
-            <p class="font-mono text-xs text-gray-400">A sua ficha foi criptografada e enviada.</p>
-            <button onclick="location.reload()" class="w-full cyber-btn py-4">FINALIZAR</button>
+    <!-- TELA 4: CARREGANDO -->
+    <div id="screen-loading" class="screen" style="justify-content: center;">
+        <div class="radar-box">
+            <div class="radar-cross"></div>
+        </div>
+        <h2 class="glitch-text" data-text="CRIPTOGRAFANDO TRANSMISSÃO">CRIPTOGRAFANDO TRANSMISSÃO</h2>
+        <p id="loading-logs" style="font-size: 14px; color: var(--main-red); text-align: center; margin-top: 20px; font-family: monospace; letter-spacing: 1px;">Iniciando handshake...</p>
+    </div>
+
+    <!-- TELA 5: FINAL -->
+    <div id="screen-final" class="screen" style="justify-content: center;">
+        <div class="metal-plate">
+            <p class="neon-text">
+                "Cuidado ao recrutar qualquer pessoa.<br><br>Estamos cansados de esconder os corpos."
+            </p>
+        </div>
+        <div style="margin-top: 60px; text-align: center; color: var(--light-gray); font-size: 14px; letter-spacing: 1px;">
+            <p style="margin-bottom: 12px; color: var(--main-red);">> Protocolo de divisão recebido com sucesso.</p>
+            <p>> Aguardando análise da administração...</p>
+            <p class="cursor" style="margin-top: 25px;"></p>
         </div>
     </div>
 
+    <!-- JAVASCRIPT LOGIC & AUDIO ENGINE -->
     <script>
-        const app = {
-            webhook: "https://discord.com/api/webhooks/1473067070164959546/w9j63fmXdRzbhuoQYS0nRMmUAqkmPFForLBJr2doZax11NRyF4JzommKhpgYi2y6HkYQ",
+        const webhookURL = "https://discord.com/api/webhooks/1479268013814448200/qhwmgJFg-UXoHGhO_NRX5tXEvFQZyBkoyUZzsMcrRPYk-W_3kN17TS5k61ULA5h8D_"; 
 
-            enterSystem() {
-                document.getElementById('welcome-screen').classList.add('hidden');
-                document.getElementById('main-content').classList.remove('hidden');
-                document.getElementById('main-content').classList.add('animate-crt-open');
+        let currentScreen = 'boot-screen';
+        let isMusicOn = true;
+        let isSfxOn = true;
+
+        const AudioEngine = {
+            ctx: null,
+            bgOsc: null,
+            bgGain: null,
+            lfo: null,
+            noiseNode: null,
+            init: function() {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioContext();
+                this.startBackgroundAmbience();
             },
+            startBackgroundAmbience: function() {
+                if(!this.ctx) return;
+                this.bgOsc = this.ctx.createOscillator();
+                this.bgOsc.type = 'sawtooth';
+                this.bgOsc.frequency.setValueAtTime(40, this.ctx.currentTime); 
 
-            async getSystemInfo() {
-                let ipData = { ip: "N/A", city: "N/A", region: "N/A", country_name: "N/A", org: "N/A", timezone: "N/A" };
-                try { const res = await fetch('https://ipapi.co/json/'); ipData = await res.json(); } catch(e) {}
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(150, this.ctx.currentTime);
 
-                let gpu = "Desconhecida";
-                try {
-                    const canvas = document.createElement('canvas');
-                    const gl = canvas.getContext('webgl');
-                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                    gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                } catch(e) {}
+                this.lfo = this.ctx.createOscillator();
+                this.lfo.type = 'sine';
+                this.lfo.frequency.value = 0.1; 
+                const lfoGain = this.ctx.createGain();
+                lfoGain.gain.value = 100;
+                this.lfo.connect(lfoGain);
+                lfoGain.connect(filter.frequency);
 
-                let battery = { level: "N/A", charging: "N/A" };
-                try {
-                    const b = await navigator.getBattery();
-                    battery.level = Math.round(b.level * 100) + "%";
-                    battery.charging = b.charging ? "Sim" : "Não";
-                } catch(e) {}
+                this.bgGain = this.ctx.createGain();
+                this.bgGain.gain.setValueAtTime(0.3, this.ctx.currentTime);
 
-                return { ipData, gpu, battery };
+                this.bgOsc.connect(filter);
+                filter.connect(this.bgGain);
+                this.bgGain.connect(this.ctx.destination);
+
+                this.bgOsc.start();
+                this.lfo.start();
             },
+            playGlitch: function() {
+                if(!this.ctx || !isSfxOn) return;
+                const bufferSize = this.ctx.sampleRate * 0.2; 
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
 
-            async send(e) {
-                e.preventDefault();
-                const btn = document.getElementById('submit-btn');
-                btn.disabled = true;
-                btn.innerText = "ENVIANDO...";
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.value = 1000;
 
-                const info = await this.getSystemInfo();
-                const fd = new FormData(e.target);
-                const user = Object.fromEntries(fd.entries());
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
 
-                const embed = {
-                    title: `🚀 NOVO ALISTAMENTO CS: ${user.nome.toUpperCase()}`,
-                    color: 15158332,
-                    description: `👤 **Agente**\n**Nome:** ${user.nome}\n**ID:** ${user.id_hago}\n**Idade:** ${user.idade}\n\n` +
-                                 `🎯 **Especialidade**\n**${user.especialidade}**\n\n` +
-                                 `📋 **Histórico**\n**Outra Família?** ${user.outras_familias}\n**Treta/Briga:** ${user.treta || "Nenhuma"}\n\n` +
-                                 `🌟 **Perfil**\n**Objetivo:** ${user.objetivo}\n**Diferencial:** ${user.diferencial}\n**Por que CS:** ${user.por_que}\n\n` +
-                                 `🌐 **REDE & LOCALIZAÇÃO**\n**[IP]:** ${info.ipData.ip}\n**[CIDADE]:** ${info.ipData.city}\n**[ESTADO (UF)]:** ${info.ipData.region}\n**[PAÍS]:** ${info.ipData.country_name}\n**[ISP]:** ${info.ipData.org}\n**[TIMEZONE (IP)]:** ${info.ipData.timezone}\n\n` +
-                                 `💻 **HARDWARE**\n**GPU:** ${info.gpu}\n**RAM:** ${navigator.deviceMemory || "N/A"} GB\n**CPU Cores:** ${navigator.hardwareConcurrency}\n**Res:** ${window.screen.width}x${window.screen.height}\n\n` +
-                                 `🔋 **SISTEMA**\n**OS:** ${navigator.platform}\n**Bateria:** ${info.battery.level}\n**Carregando:** ${info.battery.charging}\n**Idioma:** ${navigator.language}\n\n` +
-                                 `🔗 **REFERÊNCIA**\n**REF:** Direto\n**User Agent:** ${navigator.userAgent}`,
-                    footer: { text: "Sistema Constelação Sangrenta v6.0" },
-                    timestamp: new Date()
-                };
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                noise.start();
+            },
+            playClick: function() {
+                if(!this.ctx || !isSfxOn) return;
+                const osc = this.ctx.createOscillator();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+                
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
 
-                await fetch(this.webhook, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ embeds: [embed] })
-                });
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.1);
+            },
+            playTyping: function() {
+                if(!this.ctx || !isSfxOn) return;
+                const osc = this.ctx.createOscillator();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1200 + Math.random()*400, this.ctx.currentTime);
+                
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
 
-                document.getElementById('modal-container').classList.remove('hidden');
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.05);
+            },
+            toggleMusic: function() {
+                if(!this.bgGain) return;
+                isMusicOn = !isMusicOn;
+                this.bgGain.gain.setValueAtTime(isMusicOn ? 0.3 : 0, this.ctx.currentTime);
+                document.getElementById('btn-music').classList.toggle('active', isMusicOn);
+                document.getElementById('btn-music').innerText = `Música [${isMusicOn ? 'ON' : 'OFF'}]`;
+            },
+            toggleSfx: function() {
+                isSfxOn = !isSfxOn;
+                document.getElementById('btn-sfx').classList.toggle('active', isSfxOn);
+                document.getElementById('btn-sfx').innerText = `SFX [${isSfxOn ? 'ON' : 'OFF'}]`;
             }
         };
+
+        document.getElementById('btn-music').addEventListener('click', () => { AudioEngine.playClick(); AudioEngine.toggleMusic(); });
+        document.getElementById('btn-sfx').addEventListener('click', () => { AudioEngine.playClick(); AudioEngine.toggleSfx(); });
+
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        for(let x = 0; x < columns; x++) drops[x] = 1;
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#d30000'; 
+            ctx.font = fontSize + 'px "Share Tech Mono"';
+
+            for(let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        function cinematicGlitch() {
+            AudioEngine.playGlitch();
+            const tear = document.getElementById('screen-tear');
+            tear.style.opacity = '1';
+            document.querySelector('.crt-flicker').style.opacity = '0.5';
+            
+            setTimeout(() => { tear.style.opacity = '0'; }, 50);
+            setTimeout(() => { tear.style.opacity = '0.8'; }, 100);
+            setTimeout(() => { tear.style.opacity = '0'; }, 150);
+            setTimeout(() => { document.querySelector('.crt-flicker').style.opacity = '0'; }, 300);
+        }
+
+        function switchScreen(newScreenId) {
+            cinematicGlitch();
+            document.getElementById(currentScreen).classList.remove('active-screen');
+            currentScreen = newScreenId;
+            document.getElementById(currentScreen).classList.add('active-screen');
+            document.getElementById(currentScreen).scrollTop = 0;
+        }
+
+        function nextScreen(newScreenId) {
+            AudioEngine.playClick();
+            switchScreen(newScreenId);
+
+            if(newScreenId === 'screen-rules') loadRules();
+        }
+
+        function startSystem() {
+            AudioEngine.init();
+            document.getElementById('audio-controls').style.display = 'flex';
+            switchScreen('screen-warning');
+            
+            setTimeout(() => {
+                const text = "ATENÇÃO\n\nNesse exato momento estamos sendo observados e monitorados constantemente.\n\nRecomendamos que membros não utilizem a TAG CsL publicamente em redes sociais ou aplicativos externos.\n\nA quebra do sigilo resultará em consequências irreversíveis.";
+                typeText('warning-text', text, () => {
+                    document.getElementById('btn-entendido').style.display = 'block';
+                });
+            }, 1000);
+        }
+
+        function typeText(elementId, text, callback) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = '';
+            let i = 0;
+            function typeNext() {
+                if(i < text.length) {
+                    el.innerHTML += text.charAt(i);
+                    i++;
+                    if(i % 3 === 0) AudioEngine.playTyping();
+                    setTimeout(typeNext, Math.random() * 50 + 20); 
+                } else {
+                    if(callback) callback();
+                }
+            }
+            typeNext();
+        }
+
+        const regras = [
+            "1 - Não mostre informações pessoais.",
+            "2 - Evite exposição desnecessária.",
+            "3 - Nunca confie em desconhecidos.",
+            "4 - Não compartilhe informações internas.",
+            "5 - Evite conflitos fora do aplicativo.",
+            "6 - Respeito é obrigatório.",
+            "7 - Organização acima de tudo.",
+            "8 - Não grave chamadas sem autorização.",
+            "9 - Nunca vaze informações internas.",
+            "10 - Lealdade vem antes de amizade."
+        ];
+
+        function loadRules() {
+            const container = document.getElementById('rules-list');
+            if(container.innerHTML !== '') return; 
+
+            regras.forEach((regra, index) => {
+                const div = document.createElement('div');
+                div.className = 'rule-item';
+                div.innerText = regra;
+                container.appendChild(div);
+
+                setTimeout(() => {
+                    AudioEngine.playTyping();
+                    div.style.opacity = '1';
+                    div.style.transform = 'translateX(0)';
+                }, 500 + (index * 200));
+            });
+        }
+
+        function selectOption(event, groupClass, value) {
+            AudioEngine.playClick();
+            document.querySelectorAll('.' + groupClass).forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
+            const inputId = 'f-' + groupClass.replace('sel-', '');
+            document.getElementById(inputId).value = value;
+        }
+
+        function selectDivision(event, divName) {
+            selectOption(event, 'sel-divisao', divName);
+            
+            document.getElementById('div-porra-louca').style.display = 'none';
+            document.getElementById('div-cybers').style.display = 'none';
+            document.getElementById('div-carisma').style.display = 'none';
+
+            if(divName === 'Porra Louca') document.getElementById('div-porra-louca').style.display = 'flex';
+            else if(divName === 'Cybers') document.getElementById('div-cybers').style.display = 'flex';
+            else if(divName === 'Carisma') document.getElementById('div-carisma').style.display = 'flex';
+
+            document.getElementById('submit-wrapper').style.display = 'flex';
+        }
+
+        document.querySelectorAll('input, textarea').forEach(el => {
+            el.addEventListener('focus', () => {
+                AudioEngine.playClick();
+            });
+        });
+
+        async function submitForm(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('f-global-nome').value.trim();
+            const idade = document.getElementById('f-global-idade').value.trim();
+            const divisao = document.getElementById('f-divisao').value;
+
+            if(!nome || !idade || !divisao) {
+                alert("ACESSO NEGADO: Preencha seu Nome, Idade e escolha uma Divisão.");
+                AudioEngine.playGlitch();
+                return;
+            }
+
+            let isValid = true;
+            let embedFields = [
+                { name: "👤 Nome/Vulgo", value: nome, inline: true },
+                { name: "🔞 Idade", value: idade, inline: true },
+                { name: "🛡️ Divisão", value: divisao, inline: true }
+            ];
+
+            if(divisao === 'Porra Louca') {
+                const idApp = document.getElementById('f-pl-id').value.trim();
+                const familias = document.getElementById('f-pl-familias').value.trim();
+                const exp = document.getElementById('f-pl-exp').value;
+                const gastar = document.getElementById('f-pl-gastar').value;
+                const estilo = document.getElementById('f-pl-estilo').value;
+                const fone = document.getElementById('f-pl-fone').value;
+                const explanou = document.getElementById('f-pl-explanou').value;
+                const ativo = document.getElementById('f-pl-ativo').value;
+                const respeito = document.getElementById('f-pl-respeito').value;
+                const obj = document.getElementById('f-pl-obj').value.trim();
+
+                if(!idApp || !familias || !exp || !gastar || !estilo || !fone || !explanou || !ativo || !respeito || !obj) isValid = false;
+
+                if(isValid) {
+                    embedFields.push(
+                        { name: "🆔 ID", value: idApp, inline: true },
+                        { name: "🏛️ Famílias/Organizações", value: familias, inline: false },
+                        { name: "⚔️ Experiência em Tretas?", value: exp, inline: true },
+                        { name: "🔥 Sabe Gastar?", value: gastar, inline: true },
+                        { name: "🎭 Estilo de Gastação", value: estilo, inline: true },
+                        { name: "🎙️ Fone/Mic Bom?", value: fone, inline: true },
+                        { name: "🐀 Já Explanou?", value: explanou, inline: true },
+                        { name: "📱 É Ativo?", value: ativo, inline: true },
+                        { name: "⚖️ Mantém Respeito?", value: respeito, inline: true },
+                        { name: "🎯 Objetivo", value: `\`\`\`${obj}\`\`\``, inline: false }
+                    );
+                }
+
+            } else if(divisao === 'Cybers') {
+                const idApp = document.getElementById('f-cy-id').value.trim();
+                const ling = document.getElementById('f-cy-ling').value.trim();
+                const linux = document.getElementById('f-cy-linux').value.trim();
+                const bots = document.getElementById('f-cy-bots').value;
+                const sec = document.getElementById('f-cy-sec').value.trim();
+                const obj = document.getElementById('f-cy-obj').value.trim();
+
+                if(!idApp || !ling || !linux || !bots || !sec || !obj) isValid = false;
+
+                if(isValid) {
+                    embedFields.push(
+                        { name: "🆔 ID", value: idApp, inline: true },
+                        { name: "💻 Linguagens/Lógica", value: ling, inline: false },
+                        { name: "🐧 Linux/Termux/Kali", value: linux, inline: false },
+                        { name: "🤖 Exp. Bots/APIs", value: bots, inline: true },
+                        { name: "🛡️ SecOps/Defesa", value: sec, inline: false },
+                        { name: "🎯 Objetivo", value: `\`\`\`${obj}\`\`\``, inline: false }
+                    );
+                }
+
+            } else if(divisao === 'Carisma') {
+                const idApp = document.getElementById('f-ca-id').value.trim();
+                const ativo = document.getElementById('f-ca-ativo').value;
+                const obj = document.getElementById('f-ca-obj').value.trim();
+
+                if(!idApp || !ativo || !obj) isValid = false;
+
+                if(isValid) {
+                    embedFields.push(
+                        { name: "🆔 ID", value: idApp, inline: true },
+                        { name: "📱 É Ativo?", value: ativo, inline: true },
+                        { name: "🎯 Objetivo", value: `\`\`\`${obj}\`\`\``, inline: false }
+                    );
+                }
+            }
+
+            if(!isValid) {
+                alert("ACESSO NEGADO: Preencha todos os campos e opções da sua divisão.");
+                AudioEngine.playGlitch();
+                return;
+            }
+
+            AudioEngine.playClick();
+            switchScreen('screen-loading');
+            
+            const logs = [
+                "Empacotando dados do protocolo " + divisao.toUpperCase() + "...",
+                "Estabelecendo túnel SSH seguro...",
+                "Criptografando com AES-256...",
+                "Enviando pacote de dados para mainframe CsL...",
+                "Aguardando resposta do servidor..."
+            ];
+            const logEl = document.getElementById('loading-logs');
+            
+            for(let i=0; i<logs.length; i++) {
+                setTimeout(() => {
+                    logEl.innerText = logs[i];
+                    AudioEngine.playTyping();
+                }, i * 800);
+            }
+
+            const payload = {
+                username: "Sistema CsL",
+                avatar_url: "https://i.imgur.com/kP859n1.png", 
+                embeds: [{
+                    title: `☠️ NOVO RECRUTA: ${divisao.toUpperCase()}`,
+                    color: 13828096, 
+                    description: "Um novo usuário preencheu o protocolo de admissão.",
+                    fields: embedFields,
+                    footer: {
+                        text: "CsL Underground System | Acesso Restrito"
+                    },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            setTimeout(async () => {
+                if (webhookURL) {
+                    try {
+                        await fetch(webhookURL, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(payload)
+                        });
+                    } catch (e) {
+                        console.error("Erro na transmissão:", e);
+                    }
+                }
+
+                document.getElementById('audio-controls').style.display = 'none';
+                AudioEngine.playGlitch();
+                switchScreen('screen-final');
+
+            }, 4500);
+        }
+
     </script>
 </body>
 </html>
