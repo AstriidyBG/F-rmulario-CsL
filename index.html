@@ -6,1371 +6,1027 @@
     <title>CsL - TERMINAL RESTRITO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
+        /* =========================================================
+           VÁRIAVEIS GLOBAIS E TEMA
+        ========================================================= */
         :root {
-            --bg-color: #030000;
-            --main-red: #d30000;
-            --main-red-glow: rgba(211, 0, 0, 0.6);
-            --dark-red: #5a0000;
-            --metal-gray: #1a1a1a;
-            --light-gray: #a8a8a8;
-            --glow: 0 0 10px rgba(211, 0, 0, 0.7), 0 0 20px rgba(211, 0, 0, 0.4), 0 0 30px rgba(211, 0, 0, 0.2);
-            --scanline-color: rgba(255, 0, 0, 0.05);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--main-red);
-            font-family: 'Share Tech Mono', monospace;
-            overflow: hidden;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* --- BACKGROUNDS & OVERLAYS --- */
-        #matrix-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.15;
-        }
-
-        .scanlines {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent 50%, var(--scanline-color) 51%);
-            background-size: 100% 4px;
-            z-index: 998;
-            pointer-events: none;
-        }
-
-        .vignette {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.95) 100%);
-            z-index: 997;
-            pointer-events: none;
-            animation: pulse-vignette 4s infinite alternate;
-        }
-
-        .crt-flicker {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,0,0,0.02);
-            z-index: 999;
-            pointer-events: none;
-            animation: flicker 0.15s infinite;
-            opacity: 0;
-        }
-
-        /* --- AUDIO CONTROLS --- */
-        #audio-controls {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: none;
-            gap: 15px;
-        }
-
-        .audio-btn {
-            background: rgba(20, 0, 0, 0.8);
-            border: 1px solid var(--dark-red);
-            color: var(--main-red);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
-            padding: 8px 12px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 2px;
-            transition: 0.3s;
-            box-shadow: 0 0 10px rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-        }
-
-        .audio-btn:active {
-            transform: scale(0.95);
-        }
-
-        .audio-btn.active {
-            background: rgba(211, 0, 0, 0.15);
-            border-color: var(--main-red);
-            box-shadow: var(--glow);
-            text-shadow: 0 0 5px var(--main-red);
-        }
-
-        /* --- SCREENS --- */
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            z-index: 10;
-            padding: 5% 5%;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scrollbar-width: thin;
-            scrollbar-color: var(--main-red) transparent;
-        }
-
-        .screen::-webkit-scrollbar {
-            width: 6px;
-        }
-        .screen::-webkit-scrollbar-track {
-            background: rgba(20, 0, 0, 0.5);
-            border-left: 1px solid var(--dark-red);
-        }
-        .screen::-webkit-scrollbar-thumb {
-            background: var(--main-red);
-            box-shadow: 0 0 10px var(--main-red);
-        }
-
-        .active-screen {
-            display: flex;
-            animation: screen-on 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        /* --- COMPONENTS --- */
-        h1, h2 {
-            font-family: 'Orbitron', sans-serif;
-            text-align: center;
-            text-transform: uppercase;
-            text-shadow: var(--glow);
-            margin-bottom: 25px;
-            letter-spacing: 3px;
-        }
-
-        .glitch-text {
-            position: relative;
-        }
-        .glitch-text::before, .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: transparent;
-        }
-        .glitch-text::before {
-            left: 2px;
-            text-shadow: -2px 0 red;
-            clip: rect(24px, 550px, 90px, 0);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-        }
-        .glitch-text::after {
-            left: -2px;
-            text-shadow: -2px 0 blue;
-            clip: rect(85px, 550px, 140px, 0);
-            animation: glitch-anim 2.5s infinite linear alternate-reverse;
-        }
-
-        .typewriter-container {
-            width: 100%;
-            max-width: 650px;
-            min-height: 150px;
-            border-left: 3px solid var(--main-red);
-            margin-bottom: 30px;
-            background: rgba(20, 0, 0, 0.6);
-            padding: 25px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 0 15px rgba(211,0,0,0.1);
-            position: relative;
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
-        }
-
-        .typewriter-text {
-            font-size: 16px;
-            line-height: 1.7;
-            color: #ffcccc;
-            white-space: pre-wrap;
-            letter-spacing: 0.5px;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 10px;
-            height: 18px;
-            background-color: var(--main-red);
-            animation: blink 1s step-end infinite;
-            vertical-align: middle;
-            margin-left: 4px;
-            box-shadow: 0 0 10px var(--main-red);
-        }
-
-        .cyber-btn {
-            background: rgba(15, 0, 0, 0.85);
-            border: 1px solid var(--dark-red);
-            color: #fff;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            padding: 16px 45px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            position: relative;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.9), 0 0 10px rgba(211,0,0,0.2);
-            width: 100%;
-            max-width: 320px;
-            margin-top: 20px;
-            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            outline: none;
-        }
-
-        .cyber-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(211, 0, 0, 0.2), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.5s ease;
-        }
-
-        .cyber-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 2px;
-            background: var(--main-red);
-            box-shadow: 0 0 10px var(--main-red);
-        }
-
-        .cyber-btn:hover, .cyber-btn:active {
-            background: rgba(40, 0, 0, 0.9);
-            border-color: var(--main-red);
-            color: #fff;
-            box-shadow: 0 0 25px rgba(211, 0, 0, 0.4), inset 0 0 20px rgba(211, 0, 0, 0.3);
-            text-shadow: 0 0 8px #fff;
-            transform: translateY(-2px);
-        }
-
-        .cyber-btn:hover::before {
-            transform: translateX(100%);
-        }
-
-        /* --- SPECIFIC SCREENS --- */
-        #boot-screen {
-            justify-content: center;
-        }
-        
-        .system-warning-icon {
-            font-size: 60px;
-            color: var(--main-red);
-            margin-bottom: 20px;
-            animation: pulse-red 1s infinite;
-            text-shadow: var(--glow);
-        }
-
-        /* Rules Screen */
-        .rules-container {
-            width: 100%;
-            max-width: 650px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        .rule-item {
-            background: rgba(15, 0, 0, 0.7);
-            border: 1px solid var(--dark-red);
-            padding: 15px 20px;
-            font-size: 14px;
-            border-left: 4px solid var(--main-red);
-            opacity: 0;
-            transform: translateX(-20px);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-            letter-spacing: 0.5px;
-        }
-
-        .rule-item::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: var(--main-red);
-            transform: translateX(-100%);
-            animation: scan-horizontal 3s infinite;
-            box-shadow: 0 0 5px var(--main-red);
-        }
-
-        .floating-alert {
-            position: absolute;
-            color: rgba(211, 0, 0, 0.2);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 10px;
-            pointer-events: none;
-            white-space: nowrap;
-            animation: float-around 12s infinite linear;
-            text-shadow: 0 0 5px rgba(211,0,0,0.2);
+            --bg-base: #030000;
+            --red-main: #ff003c;
+            --red-glow: rgba(255, 0, 60, 0.6);
+            --red-dark: #4a0008;
+            --red-blood: #8a0018;
+            --gray-metal: #121212;
+            --text-light: #f0f0f0;
+            --text-dim: #a8a8a8;
+            --scanline: rgba(255, 0, 60, 0.03);
+            --font-head: 'Orbitron', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+            --glow-text: 0 0 5px var(--red-main), 0 0 15px var(--red-main);
+            --glow-box: 0 0 15px var(--red-glow), inset 0 0 15px var(--red-glow);
         }
 
         /* =========================================================
-           UI DO FORMULÁRIO (TOTALMENTE REFORMULADA)
+           RESETS E BASE
         ========================================================= */
-        .form-container {
-            width: 100%;
-            max-width: 700px;
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-            padding-bottom: 60px;
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            user-select: none; -webkit-tap-highlight-color: transparent;
+            cursor: none !important; /* Esconde cursor padrão */
         }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            position: relative;
-        }
-
-        .input-group label {
-            color: var(--main-red);
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            text-shadow: 0 0 5px rgba(211,0,0,0.3);
-        }
-
-        .input-group label::before {
-            content: '[+]\00a0';
-            color: var(--light-gray);
-            font-weight: normal;
-        }
-
-        /* Input Text & Number */
-        .cyber-input {
-            background: rgba(10, 0, 0, 0.8);
-            border: 1px solid var(--dark-red);
-            border-left: 3px solid var(--main-red);
-            color: #fff;
-            font-family: 'Share Tech Mono', monospace;
-            padding: 16px 20px;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: inset 0 0 15px rgba(0,0,0,1);
-            border-radius: 0;
-            -webkit-appearance: none;
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
-            position: relative;
-            letter-spacing: 1px;
-        }
-
-        .cyber-input::placeholder {
-            color: rgba(255, 255, 255, 0.2);
-        }
-
-        .cyber-input:focus {
-            background: rgba(30, 0, 0, 0.9);
-            border-color: var(--main-red);
-            box-shadow: inset 0 0 20px rgba(211, 0, 0, 0.15), 0 0 15px rgba(211, 0, 0, 0.3);
-            border-left-width: 5px;
-        }
-
-        /* Custom Radio/Select logic */
-        .radio-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px;
-            width: 100%;
-        }
-
-        .radio-option {
-            background: rgba(15, 0, 0, 0.8);
-            border: 1px solid var(--dark-red);
-            padding: 14px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--light-gray);
-            position: relative;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
-        }
-
-        .radio-option:hover {
-            border-color: var(--main-red);
-            color: #fff;
-            background: rgba(30, 0, 0, 0.6);
-            box-shadow: inset 0 0 15px rgba(211, 0, 0, 0.2);
-        }
-
-        .radio-option.selected {
-            background: rgba(211, 0, 0, 0.15);
-            border-color: var(--main-red);
-            color: #fff;
-            box-shadow: 0 0 20px rgba(211, 0, 0, 0.3), inset 0 0 20px rgba(211, 0, 0, 0.2);
-            text-shadow: 0 0 8px #fff;
-            font-weight: bold;
-        }
-
-        .radio-option.selected::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 3px;
-            background: var(--main-red);
-            box-shadow: 0 0 10px var(--main-red);
-        }
-
-        /* Container de Divisões Dinâmico */
-        .division-container {
-            display: none;
-            flex-direction: column;
-            gap: 25px;
-            width: 100%;
-            margin-top: 15px;
-            padding: 40px 25px 30px 25px; /* Top padding extra para o título */
-            background: linear-gradient(180deg, rgba(15,0,0,0.8) 0%, rgba(5,0,0,0.9) 100%);
-            border: 1px solid var(--dark-red);
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 30px rgba(211,0,0,0.05);
-            animation: form-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Bordas High-Tech do Container */
-        .division-container::before, .division-container::after {
-            content: ''; position: absolute; width: 40px; height: 40px; 
-            border-color: var(--main-red); border-style: solid; pointer-events: none;
-            box-shadow: 0 0 10px var(--main-red-glow);
-        }
-        .division-container::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-        .division-container::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
-
-        .div-title {
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            background: var(--bg-color);
-            padding: 0 15px;
-            color: var(--main-red);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            letter-spacing: 3px;
-            font-weight: 900;
-            text-shadow: 0 0 10px var(--main-red);
-            border-left: 2px solid var(--main-red);
-            border-right: 2px solid var(--main-red);
-            box-shadow: 0 0 15px rgba(0,0,0,0.9);
-            text-transform: uppercase;
-        }
-
-        /* Textareas */
-        textarea.cyber-input {
-            min-height: 120px;
-            resize: vertical;
-            line-height: 1.5;
-        }
-
-        /* Btn wrapper fix */
-        .btn-wrapper {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        /* Loading Screen */
-        .radar-box {
-            width: 160px;
-            height: 160px;
-            border: 2px solid var(--main-red);
-            border-radius: 50%;
-            position: relative;
+        body, html {
+            width: 100vw; height: 100vh;
+            background-color: var(--bg-base);
+            color: var(--red-main);
+            font-family: var(--font-mono);
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(211,0,0,0.3), inset 0 0 20px rgba(211,0,0,0.2);
-            margin-bottom: 35px;
-        }
-        .radar-box::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background: conic-gradient(from 0deg, transparent 70%, rgba(211,0,0,0.9) 100%);
-            transform-origin: 0 0;
-            animation: radar-spin 1.5s linear infinite;
-        }
-        .radar-box::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            width: 1px;
-            height: 100%;
-            background: rgba(211,0,0,0.6);
-            box-shadow: 0 0 10px var(--main-red);
-        }
-        .radar-cross {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: rgba(211,0,0,0.6);
-            box-shadow: 0 0 10px var(--main-red);
         }
 
-        /* Final Screen */
-        .metal-plate {
-            background: linear-gradient(135deg, #151515, #080808, #111);
-            border: 1px solid var(--dark-red);
-            padding: 40px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 30px rgba(0,0,0,0.8);
-            max-width: 90%;
-            border-radius: 2px;
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-        }
-        .metal-plate::before {
-            content: '';
-            position: absolute;
-            top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 1px dashed rgba(211, 0, 0, 0.4);
-            pointer-events: none;
-        }
-        .neon-text {
-            font-family: 'Orbitron', sans-serif;
-            color: #fff;
-            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--main-red), 0 0 40px var(--main-red), 0 0 80px var(--main-red);
-            font-size: 22px;
-            line-height: 1.6;
-            font-weight: 900;
-            animation: neon-flicker 1.5s infinite alternate;
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes pulse-vignette {
-            0% { opacity: 0.8; }
-            100% { opacity: 1; }
-        }
-        @keyframes flicker {
-            0% { opacity: 0.02; }
-            50% { opacity: 0.05; }
-            100% { opacity: 0.02; }
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        @keyframes screen-on {
-            0% { opacity: 0; transform: scale(0.95); filter: brightness(3) contrast(2) blur(5px); }
-            50% { filter: brightness(1.5) contrast(1.5) blur(2px); }
-            100% { opacity: 1; transform: scale(1); filter: none; }
-        }
-        @keyframes form-reveal {
-            0% { opacity: 0; transform: translateY(20px); clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); }
-            100% { opacity: 1; transform: translateY(0); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
-        }
-        @keyframes pulse-red {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 40px red; }
-            100% { transform: scale(1); opacity: 0.8; }
-        }
-        @keyframes radar-spin {
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes scan-horizontal {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        @keyframes glitch-anim {
-            0% { clip: rect(21px, 9999px, 91px, 0); transform: skew(0.66deg); }
-            5% { clip: rect(61px, 9999px, 57px, 0); transform: skew(0.85deg); }
-            10% { clip: rect(98px, 9999px, 86px, 0); transform: skew(0.79deg); }
-            15% { clip: rect(4px, 9999px, 5px, 0); transform: skew(0.19deg); }
-            20% { clip: rect(43px, 9999px, 53px, 0); transform: skew(0.53deg); }
-            25% { clip: rect(10px, 9999px, 92px, 0); transform: skew(0.95deg); }
-            30% { clip: rect(6px, 9999px, 20px, 0); transform: skew(0.82deg); }
-            35% { clip: rect(81px, 9999px, 16px, 0); transform: skew(0.71deg); }
-            40% { clip: rect(8px, 9999px, 88px, 0); transform: skew(0.18deg); }
-            45% { clip: rect(32px, 9999px, 21px, 0); transform: skew(0.5deg); }
-            50% { clip: rect(72px, 9999px, 78px, 0); transform: skew(0.96deg); }
-            55% { clip: rect(1px, 9999px, 96px, 0); transform: skew(0.54deg); }
-            60% { clip: rect(54px, 9999px, 45px, 0); transform: skew(0.48deg); }
-            65% { clip: rect(18px, 9999px, 60px, 0); transform: skew(0.79deg); }
-            70% { clip: rect(68px, 9999px, 63px, 0); transform: skew(0.57deg); }
-            75% { clip: rect(59px, 9999px, 62px, 0); transform: skew(0.66deg); }
-            80% { clip: rect(34px, 9999px, 2px, 0); transform: skew(0.24deg); }
-            85% { clip: rect(30px, 9999px, 26px, 0); transform: skew(0.29deg); }
-            90% { clip: rect(83px, 9999px, 80px, 0); transform: skew(0.1deg); }
-            95% { clip: rect(93px, 9999px, 92px, 0); transform: skew(0.49deg); }
-            100% { clip: rect(65px, 9999px, 49px, 0); transform: skew(0.73deg); }
-        }
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(25px, 9999px, 12px, 0); transform: skew(0.23deg); }
-            5% { clip: rect(53px, 9999px, 65px, 0); transform: skew(0.14deg); }
-            10% { clip: rect(15px, 9999px, 84px, 0); transform: skew(0.25deg); }
-            15% { clip: rect(62px, 9999px, 96px, 0); transform: skew(0.47deg); }
-            20% { clip: rect(14px, 9999px, 45px, 0); transform: skew(0.49deg); }
-            25% { clip: rect(30px, 9999px, 75px, 0); transform: skew(0.15deg); }
-            30% { clip: rect(87px, 9999px, 43px, 0); transform: skew(0.3deg); }
-            35% { clip: rect(65px, 9999px, 18px, 0); transform: skew(0.99deg); }
-            40% { clip: rect(59px, 9999px, 7px, 0); transform: skew(0.44deg); }
-            45% { clip: rect(38px, 9999px, 85px, 0); transform: skew(0.66deg); }
-            50% { clip: rect(91px, 9999px, 49px, 0); transform: skew(0.75deg); }
-            55% { clip: rect(9px, 9999px, 64px, 0); transform: skew(0.53deg); }
-            60% { clip: rect(21px, 9999px, 35px, 0); transform: skew(0.31deg); }
-            65% { clip: rect(72px, 9999px, 5px, 0); transform: skew(0.67deg); }
-            70% { clip: rect(11px, 9999px, 34px, 0); transform: skew(0.2deg); }
-            75% { clip: rect(4px, 9999px, 20px, 0); transform: skew(0.25deg); }
-            80% { clip: rect(84px, 9999px, 93px, 0); transform: skew(0.42deg); }
-            85% { clip: rect(69px, 9999px, 55px, 0); transform: skew(0.18deg); }
-            90% { clip: rect(32px, 9999px, 40px, 0); transform: skew(0.22deg); }
-            95% { clip: rect(52px, 9999px, 89px, 0); transform: skew(0.11deg); }
-            100% { clip: rect(88px, 9999px, 78px, 0); transform: skew(0.72deg); }
-        }
-        @keyframes float-around {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(100px, 50px); }
-            50% { transform: translate(-50px, 150px); }
-            75% { transform: translate(-100px, -50px); }
-            100% { transform: translate(0, 0); }
-        }
-        @keyframes neon-flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--main-red), 0 0 40px var(--main-red), 0 0 80px var(--main-red);
-                opacity: 1;
-            }
-            20%, 24%, 55% {
-                text-shadow: none;
-                opacity: 0.5;
-            }
+        /* =========================================================
+           SISTEMA DE OVERLAYS (CRT, SCANLINES, VIGNETTE)
+        ========================================================= */
+        #fx-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.2;
         }
         
-        /* Mobile specific fixes */
-        @media (max-width: 768px) {
-            h1, h2 { font-size: 22px; }
-            .cyber-btn { padding: 14px 20px; font-size: 15px; }
-            .screen { padding: 8% 5%; }
-            .metal-plate { padding: 25px 15px; }
-            .neon-text { font-size: 18px; }
-            .division-container { padding: 35px 15px 20px 15px; }
-            .radio-group { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
-            .input-group label { font-size: 11px; }
+        .scanlines {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, var(--scanline) 51%);
+            background-size: 100% 4px; z-index: 990; pointer-events: none;
         }
-        @media (max-width: 400px) {
-            .radio-group { grid-template-columns: 1fr; }
+
+        .vignette {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.95) 100%);
+            z-index: 991; pointer-events: none; animation: pulse-vig 5s infinite alternate;
+        }
+
+        .crt-noise {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+            opacity: 0.04; z-index: 992; pointer-events: none;
         }
 
         #screen-tear {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #fff;
-            mix-blend-mode: overlay;
-            z-index: 9999;
-            opacity: 0;
-            pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; mix-blend-mode: overlay; z-index: 9999;
+            opacity: 0; pointer-events: none;
         }
 
+        /* =========================================================
+           HUD E ELEMENTOS PERIFÉRICOS
+        ========================================================= */
+        .hud-element {
+            position: absolute; z-index: 800; font-size: 10px; color: var(--text-dim);
+            text-transform: uppercase; letter-spacing: 2px; pointer-events: none;
+            text-shadow: 0 0 5px rgba(255,0,0,0.3);
+        }
+        #hud-top-left { top: 20px; left: 20px; display: flex; flex-direction: column; gap: 5px; }
+        #hud-top-right { top: 20px; right: 20px; text-align: right; }
+        #hud-bottom-left { bottom: 20px; left: 20px; width: 250px; max-height: 100px; overflow: hidden; opacity: 0.7;}
+        
+        .status-indicator {
+            display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+            background: var(--red-main); box-shadow: 0 0 10px var(--red-main);
+            margin-right: 8px; animation: blink-status 1s infinite;
+        }
+
+        .log-line { margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* =========================================================
+           CURSOR CUSTOMIZADO
+        ========================================================= */
+        #custom-cursor {
+            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
+            pointer-events: none; z-index: 10000; transform: translate(-50%, -50%);
+            display: flex; justify-content: center; align-items: center;
+        }
+        #custom-cursor::before {
+            content: ''; position: absolute; width: 4px; height: 4px;
+            background: var(--red-main); border-radius: 50%; box-shadow: 0 0 8px var(--red-main);
+        }
+        #custom-cursor::after {
+            content: ''; position: absolute; width: 24px; height: 24px;
+            border: 1px dashed var(--red-main); border-radius: 50%;
+            animation: spin 4s linear infinite; opacity: 0.5;
+        }
+        .cursor-click { animation: cursor-pulse 0.3s ease-out; }
+
+        /* =========================================================
+           SCREENS E CONTAINERS
+        ========================================================= */
+        #app-container {
+            position: relative; width: 100%; height: 100%; z-index: 10;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .screen {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 5%; overflow-y: auto; overflow-x: hidden;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        .screen.active {
+            opacity: 1; pointer-events: all;
+            animation: screen-boot 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .screen::-webkit-scrollbar { width: 4px; }
+        .screen::-webkit-scrollbar-track { background: var(--bg-base); }
+        .screen::-webkit-scrollbar-thumb { background: var(--red-dark); }
+
+        /* =========================================================
+           TIPOGRAFIA E TÍTULOS
+        ========================================================= */
+        h1, h2, h3 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 4px; }
+        
+        .glitch-text {
+            position: relative; font-size: 28px; font-weight: 900;
+            text-shadow: var(--glow-text); margin-bottom: 20px; text-align: center;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: transparent; opacity: 0.8;
+        }
+        .glitch-text::before { left: 2px; text-shadow: -2px 0 #00ffff; animation: glitch-1 2s infinite linear alternate-reverse; clip-path: polygon(0 0, 100% 0, 100% 30%, 0 30%); }
+        .glitch-text::after { left: -2px; text-shadow: -2px 0 #ff00ff; animation: glitch-2 3s infinite linear alternate-reverse; clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0 100%); }
+
+        .typewriter-text { font-size: 16px; line-height: 1.6; color: var(--text-light); white-space: pre-wrap; }
+        .cursor-blink { display: inline-block; width: 10px; height: 18px; background: var(--red-main); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 5px;}
+
+        /* =========================================================
+           BOTÕES CYBERPUNK
+        ========================================================= */
+        .cyber-btn {
+            position: relative; background: rgba(20, 0, 0, 0.6);
+            border: 1px solid var(--red-dark); color: var(--text-light);
+            font-family: var(--font-head); font-size: 16px; font-weight: 700;
+            padding: 15px 40px; text-transform: uppercase; letter-spacing: 3px;
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            transition: all 0.3s ease; outline: none; margin-top: 20px; min-width: 250px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9); overflow: hidden;
+        }
+        .cyber-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,0,60,0.3), transparent);
+            transition: transform 0.5s ease;
+        }
+        .cyber-btn::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
+            background: var(--red-main); box-shadow: 0 0 10px var(--red-main);
+        }
+        .cyber-btn:hover {
+            background: rgba(60, 0, 0, 0.8); border-color: var(--red-main);
+            color: #fff; box-shadow: var(--glow-box); text-shadow: 0 0 8px #fff;
+            transform: translateY(-2px);
+        }
+        .cyber-btn:hover::before { transform: translateX(100%); }
+
+        /* =========================================================
+           PLACA DE AVISO METÁLICA (WARNING SCREEN)
+        ========================================================= */
+        .metal-plate {
+            position: relative; width: 100%; max-width: 650px;
+            background: linear-gradient(135deg, #2a2a2a 0%, #111 50%, #0a0a0a 100%);
+            border: 2px solid #333; border-radius: 4px; padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9), inset 0 0 40px rgba(0,0,0,1), 0 0 20px rgba(255,0,60,0.2);
+            display: flex; flex-direction: column; align-items: center;
+        }
+        /* Bordas listradas industriais */
+        .metal-plate::before {
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 2px dashed rgba(255, 0, 60, 0.4); pointer-events: none; z-index: 1;
+        }
+        /* Parafusos nos cantos */
+        .screw {
+            position: absolute; width: 12px; height: 12px; border-radius: 50%;
+            background: radial-gradient(circle, #555, #111); border: 1px solid #000;
+            box-shadow: inset 0 0 2px #fff, 0 1px 2px rgba(0,0,0,0.8); z-index: 2;
+        }
+        .screw::after { content: ''; position: absolute; top: 50%; left: 10%; width: 80%; height: 2px; background: #0a0a0a; transform: translateY(-50%) rotate(45deg); box-shadow: 0 1px 0 rgba(255,255,255,0.2); }
+        .screw.tl { top: 20px; left: 20px; } .screw.tr { top: 20px; right: 20px; transform: rotate(30deg); }
+        .screw.bl { bottom: 20px; left: 20px; transform: rotate(70deg); } .screw.br { bottom: 20px; right: 20px; transform: rotate(-20deg); }
+        
+        .alert-beacon {
+            width: 100%; height: 4px; background: var(--red-dark); position: absolute; top: 0; left: 0;
+            animation: beacon-flash 1s infinite alternate; box-shadow: 0 0 20px var(--red-main);
+        }
+        .warning-icon { font-size: 50px; text-shadow: var(--glow-text); margin-bottom: 20px; animation: pulse-red 1s infinite; }
+
+        /* =========================================================
+           FORMULÁRIOS & UI AVANÇADA
+        ========================================================= */
+        .form-container { width: 100%; max-width: 700px; display: flex; flex-direction: column; gap: 30px; padding-bottom: 50px; }
+        
+        .input-group { position: relative; display: flex; flex-direction: column; gap: 8px; }
+        .input-group label {
+            font-family: var(--font-head); font-size: 11px; color: var(--red-main);
+            letter-spacing: 2px; display: flex; align-items: center; text-shadow: 0 0 5px rgba(255,0,0,0.3);
+        }
+        .input-group label::before { content: '>'; color: var(--text-dim); margin-right: 8px; animation: blink 1.5s infinite; }
+
+        .cyber-input {
+            width: 100%; background: rgba(5, 0, 0, 0.7); border: 1px solid var(--red-dark);
+            border-left: 4px solid var(--red-main); color: var(--text-light);
+            font-family: var(--font-mono); font-size: 16px; padding: 15px 20px;
+            outline: none; transition: all 0.3s ease; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+        }
+        .cyber-input:focus {
+            background: rgba(20, 0, 0, 0.9); border-color: var(--red-main);
+            box-shadow: inset 0 0 20px rgba(255,0,60,0.1), 0 0 15px rgba(255,0,60,0.3);
+        }
+        .cyber-input::placeholder { color: rgba(255,255,255,0.15); }
+        textarea.cyber-input { min-height: 120px; resize: vertical; }
+
+        /* Custom Radio Buttons */
+        .radio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; }
+        .radio-btn {
+            background: rgba(10, 0, 0, 0.8); border: 1px solid var(--red-dark);
+            color: var(--text-dim); padding: 12px; text-align: center; font-size: 13px;
+            text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            position: relative; overflow: hidden;
+        }
+        .radio-btn:hover { border-color: var(--red-main); color: #fff; background: rgba(30,0,0,0.6); }
+        .radio-btn.selected {
+            background: rgba(255,0,60,0.15); border-color: var(--red-main); color: #fff;
+            box-shadow: 0 0 15px rgba(255,0,60,0.3); font-weight: bold; text-shadow: 0 0 5px #fff;
+        }
+        .radio-btn.selected::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--red-main); }
+
+        /* Container de Divisões */
+        .division-box {
+            display: none; flex-direction: column; gap: 25px; padding: 40px 25px 25px;
+            background: linear-gradient(180deg, rgba(20,0,0,0.8) 0%, rgba(5,0,0,0.9) 100%);
+            border: 1px solid var(--red-dark); position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9); animation: slide-down 0.5s ease;
+        }
+        .division-box::before, .division-box::after {
+            content: ''; position: absolute; width: 30px; height: 30px; border-color: var(--red-main); border-style: solid; box-shadow: 0 0 10px var(--red-main);
+        }
+        .division-box::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+        .division-box::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+        .div-title-badge {
+            position: absolute; top: -14px; left: 20px; background: var(--bg-base);
+            color: var(--red-main); padding: 5px 15px; font-family: var(--font-head);
+            font-size: 12px; font-weight: 900; border: 1px solid var(--red-main); box-shadow: 0 0 10px rgba(0,0,0,0.9);
+        }
+
+        /* =========================================================
+           LOADING E RADAR
+        ========================================================= */
+        .radar-container {
+            position: relative; width: 200px; height: 200px; border-radius: 50%;
+            border: 2px solid var(--red-dark); box-shadow: inset 0 0 40px rgba(255,0,60,0.1);
+            background: repeating-radial-gradient(transparent, transparent 20px, rgba(255,0,60,0.1) 21px);
+        }
+        .radar-sweep {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 70%, rgba(255,0,60,0.8) 100%);
+            animation: sweep 2s linear infinite; clip-path: circle(50% at 50% 50%);
+        }
+        .radar-crosshair {
+            position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,0,60,0.5);
+        }
+        .radar-crosshair::after {
+            content: ''; position: absolute; top: -100px; left: 50%; width: 1px; height: 200px; background: rgba(255,0,60,0.5);
+        }
+        #loading-logs { font-size: 12px; color: var(--text-dim); margin-top: 30px; min-height: 20px; }
+
+        /* =========================================================
+           NOTIFICAÇÕES
+        ========================================================= */
+        #notification-area {
+            position: fixed; top: 20px; right: 20px; width: 300px; z-index: 9000;
+            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+        }
+        .sys-notif {
+            background: rgba(10, 0, 0, 0.9); border-left: 4px solid var(--red-main);
+            padding: 12px 15px; color: #fff; font-size: 12px; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: notif-slide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        /* =========================================================
+           ANIMAÇÕES
+        ========================================================= */
+        @keyframes pulse-vig { 0% { opacity: 0.8; } 100% { opacity: 1; } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes blink-status { 0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--red-main); } 50% { opacity: 0.3; box-shadow: none; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes cursor-pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+        @keyframes screen-boot { 0% { opacity: 0; transform: scale(0.95); filter: blur(5px) brightness(2); } 100% { opacity: 1; transform: scale(1); filter: none; } }
+        @keyframes sweep { 100% { transform: rotate(360deg); } }
+        @keyframes slide-down { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes beacon-flash { 0% { background: var(--red-dark); box-shadow: none; } 100% { background: var(--red-main); box-shadow: 0 0 20px var(--red-main); } }
+        @keyframes pulse-red { 0%, 100% { text-shadow: var(--glow-text); transform: scale(1); } 50% { text-shadow: 0 0 30px red; transform: scale(1.1); } }
+        @keyframes notif-slide { 0% { transform: translateX(120%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+        
+        @media (max-width: 768px) {
+            h1, h2 { font-size: 20px; }
+            .cyber-btn { width: 100%; padding: 15px; }
+            .metal-plate { padding: 20px; }
+            #hud-top-right { display: none; }
+            #hud-bottom-left { display: none; }
+            .radio-grid { grid-template-columns: 1fr 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Overlays globais -->
-    <canvas id="matrix-canvas"></canvas>
+    <!-- OVERLAYS VISUAIS -->
+    <canvas id="fx-canvas"></canvas>
     <div class="scanlines"></div>
     <div class="vignette"></div>
-    <div class="crt-flicker"></div>
+    <div class="crt-noise"></div>
     <div id="screen-tear"></div>
+    <div id="custom-cursor"></div>
 
-    <!-- Controles de Áudio -->
-    <div id="audio-controls">
-        <button class="audio-btn active" id="btn-music">Música [ON]</button>
-        <button class="audio-btn active" id="btn-sfx">SFX [ON]</button>
+    <!-- HUD (Heads Up Display) -->
+    <div id="hud-top-left" class="hud-element">
+        <div><span class="status-indicator"></span>CONEXÃO SEGURA</div>
+        <div id="hud-ip">IP: OFUSCANDO...</div>
+        <div>LATÊNCIA: <span id="hud-ping">24</span>ms</div>
+    </div>
+    <div id="hud-top-right" class="hud-element">
+        <div id="hud-time">00:00:00</div>
+        <div>SYS_VER: 4.2.1</div>
+    </div>
+    <div id="hud-bottom-left" class="hud-element">
+        <div id="terminal-logs"></div>
     </div>
 
-    <!-- TELA 0: INICIALIZAÇÃO -->
-    <div id="boot-screen" class="screen active-screen">
-        <div class="system-warning-icon">⚠</div>
-        <h2 class="glitch-text" data-text="ACESSO RESTRITO">ACESSO RESTRITO</h2>
-        <p style="color: var(--light-gray); font-size: 12px; margin-bottom: 30px; text-align: center; letter-spacing: 1px;">Requer conexão de áudio e visualização ativa.</p>
-        <button class="cyber-btn" onclick="startSystem()">ESTABELECER CONEXÃO</button>
-    </div>
+    <!-- NOTIFICAÇÕES FLUTUANTES -->
+    <div id="notification-area"></div>
 
-    <!-- TELA 1: AVISO -->
-    <div id="screen-warning" class="screen">
-        <div class="system-warning-icon" style="color: #ff0000; animation: blink 0.5s infinite;">🚨</div>
-        <div class="typewriter-container">
-            <span id="warning-text" class="typewriter-text"></span><span class="cursor"></span>
-        </div>
-        <div class="btn-wrapper">
-            <button class="cyber-btn" style="display:none;" id="btn-entendido" onclick="nextScreen('screen-rules')">ENTENDIDO</button>
-        </div>
-    </div>
-
-    <!-- TELA 2: PROTOCOLOS -->
-    <div id="screen-rules" class="screen">
-        <h2 class="glitch-text" data-text="PROTOCOLO DE SEGURANÇA CsL">PROTOCOLO DE SEGURANÇA CsL</h2>
+    <div id="app-container">
         
-        <!-- Alertas flutuantes background -->
-        <div class="floating-alert" style="top: 10%; left: 5%;">SIGILO É SOBREVIVÊNCIA</div>
-        <div class="floating-alert" style="top: 30%; right: 10%; animation-delay: -2s;">ACESSO MONITORADO</div>
-        <div class="floating-alert" style="top: 60%; left: 15%; animation-delay: -5s;">TRANSMISSÃO CRIPTOGRAFADA</div>
-        <div class="floating-alert" style="top: 80%; right: 5%; animation-delay: -7s;">OBSERVADOS 24H</div>
-
-        <div class="rules-container" id="rules-list">
-            <!-- Preenchido via JS -->
+        <!-- TELA 0: BOOT -->
+        <div id="screen-boot" class="screen active">
+            <h1 class="glitch-text" data-text="CSL SYS_CORE">CSL SYS_CORE</h1>
+            <p style="color: var(--text-dim); font-size: 12px; margin-bottom: 40px; letter-spacing: 2px;">INICIALIZAÇÃO REQUERIDA</p>
+            <button class="cyber-btn" onclick="System.init()">[ BOOT SEQUENCE ]</button>
         </div>
 
-        <div class="btn-wrapper">
-            <button class="cyber-btn" onclick="nextScreen('screen-form')">PROSSEGUIR</button>
-        </div>
-    </div>
-
-    <!-- TELA 3: FORMULÁRIO DINÂMICO (ULTRA UI) -->
-    <div id="screen-form" class="screen">
-        <h2 class="glitch-text" data-text="DADOS DO RECRUTA">DADOS DO RECRUTA</h2>
-        <p style="color: var(--light-gray); font-size: 12px; margin-bottom: 25px; text-align: center; letter-spacing: 1px;">Preencha com precisão. O sistema não tolera falhas.</p>
-
-        <form id="recruitment-form" class="form-container" onsubmit="submitForm(event)">
-            
-            <!-- ETAPA 1: DADOS GERAIS -->
-            <div class="input-group">
-                <label>Qual é o seu nome/vulgo principal?</label>
-                <input type="text" id="f-global-nome" class="cyber-input" autocomplete="off" placeholder="Insira sua identificação...">
-            </div>
-
-            <div class="input-group">
-                <label>Qual é a sua idade?</label>
-                <input type="number" id="f-global-idade" class="cyber-input" autocomplete="off" placeholder="Ex: 21">
-            </div>
-
-            <div class="input-group">
-                <label>Qual divisão você deseja entrar?</label>
-                <div class="radio-group">
-                    <div class="radio-option sel-divisao" onclick="selectDivision(event, 'Porra Louca')">⏤͟͟͞͞⛤ Porra Louca</div>
-                    <div class="radio-option sel-divisao" onclick="selectDivision(event, 'Cybers')">Cybers</div>
-                    <div class="radio-option sel-divisao" onclick="selectDivision(event, 'Carisma')">Carisma</div>
-                </div>
-                <input type="hidden" id="f-divisao">
-            </div>
-
-            <!-- ==============================================
-                 DIVISÃO: PORRA LOUCA
-            =============================================== -->
-            <div id="div-porra-louca" class="division-container">
-                <div class="div-title">PROTOCOLO // PORRA LOUCA</div>
-
-                <div class="input-group">
-                    <label>ID de Registro</label>
-                    <input type="text" id="f-pl-id" class="cyber-input" autocomplete="off" placeholder="Seu ID no App">
-                </div>
-                <div class="input-group">
-                    <label>Famílias/Organizações Anteriores</label>
-                    <input type="text" id="f-pl-familias" class="cyber-input" autocomplete="off" placeholder="Onde você já esteve?">
-                </div>
-                <div class="input-group">
-                    <label>Tem experiência em tretas/conflitos?</label>
-                    <div class="radio-group">
-                        <div class="radio-option sel-pl-exp" onclick="selectOption(event, 'sel-pl-exp', 'Sim')">Sim</div>
-                        <div class="radio-option sel-pl-exp" onclick="selectOption(event, 'sel-pl-exp', 'Não')">Não</div>
-                    </div>
-                    <input type="hidden" id="f-pl-exp">
-                </div>
-                <div class="input-group">
-                    <label>Sabe gastar/treta?</label>
-                    <div class="radio-group">
-                        <div class="radio-option sel-pl-gastar" onclick="selectOption(event, 'sel-pl-gastar', 'Sim')">Sim</div>
-                        <div class="radio-option sel-pl-gastar" onclick="selectOption(event, 'sel-pl-gastar', 'Não')">Não</div>
-                        <div class="radio-option sel-pl-gastar" onclick="selectOption(event, 'sel-pl-gastar', 'Estou aprendendo')">Aprendendo</div>
-                    </div>
-                    <input type="hidden" id="f-pl-gastar">
-                </div>
-                <div class="input-group">
-                    <label>Qual seu estilo de gastação?</label>
-                    <div class="radio-group">
-                        <div class="radio-option sel-pl-estilo" onclick="selectOption(event, 'sel-pl-estilo', 'Arabiano')">Arabiano</div>
-                        <div class="radio-option sel-pl-estilo" onclick="selectOption(event, 'sel-pl-estilo', 'Bate e Volta')">Bate e Volta</div>
-                        <div class="radio-option sel-pl-estilo" onclick="selectOption(event, 'sel-pl-estilo', 'Argumentativo')">Argumentativo</div>
-                    </div>
-                    <input type="hidden" id="f-pl-estilo">
-                </div>
-                <div class="input-group">
-                    <label>Possui fone/microfone bom para call?</label>
-                    <div class="radio-group">
-                        <div class="radio-option sel-pl-fone" onclick="selectOption(event, 'sel-pl-fone', 'Sim')">Sim</div>
-                        <div class="radio-option sel-pl-fone" onclick="selectOption(event, 'sel-pl-fone', 'Não')">Não</div>
-                    </div>
-                    <input type="hidden" id="f-pl-fone">
-                </div>
-                <div class="input-group">
-                    <label>Já explanou alguém alguma vez?</label>
-                    <div class="radio-group">
-                        <div class="radio-option sel-pl-explanou" onclick="selectOption(event, 'sel-pl-explanou', 'Sim')">Sim</div>
-                        <div class="radio-option sel-pl-explanou" onclick="selectOption(event, 'sel-pl-explanou', 'Não')">Não</div>
-                    </div>
-                    <input type="hidden" id="f-pl-explanou">
-                </div>
-                <div class="input-group">
-                    <label>É ativo no aplicativo?</label>
-                    <div class="radio-group">
-                        <div class="radio-option sel-pl-ativo" onclick="selectOption(event, 'sel-pl-ativo', 'Sim')">Sim</div>
-                        <div class="radio-option sel-pl-ativo" onclick="selectOption(event, 'sel-pl-ativo', 'Não muito')">Não muito</div>
-                    </div>
-                    <input type="hidden" id="f-pl-ativo">
-                </div>
-                <div class="input-group">
-                    <label>Sabe manter organização e respeito na família?</label>
-                    <div class="radio-group">
-                        <div class="radio-option sel-pl-respeito" onclick="selectOption(event, 'sel-pl-respeito', 'Sim')">Sim</div>
-                        <div class="radio-option sel-pl-respeito" onclick="selectOption(event, 'sel-pl-respeito', 'Não')">Não</div>
-                    </div>
-                    <input type="hidden" id="f-pl-respeito">
-                </div>
-                <div class="input-group">
-                    <label>Objetivo ao entrar na família</label>
-                    <textarea id="f-pl-obj" class="cyber-input" placeholder="Seja direto..."></textarea>
-                </div>
-            </div>
-
-            <!-- ==============================================
-                 DIVISÃO: CYBERS
-            =============================================== -->
-            <div id="div-cybers" class="division-container">
-                <div class="div-title">PROTOCOLO // CYBERS</div>
-
-                <div class="input-group">
-                    <label>ID de Registro</label>
-                    <input type="text" id="f-cy-id" class="cyber-input" autocomplete="off" placeholder="Seu ID no App">
-                </div>
-                <div class="input-group">
-                    <label>Linguagens de Programação e Lógica</label>
-                    <input type="text" id="f-cy-ling" class="cyber-input" placeholder="Ex: Python, JS, Bash, C..." autocomplete="off">
-                </div>
-                <div class="input-group">
-                    <label>Experiência com SO (Linux, Termux, Kali)</label>
-                    <input type="text" id="f-cy-linux" class="cyber-input" placeholder="Nível de vivência em terminais" autocomplete="off">
-                </div>
-                <div class="input-group">
-                    <label>Experiência com Bots, APIs e Automação</label>
-                    <div class="radio-group">
-                        <div class="radio-option sel-cy-bots" onclick="selectOption(event, 'sel-cy-bots', 'Avançado')">Avançado</div>
-                        <div class="radio-option sel-cy-bots" onclick="selectOption(event, 'sel-cy-bots', 'Básico')">Básico</div>
-                        <div class="radio-option sel-cy-bots" onclick="selectOption(event, 'sel-cy-bots', 'Nenhuma')">Nenhuma</div>
-                    </div>
-                    <input type="hidden" id="f-cy-bots">
-                </div>
-                <div class="input-group">
-                    <label>Segurança Defensiva e Proteção de Contas</label>
-                    <textarea id="f-cy-sec" class="cyber-input" placeholder="Descreva como você protege sistemas ou redes..."></textarea>
-                </div>
-                <div class="input-group">
-                    <label>Objetivo ao entrar na divisão Cybers</label>
-                    <textarea id="f-cy-obj" class="cyber-input" placeholder="Seu propósito na infraestrutura..."></textarea>
-                </div>
-            </div>
-
-            <!-- ==============================================
-                 DIVISÃO: CARISMA
-            =============================================== -->
-            <div id="div-carisma" class="division-container">
-                <div class="div-title">PROTOCOLO // CARISMA</div>
-
-                <div class="input-group">
-                    <label>ID de Registro</label>
-                    <input type="text" id="f-ca-id" class="cyber-input" autocomplete="off" placeholder="Seu ID no App">
-                </div>
-                <div class="input-group">
-                    <label>É ativo no aplicativo?</label>
-                    <div class="radio-group">
-                        <div class="radio-option sel-ca-ativo" onclick="selectOption(event, 'sel-ca-ativo', 'Sim')">Sim</div>
-                        <div class="radio-option sel-ca-ativo" onclick="selectOption(event, 'sel-ca-ativo', 'Não muito')">Não muito</div>
-                    </div>
-                    <input type="hidden" id="f-ca-ativo">
-                </div>
-                <div class="input-group">
-                    <label>Objetivo ao entrar na família</label>
-                    <textarea id="f-ca-obj" class="cyber-input" placeholder="O que você busca agregar?"></textarea>
-                </div>
-            </div>
-
-            <div class="btn-wrapper" id="submit-wrapper" style="display: none;">
-                <button type="submit" id="btn-submit-form" class="cyber-btn">TRANSMITIR DADOS</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- TELA 4: CARREGANDO -->
-    <div id="screen-loading" class="screen" style="justify-content: center;">
-        <div class="radar-box">
-            <div class="radar-cross"></div>
-        </div>
-        <h2 class="glitch-text" data-text="CRIPTOGRAFANDO TRANSMISSÃO">CRIPTOGRAFANDO TRANSMISSÃO</h2>
-        <p id="loading-logs" style="font-size: 14px; color: var(--main-red); text-align: center; margin-top: 20px; font-family: monospace; letter-spacing: 1px;">Iniciando handshake...</p>
-    </div>
-
-    <!-- TELA 5: FINAL -->
-    <div id="screen-final" class="screen" style="justify-content: center;">
-        <div class="metal-plate">
-            <p class="neon-text">
-                "Cuidado ao recrutar qualquer pessoa.<br><br>Estamos cansados de esconder os corpos."
-            </p>
-        </div>
-        <div style="margin-top: 60px; text-align: center; color: var(--light-gray); font-size: 14px; letter-spacing: 1px;">
-            <p style="margin-bottom: 12px; color: var(--main-red);">> Protocolo de divisão recebido com sucesso.</p>
-            <p>> Aguardando análise da administração...</p>
-            <p class="cursor" style="margin-top: 25px;"></p>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC & AUDIO ENGINE -->
-    <script>
-        const webhookURL = "https://discord.com/api/webhooks/1479268013814448200/qhwmgJFg-UXoHGhO_NRX5tXEvFQZyBkoyUZzsMcrRPYk-W_3kN17TS5k61ULA5h8D_"; 
-
-        let currentScreen = 'boot-screen';
-        let isMusicOn = true;
-        let isSfxOn = true;
-
-        const AudioEngine = {
-            ctx: null,
-            bgOsc: null,
-            bgGain: null,
-            lfo: null,
-            noiseNode: null,
-            init: function() {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                this.ctx = new AudioContext();
-                this.startBackgroundAmbience();
-            },
-            startBackgroundAmbience: function() {
-                if(!this.ctx) return;
-                this.bgOsc = this.ctx.createOscillator();
-                this.bgOsc.type = 'sawtooth';
-                this.bgOsc.frequency.setValueAtTime(40, this.ctx.currentTime); 
-
-                const filter = this.ctx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(150, this.ctx.currentTime);
-
-                this.lfo = this.ctx.createOscillator();
-                this.lfo.type = 'sine';
-                this.lfo.frequency.value = 0.1; 
-                const lfoGain = this.ctx.createGain();
-                lfoGain.gain.value = 100;
-                this.lfo.connect(lfoGain);
-                lfoGain.connect(filter.frequency);
-
-                this.bgGain = this.ctx.createGain();
-                this.bgGain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-
-                this.bgOsc.connect(filter);
-                filter.connect(this.bgGain);
-                this.bgGain.connect(this.ctx.destination);
-
-                this.bgOsc.start();
-                this.lfo.start();
-            },
-            playGlitch: function() {
-                if(!this.ctx || !isSfxOn) return;
-                const bufferSize = this.ctx.sampleRate * 0.2; 
-                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = Math.random() * 2 - 1;
-                }
-                const noise = this.ctx.createBufferSource();
-                noise.buffer = buffer;
-
-                const filter = this.ctx.createBiquadFilter();
-                filter.type = 'highpass';
-                filter.frequency.value = 1000;
-
-                const gain = this.ctx.createGain();
-                gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
-
-                noise.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.ctx.destination);
-                noise.start();
-            },
-            playClick: function() {
-                if(!this.ctx || !isSfxOn) return;
-                const osc = this.ctx.createOscillator();
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(800, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+        <!-- TELA 1: AVISO MILITAR -->
+        <div id="screen-warning" class="screen">
+            <div class="metal-plate">
+                <div class="alert-beacon"></div>
+                <div class="screw tl"></div><div class="screw tr"></div>
+                <div class="screw bl"></div><div class="screw br"></div>
                 
-                const gain = this.ctx.createGain();
-                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
-
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.1);
-            },
-            playTyping: function() {
-                if(!this.ctx || !isSfxOn) return;
-                const osc = this.ctx.createOscillator();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(1200 + Math.random()*400, this.ctx.currentTime);
+                <div class="warning-icon">⚠</div>
+                <h2 style="color:#ff0000; margin-bottom: 20px; text-shadow: 0 0 10px red;">NÍVEL DE ACESSO: CRÍTICO</h2>
                 
-                const gain = this.ctx.createGain();
-                gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+                <div style="background: rgba(0,0,0,0.6); padding: 20px; border: 1px solid var(--red-dark); width: 100%; margin-bottom: 30px; box-shadow: inset 0 0 15px #000;">
+                    <p id="warning-text" class="typewriter-text"></p><span class="cursor-blink"></span>
+                </div>
+                
+                <button class="cyber-btn" id="btn-entendido" style="display:none; width: 80%;" onclick="System.switchScreen('screen-form')">ENTENDIDO</button>
+            </div>
+        </div>
 
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.05);
-            },
-            toggleMusic: function() {
-                if(!this.bgGain) return;
-                isMusicOn = !isMusicOn;
-                this.bgGain.gain.setValueAtTime(isMusicOn ? 0.3 : 0, this.ctx.currentTime);
-                document.getElementById('btn-music').classList.toggle('active', isMusicOn);
-                document.getElementById('btn-music').innerText = `Música [${isMusicOn ? 'ON' : 'OFF'}]`;
-            },
-            toggleSfx: function() {
-                isSfxOn = !isSfxOn;
-                document.getElementById('btn-sfx').classList.toggle('active', isSfxOn);
-                document.getElementById('btn-sfx').innerText = `SFX [${isSfxOn ? 'ON' : 'OFF'}]`;
-            }
-        };
+        <!-- TELA 2: FORMULÁRIO -->
+        <div id="screen-form" class="screen" style="justify-content: flex-start; padding-top: 80px;">
+            <h2 class="glitch-text" data-text="PROTOCOLO DE ADMISSÃO">PROTOCOLO DE ADMISSÃO</h2>
+            <p style="color: var(--text-dim); font-size: 12px; margin-bottom: 30px; letter-spacing: 1px; text-align: center;">REGISTRE SEUS DADOS. TENTATIVAS DE INJEÇÃO RESULTARÃO EM BANIMENTO.</p>
 
-        document.getElementById('btn-music').addEventListener('click', () => { AudioEngine.playClick(); AudioEngine.toggleMusic(); });
-        document.getElementById('btn-sfx').addEventListener('click', () => { AudioEngine.playClick(); AudioEngine.toggleSfx(); });
+            <form id="recruitment-form" class="form-container">
+                
+                <div class="input-group">
+                    <label>IDENTIFICAÇÃO PRIMÁRIA (NOME/VULGO)</label>
+                    <input type="text" id="f-nome" class="cyber-input" placeholder="Insira seu vulgo..." autocomplete="off">
+                </div>
 
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+                <div class="input-group">
+                    <label>IDADE</label>
+                    <input type="number" id="f-idade" class="cyber-input" placeholder="Anos de operação..." autocomplete="off">
+                </div>
 
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = [];
-        for(let x = 0; x < columns; x++) drops[x] = 1;
+                <div class="input-group" style="margin-top: 10px;">
+                    <label>SELECIONE O VETOR DE ENTRADA (DIVISÃO)</label>
+                    <div class="radio-grid">
+                        <div class="radio-btn sel-div" data-val="Porra Louca" onclick="UI.selectDiv(this, 'Porra Louca')">Porra Louca</div>
+                        <div class="radio-btn sel-div" data-val="Cybers" onclick="UI.selectDiv(this, 'Cybers')">Cybers</div>
+                        <div class="radio-btn sel-div" data-val="Carisma" onclick="UI.selectDiv(this, 'Carisma')">Carisma</div>
+                    </div>
+                    <input type="hidden" id="f-divisao">
+                </div>
 
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#d30000'; 
-            ctx.font = fontSize + 'px "Share Tech Mono"';
+                <!-- DIVISÃO: PORRA LOUCA -->
+                <div id="div-porra-louca" class="division-box">
+                    <div class="div-title-badge">DIR: PORRA LOUCA</div>
+                    
+                    <div class="input-group">
+                        <label>ID DE REGISTRO APP</label>
+                        <input type="text" id="f-pl-id" class="cyber-input">
+                    </div>
+                    <div class="input-group">
+                        <label>FAMÍLIAS/ORGS ANTERIORES</label>
+                        <input type="text" id="f-pl-familias" class="cyber-input">
+                    </div>
+                    <div class="input-group">
+                        <label>EXPERIÊNCIA EM CONFLITOS?</label>
+                        <div class="radio-grid">
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-exp')">Sim</div>
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-exp')">Não</div>
+                        </div>
+                        <input type="hidden" id="f-pl-exp">
+                    </div>
+                    <div class="input-group">
+                        <label>SABE GASTAR?</label>
+                        <div class="radio-grid">
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-gastar')">Sim</div>
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-gastar')">Não</div>
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-gastar')">Aprendendo</div>
+                        </div>
+                        <input type="hidden" id="f-pl-gastar">
+                    </div>
+                    <div class="input-group">
+                        <label>ESTILO DE GASTAÇÃO</label>
+                        <div class="radio-grid">
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-estilo')">Arabiano</div>
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-estilo')">Bate e Volta</div>
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-estilo')">Argumentativo</div>
+                        </div>
+                        <input type="hidden" id="f-pl-estilo">
+                    </div>
+                    <div class="input-group">
+                        <label>HARDWARE DE ÁUDIO BOM?</label>
+                        <div class="radio-grid">
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-fone')">Sim</div>
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-fone')">Não</div>
+                        </div>
+                        <input type="hidden" id="f-pl-fone">
+                    </div>
+                    <div class="input-group">
+                        <label>OBJETIVO NA FAMÍLIA</label>
+                        <textarea id="f-pl-obj" class="cyber-input"></textarea>
+                    </div>
+                </div>
 
-            for(let i = 0; i < drops.length; i++) {
-                const text = letters.charAt(Math.floor(Math.random() * letters.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
+                <!-- DIVISÃO: CYBERS -->
+                <div id="div-cybers" class="division-box">
+                    <div class="div-title-badge">DIR: CYBERS</div>
+                    
+                    <div class="input-group">
+                        <label>ID DE REGISTRO APP</label>
+                        <input type="text" id="f-cy-id" class="cyber-input">
+                    </div>
+                    <div class="input-group">
+                        <label>STACK (LINGUAGENS/TOOLS)</label>
+                        <input type="text" id="f-cy-ling" class="cyber-input" placeholder="Python, Bash, JS, C...">
+                    </div>
+                    <div class="input-group">
+                        <label>SISTEMAS OPERACIONAIS</label>
+                        <input type="text" id="f-cy-linux" class="cyber-input" placeholder="Linux, Termux, Kali...">
+                    </div>
+                    <div class="input-group">
+                        <label>NÍVEL EM AUTOMAÇÃO/BOTS</label>
+                        <div class="radio-grid">
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-cy-bots')">Avançado</div>
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-cy-bots')">Intermediário</div>
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-cy-bots')">Iniciante</div>
+                        </div>
+                        <input type="hidden" id="f-cy-bots">
+                    </div>
+                    <div class="input-group">
+                        <label>OBJETIVO NA INFRAESTRUTURA</label>
+                        <textarea id="f-cy-obj" class="cyber-input"></textarea>
+                    </div>
+                </div>
+
+                <!-- DIVISÃO: CARISMA -->
+                <div id="div-carisma" class="division-box">
+                    <div class="div-title-badge">DIR: CARISMA</div>
+                    
+                    <div class="input-group">
+                        <label>ID DE REGISTRO APP</label>
+                        <input type="text" id="f-ca-id" class="cyber-input">
+                    </div>
+                    <div class="input-group">
+                        <label>NÍVEL DE ATIVIDADE</label>
+                        <div class="radio-grid">
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-ca-ativo')">Alto</div>
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-ca-ativo')">Médio</div>
+                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-ca-ativo')">Baixo</div>
+                        </div>
+                        <input type="hidden" id="f-ca-ativo">
+                    </div>
+                    <div class="input-group">
+                        <label>OBJETIVO NA FAMÍLIA</label>
+                        <textarea id="f-ca-obj" class="cyber-input"></textarea>
+                    </div>
+                </div>
+
+                <div id="submit-wrapper" style="display:none; text-align: center; margin-top: 20px;">
+                    <button type="button" class="cyber-btn" onclick="Network.transmit()">[ TRANSMITIR DADOS ]</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- TELA 3: UPLOAD / LOADING -->
+        <div id="screen-loading" class="screen">
+            <div class="radar-container">
+                <div class="radar-crosshair"></div>
+                <div class="radar-sweep"></div>
+            </div>
+            <h2 style="margin-top: 40px; text-shadow: var(--glow-text);">CRIPTOGRAFANDO</h2>
+            <div id="loading-logs">Handshake iniciado...</div>
+        </div>
+
+        <!-- TELA 4: FINAL -->
+        <div id="screen-final" class="screen">
+            <div class="metal-plate" style="border-color: #00ff00; box-shadow: 0 0 30px rgba(0,255,0,0.1);">
+                <div class="screw tl"></div><div class="screw tr"></div>
+                <div class="screw bl"></div><div class="screw br"></div>
+                <h2 style="color: #00ff00; text-shadow: 0 0 10px #00ff00;">TRANSMISSÃO CONCLUÍDA</h2>
+                <p style="color: var(--text-light); text-align: center; margin-top: 20px; line-height: 1.6;">
+                    Seus dados foram criptografados e enviados ao Mainframe CsL.<br><br>
+                    Aguarde contato. Não nos procure, nós encontraremos você.
+                </p>
+                <div style="margin-top: 30px; font-size: 10px; color: var(--text-dim);">SESSÃO ENCERRADA. PODE FECHAR ESTA TELA.</div>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+/**
+ * ENGINE CENTRAL CsL
+ * Arquitetura Modular em Vanilla JS
+ */
+
+// ==========================================
+// 1. AUDIO ENGINE (WebAudio API Cinematográfica)
+// ==========================================
+const AudioCore = {
+    ctx: null,
+    droneGain: null,
+    isOn: false,
+
+    init() {
+        if(this.isOn) return;
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioContext();
+        this.isOn = true;
+        this.startDrone();
+    },
+
+    createReverb() {
+        let len = this.ctx.sampleRate * 2.5; 
+        let buffer = this.ctx.createBuffer(2, len, this.ctx.sampleRate);
+        for (let c = 0; c < 2; c++) {
+            let data = buffer.getChannelData(c);
+            for (let i = 0; i < len; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4); 
             }
         }
-        setInterval(drawMatrix, 33);
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        let conv = this.ctx.createConvolver();
+        conv.buffer = buffer;
+        return conv;
+    },
+
+    startDrone() {
+        if(!this.ctx) return;
+        const osc1 = this.ctx.createOscillator(); osc1.type = 'sawtooth'; osc1.frequency.value = 40;
+        const osc2 = this.ctx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = 41;
+        
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass'; filter.frequency.value = 100;
+
+        const lfo = this.ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.05;
+        const lfoGain = this.ctx.createGain(); lfoGain.gain.value = 50;
+        lfo.connect(lfoGain); lfoGain.connect(filter.frequency);
+
+        this.droneGain = this.ctx.createGain(); this.droneGain.gain.value = 0.3;
+
+        osc1.connect(filter); osc2.connect(filter);
+        filter.connect(this.droneGain);
+        this.droneGain.connect(this.ctx.destination);
+
+        osc1.start(); osc2.start(); lfo.start();
+    },
+
+    play(type) {
+        if(!this.ctx) return;
+        const t = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        if(type === 'click') {
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(600, t);
+            osc.frequency.exponentialRampToValueAtTime(100, t + 0.1);
+            gain.gain.setValueAtTime(0.1, t);
+            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+            osc.start(t); osc.stop(t + 0.1);
+        } 
+        else if(type === 'type') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(1500 + Math.random()*500, t);
+            gain.gain.setValueAtTime(0.03, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+            osc.start(t); osc.stop(t + 0.05);
+        }
+        else if(type === 'glitch') {
+            let bufSize = this.ctx.sampleRate * 0.2;
+            let buffer = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+            let data = buffer.getChannelData(0);
+            for(let i=0; i<bufSize; i++) data[i] = Math.random() * 2 - 1;
+            let noise = this.ctx.createBufferSource();
+            noise.buffer = buffer;
+            
+            let filter = this.ctx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 2000;
+            let nGain = this.ctx.createGain(); nGain.gain.setValueAtTime(0.2, t); nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+            
+            noise.connect(filter); filter.connect(nGain); nGain.connect(this.ctx.destination);
+            noise.start(t);
+        }
+        else if(type === 'impact') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(150, t);
+            osc.frequency.exponentialRampToValueAtTime(20, t + 0.5);
+            
+            let dist = this.ctx.createWaveShaper();
+            let curve = new Float32Array(44100);
+            for(let i=0; i<44100; i++) { let x = i * 2 / 44100 - 1; curve[i] = (3 + 20) * x * 20 * (Math.PI / 180) / (Math.PI + 20 * Math.abs(x)); }
+            dist.curve = curve;
+
+            gain.gain.setValueAtTime(0.5, t);
+            gain.gain.exponentialRampToValueAtTime(0.01, t + 1);
+
+            let rev = this.createReverb();
+            
+            osc.disconnect(); gain.disconnect();
+            osc.connect(dist); dist.connect(gain);
+            gain.connect(rev); rev.connect(this.ctx.destination); gain.connect(this.ctx.destination);
+
+            osc.start(t); osc.stop(t + 1);
+        }
+    }
+};
+
+// ==========================================
+// 2. VISUAL ENGINE (Canvas & Cursor)
+// ==========================================
+const Visuals = {
+    canvas: document.getElementById('fx-canvas'),
+    ctx: null,
+    w: 0, h: 0,
+    drops: [], particles: [],
+    chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*<>[]{}",
+    
+    init() {
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        
+        const cols = this.w / 15;
+        for(let x = 0; x < cols; x++) this.drops[x] = Math.random() * -100;
+
+        for(let i=0; i<50; i++) this.particles.push(this.createParticle());
+
+        this.loop();
+        this.setupCursor();
+    },
+
+    resize() {
+        this.w = this.canvas.width = window.innerWidth;
+        this.h = this.canvas.height = window.innerHeight;
+    },
+
+    createParticle() {
+        return {
+            x: Math.random() * this.w, y: this.h + Math.random() * 200,
+            s: Math.random() * 2 + 1, v: Math.random() * 2 + 0.5,
+            a: Math.random() * 0.5 + 0.1
+        };
+    },
+
+    loop() {
+        this.ctx.fillStyle = 'rgba(3, 0, 0, 0.15)'; 
+        this.ctx.fillRect(0, 0, this.w, this.h);
+
+        this.ctx.fillStyle = 'rgba(255, 0, 60, 0.4)';
+        this.ctx.font = '15px monospace';
+        for(let i = 0; i < this.drops.length; i++) {
+            const text = this.chars[Math.floor(Math.random() * this.chars.length)];
+            this.ctx.fillText(text, i * 15, this.drops[i] * 15);
+            if(this.drops[i] * 15 > this.h && Math.random() > 0.95) this.drops[i] = 0;
+            this.drops[i]++;
+        }
+
+        for(let i = 0; i < this.particles.length; i++) {
+            let p = this.particles[i];
+            this.ctx.fillStyle = `rgba(255, 0, 60, ${p.a})`;
+            this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); this.ctx.fill();
+            p.y -= p.v; p.x += Math.sin(p.y * 0.05) * 0.5;
+            if(p.y < -10) this.particles[i] = this.createParticle();
+        }
+
+        requestAnimationFrame(() => this.loop());
+    },
+
+    setupCursor() {
+        const isTouch = matchMedia('(pointer: coarse)').matches;
+        if(isTouch) {
+            document.getElementById('custom-cursor').style.display = 'none';
+            document.body.style.cursor = 'auto';
+            return;
+        }
+
+        const cursor = document.getElementById('custom-cursor');
+        let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+        let cX = mouseX, cY = mouseY;
+
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        document.addEventListener('mousedown', () => { 
+            cursor.classList.add('cursor-click'); AudioCore.play('click');
+            setTimeout(() => cursor.classList.remove('cursor-click'), 300);
         });
 
-        function cinematicGlitch() {
-            AudioEngine.playGlitch();
-            const tear = document.getElementById('screen-tear');
-            tear.style.opacity = '1';
-            document.querySelector('.crt-flicker').style.opacity = '0.5';
-            
-            setTimeout(() => { tear.style.opacity = '0'; }, 50);
-            setTimeout(() => { tear.style.opacity = '0.8'; }, 100);
-            setTimeout(() => { tear.style.opacity = '0'; }, 150);
-            setTimeout(() => { document.querySelector('.crt-flicker').style.opacity = '0'; }, 300);
+        const renderCursor = () => {
+            cX += (mouseX - cX) * 0.2; cY += (mouseY - cY) * 0.2;
+            cursor.style.transform = `translate(${cX}px, ${cY}px)`;
+            requestAnimationFrame(renderCursor);
+        };
+        renderCursor();
+    },
+
+    cinematicGlitch() {
+        AudioCore.play('glitch');
+        if(navigator.vibrate) navigator.vibrate(50);
+        const tear = document.getElementById('screen-tear');
+        tear.style.opacity = '1';
+        setTimeout(() => tear.style.opacity = '0', 50);
+        setTimeout(() => tear.style.opacity = '0.8', 100);
+        setTimeout(() => tear.style.opacity = '0', 150);
+    }
+};
+
+// ==========================================
+// 3. SISTEMAS FALSOS (HUD, Relógio, Terminal)
+// ==========================================
+const System = {
+    currentScreen: 'screen-boot',
+    
+    init() {
+        AudioCore.init();
+        AudioCore.play('impact');
+        this.runClock();
+        this.runFakePing();
+        this.runFakeTerminal();
+        this.genFakeIP();
+        
+        Visuals.init();
+        this.switchScreen('screen-warning');
+        
+        setTimeout(() => {
+            const txt = "ATENÇÃO\n\nNesse exato momento estamos sendo observados e monitorados.\nRecomendamos não utilizar a TAG CsL publicamente em redes externas.\n\nA quebra do sigilo resultará em consequências irreversíveis.";
+            UI.typeText('warning-text', txt, () => {
+                document.getElementById('btn-entendido').style.display = 'block';
+                AudioCore.play('impact');
+            });
+        }, 1500);
+    },
+
+    switchScreen(id) {
+        Visuals.cinematicGlitch();
+        document.getElementById(this.currentScreen).classList.remove('active');
+        this.currentScreen = id;
+        document.getElementById(id).classList.add('active');
+    },
+
+    runClock() {
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('hud-time').innerText = 
+                String(d.getHours()).padStart(2,'0') + ":" + 
+                String(d.getMinutes()).padStart(2,'0') + ":" + 
+                String(d.getSeconds()).padStart(2,'0') + " GMT-3";
+        }, 1000);
+    },
+
+    runFakePing() {
+        setInterval(() => {
+            document.getElementById('hud-ping').innerText = Math.floor(Math.random() * 40 + 15);
+        }, 2000);
+    },
+
+    genFakeIP() {
+        const ip = `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+        document.getElementById('hud-ip').innerText = `IP: ${ip} (MASKED)`;
+    },
+
+    runFakeTerminal() {
+        const logs = [
+            "Bypassing node proxy...", "Decrypting AES-256...", "Listening on port 443...",
+            "Tracing connection...", "Firewall rules updated...", "Kernel panic ignored...",
+            "Root access preserved...", "Scanning local network..."
+        ];
+        const term = document.getElementById('terminal-logs');
+        setInterval(() => {
+            const p = document.createElement('div');
+            p.className = 'log-line';
+            p.innerText = `> ${logs[Math.floor(Math.random() * logs.length)]}`;
+            term.appendChild(p);
+            if(term.children.length > 5) term.removeChild(term.firstChild);
+        }, 3500);
+    }
+};
+
+// ==========================================
+// 4. UI HANDLERS (Formulários e Notificações)
+// ==========================================
+const UI = {
+    typeText(id, text, callback) {
+        const el = document.getElementById(id);
+        el.innerHTML = '';
+        let i = 0;
+        function t() {
+            if(i < text.length) {
+                el.innerHTML += text.charAt(i); i++;
+                if(i%2===0) AudioCore.play('type');
+                setTimeout(t, Math.random() * 30 + 20);
+            } else if(callback) callback();
         }
+        t();
+    },
 
-        function switchScreen(newScreenId) {
-            cinematicGlitch();
-            document.getElementById(currentScreen).classList.remove('active-screen');
-            currentScreen = newScreenId;
-            document.getElementById(currentScreen).classList.add('active-screen');
-            document.getElementById(currentScreen).scrollTop = 0;
-        }
+    notify(msg) {
+        AudioCore.play('click');
+        const area = document.getElementById('notification-area');
+        const div = document.createElement('div');
+        div.className = 'sys-notif';
+        div.innerHTML = `<span>⚠</span> ${msg}`;
+        area.appendChild(div);
+        setTimeout(() => { div.style.opacity='0'; setTimeout(()=>div.remove(), 500); }, 4000);
+    },
 
-        function nextScreen(newScreenId) {
-            AudioEngine.playClick();
-            switchScreen(newScreenId);
+    selectDiv(el, val) {
+        AudioCore.play('click');
+        document.querySelectorAll('.sel-div').forEach(n => n.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('f-divisao').value = val;
 
-            if(newScreenId === 'screen-rules') loadRules();
-        }
+        document.getElementById('div-porra-louca').style.display = 'none';
+        document.getElementById('div-cybers').style.display = 'none';
+        document.getElementById('div-carisma').style.display = 'none';
 
-        function startSystem() {
-            AudioEngine.init();
-            document.getElementById('audio-controls').style.display = 'flex';
-            switchScreen('screen-warning');
-            
-            setTimeout(() => {
-                const text = "ATENÇÃO\n\nNesse exato momento estamos sendo observados e monitorados constantemente.\n\nRecomendamos que membros não utilizem a TAG CsL publicamente em redes sociais ou aplicativos externos.\n\nA quebra do sigilo resultará em consequências irreversíveis.";
-                typeText('warning-text', text, () => {
-                    document.getElementById('btn-entendido').style.display = 'block';
-                });
-            }, 1000);
-        }
+        if(val === 'Porra Louca') document.getElementById('div-porra-louca').style.display = 'flex';
+        else if(val === 'Cybers') document.getElementById('div-cybers').style.display = 'flex';
+        else if(val === 'Carisma') document.getElementById('div-carisma').style.display = 'flex';
 
-        function typeText(elementId, text, callback) {
-            const el = document.getElementById(elementId);
-            el.innerHTML = '';
-            let i = 0;
-            function typeNext() {
-                if(i < text.length) {
-                    el.innerHTML += text.charAt(i);
-                    i++;
-                    if(i % 3 === 0) AudioEngine.playTyping();
-                    setTimeout(typeNext, Math.random() * 50 + 20); 
-                } else {
-                    if(callback) callback();
-                }
-            }
-            typeNext();
-        }
+        document.getElementById('submit-wrapper').style.display = 'block';
+    },
 
-        const regras = [
-            "1 - Não mostre informações pessoais.",
-            "2 - Evite exposição desnecessária.",
-            "3 - Nunca confie em desconhecidos.",
-            "4 - Não compartilhe informações internas.",
-            "5 - Evite conflitos fora do aplicativo.",
-            "6 - Respeito é obrigatório.",
-            "7 - Organização acima de tudo.",
-            "8 - Não grave chamadas sem autorização.",
-            "9 - Nunca vaze informações internas.",
-            "10 - Lealdade vem antes de amizade."
+    selectOpt(el, hiddenId) {
+        AudioCore.play('click');
+        const parent = el.parentElement;
+        parent.querySelectorAll('.radio-btn').forEach(n => n.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById(hiddenId).value = el.innerText;
+    }
+};
+
+document.querySelectorAll('input, textarea').forEach(el => {
+    el.addEventListener('focus', () => AudioCore.play('click'));
+    el.addEventListener('input', () => { if(Math.random()>0.5) AudioCore.play('type'); });
+});
+
+// ==========================================
+// 5. REDE / WEBHOOK (Discord com Retries)
+// ==========================================
+const Network = {
+    // Nova URL exata conforme requisitado pelo usuário
+    webhook: "https://discord.com/api/webhooks/1479268013814448200/_qhwmgJFg-UXoHGhO_NRX5tXEvFQZyBkoyUZzsMcrRPYk_-W_3kN17TS5k61ULA5h8D_",
+
+    async transmit() {
+        const nome = document.getElementById('f-nome').value.trim();
+        const idade = document.getElementById('f-idade').value.trim();
+        const div = document.getElementById('f-divisao').value;
+
+        if(!nome || !idade || !div) return UI.notify("ERRO: DADOS GERAIS INCOMPLETOS.");
+
+        let fields = [
+            { name: "👤 Vulgo", value: `\`${nome}\``, inline: true },
+            { name: "🔞 Idade", value: `\`${idade}\``, inline: true },
+            { name: "🛡️ Divisão", value: `**${div}**`, inline: true },
+            { name: "💻 Dispositivo", value: `\`${navigator.userAgent.substring(0,40)}...\``, inline: false }
         ];
 
-        function loadRules() {
-            const container = document.getElementById('rules-list');
-            if(container.innerHTML !== '') return; 
+        let valid = true;
 
-            regras.forEach((regra, index) => {
-                const div = document.createElement('div');
-                div.className = 'rule-item';
-                div.innerText = regra;
-                container.appendChild(div);
+        // Helper para pegar valor dos inputs
+        const v = (id) => document.getElementById(id).value.trim();
+        
+        // Helper crítico: Limita texto grande (Discord rejeita Embeds > 1024 chars) e remove crases soltas
+        const cleanText = (str) => {
+            let s = str ? str.trim() : "";
+            s = s.replace(/`/g, "'"); // Remove crases que quebram o markdown do discord
+            return s.length > 950 ? s.substring(0, 950) + "..." : (s || "Não informado");
+        };
 
-                setTimeout(() => {
-                    AudioEngine.playTyping();
-                    div.style.opacity = '1';
-                    div.style.transform = 'translateX(0)';
-                }, 500 + (index * 200));
-            });
+        if(div === 'Porra Louca') {
+            if(!v('f-pl-id') || !v('f-pl-familias') || !v('f-pl-exp') || !v('f-pl-gastar') || !v('f-pl-estilo') || !v('f-pl-fone') || !v('f-pl-obj')) valid = false;
+            
+            if(valid) fields.push(
+                { name: "🆔 ID", value: v('f-pl-id'), inline: true },
+                { name: "🏛️ Famílias", value: v('f-pl-familias'), inline: true },
+                { name: "⚔️ Exp", value: v('f-pl-exp'), inline: true },
+                { name: "🔥 Gastar", value: v('f-pl-gastar'), inline: true },
+                { name: "🎭 Estilo", value: v('f-pl-estilo'), inline: true },
+                { name: "🎙️ Fone", value: v('f-pl-fone'), inline: true },
+                { name: "🎯 Objetivo", value: `\`\`\`\n${cleanText(v('f-pl-obj'))}\n\`\`\``, inline: false }
+            );
+        } else if(div === 'Cybers') {
+            if(!v('f-cy-id') || !v('f-cy-ling') || !v('f-cy-linux') || !v('f-cy-bots') || !v('f-cy-obj')) valid = false;
+            
+            if(valid) fields.push(
+                { name: "🆔 ID", value: v('f-cy-id'), inline: true },
+                { name: "💻 Stack", value: v('f-cy-ling'), inline: false },
+                { name: "🐧 OS", value: v('f-cy-linux'), inline: true },
+                { name: "🤖 Bots", value: v('f-cy-bots'), inline: true },
+                { name: "🎯 Objetivo", value: `\`\`\`\n${cleanText(v('f-cy-obj'))}\n\`\`\``, inline: false }
+            );
+        } else if(div === 'Carisma') {
+            if(!v('f-ca-id') || !v('f-ca-ativo') || !v('f-ca-obj')) valid = false;
+            
+            if(valid) fields.push(
+                { name: "🆔 ID", value: v('f-ca-id'), inline: true },
+                { name: "📱 Ativo", value: v('f-ca-ativo'), inline: true },
+                { name: "🎯 Objetivo", value: `\`\`\`\n${cleanText(v('f-ca-obj'))}\n\`\`\``, inline: false }
+            );
         }
 
-        function selectOption(event, groupClass, value) {
-            AudioEngine.playClick();
-            document.querySelectorAll('.' + groupClass).forEach(el => el.classList.remove('selected'));
-            event.target.classList.add('selected');
-            const inputId = 'f-' + groupClass.replace('sel-', '');
-            document.getElementById(inputId).value = value;
+        if(!valid) {
+            AudioCore.play('glitch');
+            return UI.notify("ERRO: PROTOCOLO DA DIVISÃO INCOMPLETO.");
         }
 
-        function selectDivision(event, divName) {
-            selectOption(event, 'sel-divisao', divName);
-            
-            document.getElementById('div-porra-louca').style.display = 'none';
-            document.getElementById('div-cybers').style.display = 'none';
-            document.getElementById('div-carisma').style.display = 'none';
+        System.switchScreen('screen-loading');
+        AudioCore.play('impact');
 
-            if(divName === 'Porra Louca') document.getElementById('div-porra-louca').style.display = 'flex';
-            else if(divName === 'Cybers') document.getElementById('div-cybers').style.display = 'flex';
-            else if(divName === 'Carisma') document.getElementById('div-carisma').style.display = 'flex';
+        const payload = {
+            username: "Sistema CsL",
+            avatar_url: "https://i.imgur.com/kP859n1.png",
+            embeds: [{
+                title: `☠️ NOVO RECRUTA: ${div.toUpperCase()}`,
+                color: 16711740,
+                fields: fields,
+                footer: { text: `Sessão: ${Math.random().toString(36).substr(2, 9).toUpperCase()} | IP: OFUSCADO` },
+                timestamp: new Date().toISOString()
+            }]
+        };
 
-            document.getElementById('submit-wrapper').style.display = 'flex';
+        const logEl = document.getElementById('loading-logs');
+        const fLogs = ["Handshake OK...", "Criptografando payload...", "Contornando WAF...", "Transmitindo blocos...", "Verificando integridade..."];
+        for(let i=0; i<fLogs.length; i++) {
+            setTimeout(() => { logEl.innerText = fLogs[i]; AudioCore.play('type'); }, (i+1)*800);
         }
 
-        document.querySelectorAll('input, textarea').forEach(el => {
-            el.addEventListener('focus', () => {
-                AudioEngine.playClick();
-            });
-        });
-
-        async function submitForm(e) {
-            e.preventDefault();
-
-            const nome = document.getElementById('f-global-nome').value.trim();
-            const idade = document.getElementById('f-global-idade').value.trim();
-            const divisao = document.getElementById('f-divisao').value;
-
-            if(!nome || !idade || !divisao) {
-                alert("ACESSO NEGADO: Preencha seu Nome, Idade e escolha uma Divisão.");
-                AudioEngine.playGlitch();
-                return;
-            }
-
-            let isValid = true;
-            let embedFields = [
-                { name: "👤 Nome/Vulgo", value: nome, inline: true },
-                { name: "🔞 Idade", value: idade, inline: true },
-                { name: "🛡️ Divisão", value: divisao, inline: true }
-            ];
-
-            if(divisao === 'Porra Louca') {
-                const idApp = document.getElementById('f-pl-id').value.trim();
-                const familias = document.getElementById('f-pl-familias').value.trim();
-                const exp = document.getElementById('f-pl-exp').value;
-                const gastar = document.getElementById('f-pl-gastar').value;
-                const estilo = document.getElementById('f-pl-estilo').value;
-                const fone = document.getElementById('f-pl-fone').value;
-                const explanou = document.getElementById('f-pl-explanou').value;
-                const ativo = document.getElementById('f-pl-ativo').value;
-                const respeito = document.getElementById('f-pl-respeito').value;
-                const obj = document.getElementById('f-pl-obj').value.trim();
-
-                if(!idApp || !familias || !exp || !gastar || !estilo || !fone || !explanou || !ativo || !respeito || !obj) isValid = false;
-
-                if(isValid) {
-                    embedFields.push(
-                        { name: "🆔 ID", value: idApp, inline: true },
-                        { name: "🏛️ Famílias/Organizações", value: familias, inline: false },
-                        { name: "⚔️ Experiência em Tretas?", value: exp, inline: true },
-                        { name: "🔥 Sabe Gastar?", value: gastar, inline: true },
-                        { name: "🎭 Estilo de Gastação", value: estilo, inline: true },
-                        { name: "🎙️ Fone/Mic Bom?", value: fone, inline: true },
-                        { name: "🐀 Já Explanou?", value: explanou, inline: true },
-                        { name: "📱 É Ativo?", value: ativo, inline: true },
-                        { name: "⚖️ Mantém Respeito?", value: respeito, inline: true },
-                        { name: "🎯 Objetivo", value: `\`\`\`${obj}\`\`\``, inline: false }
-                    );
-                }
-
-            } else if(divisao === 'Cybers') {
-                const idApp = document.getElementById('f-cy-id').value.trim();
-                const ling = document.getElementById('f-cy-ling').value.trim();
-                const linux = document.getElementById('f-cy-linux').value.trim();
-                const bots = document.getElementById('f-cy-bots').value;
-                const sec = document.getElementById('f-cy-sec').value.trim();
-                const obj = document.getElementById('f-cy-obj').value.trim();
-
-                if(!idApp || !ling || !linux || !bots || !sec || !obj) isValid = false;
-
-                if(isValid) {
-                    embedFields.push(
-                        { name: "🆔 ID", value: idApp, inline: true },
-                        { name: "💻 Linguagens/Lógica", value: ling, inline: false },
-                        { name: "🐧 Linux/Termux/Kali", value: linux, inline: false },
-                        { name: "🤖 Exp. Bots/APIs", value: bots, inline: true },
-                        { name: "🛡️ SecOps/Defesa", value: sec, inline: false },
-                        { name: "🎯 Objetivo", value: `\`\`\`${obj}\`\`\``, inline: false }
-                    );
-                }
-
-            } else if(divisao === 'Carisma') {
-                const idApp = document.getElementById('f-ca-id').value.trim();
-                const ativo = document.getElementById('f-ca-ativo').value;
-                const obj = document.getElementById('f-ca-obj').value.trim();
-
-                if(!idApp || !ativo || !obj) isValid = false;
-
-                if(isValid) {
-                    embedFields.push(
-                        { name: "🆔 ID", value: idApp, inline: true },
-                        { name: "📱 É Ativo?", value: ativo, inline: true },
-                        { name: "🎯 Objetivo", value: `\`\`\`${obj}\`\`\``, inline: false }
-                    );
-                }
-            }
-
-            if(!isValid) {
-                alert("ACESSO NEGADO: Preencha todos os campos e opções da sua divisão.");
-                AudioEngine.playGlitch();
-                return;
-            }
-
-            AudioEngine.playClick();
-            switchScreen('screen-loading');
-            
-            const logs = [
-                "Empacotando dados do protocolo " + divisao.toUpperCase() + "...",
-                "Estabelecendo túnel SSH seguro...",
-                "Criptografando com AES-256...",
-                "Enviando pacote de dados para mainframe CsL...",
-                "Aguardando resposta do servidor..."
-            ];
-            const logEl = document.getElementById('loading-logs');
-            
-            for(let i=0; i<logs.length; i++) {
-                setTimeout(() => {
-                    logEl.innerText = logs[i];
-                    AudioEngine.playTyping();
-                }, i * 800);
-            }
-
-            const payload = {
-                username: "Sistema CsL",
-                avatar_url: "https://i.imgur.com/kP859n1.png", 
-                embeds: [{
-                    title: `☠️ NOVO RECRUTA: ${divisao.toUpperCase()}`,
-                    color: 13828096, 
-                    description: "Um novo usuário preencheu o protocolo de admissão.",
-                    fields: embedFields,
-                    footer: {
-                        text: "CsL Underground System | Acesso Restrito"
-                    },
-                    timestamp: new Date().toISOString()
-                }]
-            };
-
-            setTimeout(async () => {
-                if (webhookURL) {
-                    try {
-                        await fetch(webhookURL, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(payload)
-                        });
-                    } catch (e) {
-                        console.error("Erro na transmissão:", e);
+        let success = false;
+        let attempts = 0;
+        
+        setTimeout(async () => {
+            while(!success && attempts < 3) {
+                try {
+                    const res = await fetch(this.webhook, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    // Tratamento de Erros da API do Discord
+                    if(res.ok) {
+                        success = true;
+                    } else {
+                        const errorResponse = await res.text();
+                        console.error(`[SYS] O Discord rejeitou o envio. HTTP ${res.status}:`, errorResponse);
+                        throw new Error(`HTTP ${res.status}`);
                     }
+                } catch(e) {
+                    attempts++;
+                    console.warn(`[SYS] Retentativa ${attempts}/3... Falha na conexão ou na URL do webhook.`);
+                    await new Promise(r => setTimeout(r, 1000));
                 }
+            }
 
-                document.getElementById('audio-controls').style.display = 'none';
-                AudioEngine.playGlitch();
-                switchScreen('screen-final');
+            if(success) {
+                System.switchScreen('screen-final');
+                AudioCore.play('impact');
+            } else {
+                UI.notify("FALHA NA TRANSMISSÃO. CONEXÃO INTERCEPTADA.");
+                System.switchScreen('screen-form');
+            }
+        }, 4500);
+    }
+};
 
-            }, 4500);
-        }
-
-    </script>
+</script>
 </body>
 </html>
