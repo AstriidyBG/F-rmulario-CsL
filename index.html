@@ -7,31 +7,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         /* =========================================================
-           VÁRIAVEIS GLOBAIS E TEMA
+           VÁRIAVEIS GLOBAIS E TEMA MILITAR UNDERGROUND
         ========================================================= */
         :root {
-            --bg-base: #030000;
+            --bg-base: #020000;
+            --bg-panel: #0a0000;
             --red-main: #ff003c;
-            --red-glow: rgba(255, 0, 60, 0.6);
+            --red-glow: rgba(255, 0, 60, 0.8);
             --red-dark: #4a0008;
-            --red-blood: #8a0018;
-            --gray-metal: #121212;
-            --text-light: #f0f0f0;
-            --text-dim: #a8a8a8;
-            --scanline: rgba(255, 0, 60, 0.03);
+            --red-dim: rgba(255, 0, 60, 0.2);
+            --green-sys: #00ff41;
+            --text-light: #e0e0e0;
+            --text-dim: #888888;
+            --scanline: rgba(255, 0, 60, 0.04);
             --font-head: 'Orbitron', sans-serif;
             --font-mono: 'Share Tech Mono', monospace;
-            --glow-text: 0 0 5px var(--red-main), 0 0 15px var(--red-main);
-            --glow-box: 0 0 15px var(--red-glow), inset 0 0 15px var(--red-glow);
+            --glow-text: 0 0 5px var(--red-main), 0 0 10px var(--red-main);
+            --glow-box: 0 0 20px var(--red-glow), inset 0 0 15px var(--red-glow);
+            --border-tech: 1px solid var(--red-dark);
         }
 
-        /* =========================================================
-           RESETS E BASE
-        ========================================================= */
         * {
             margin: 0; padding: 0; box-sizing: border-box;
             user-select: none; -webkit-tap-highlight-color: transparent;
-            cursor: none !important; /* Esconde cursor padrão */
+            cursor: none !important;
+            scrollbar-width: thin; scrollbar-color: var(--red-dark) var(--bg-base);
         }
 
         body, html {
@@ -43,11 +43,9 @@
         }
 
         /* =========================================================
-           SISTEMA DE OVERLAYS (CRT, SCANLINES, VIGNETTE)
+           OVERLAYS CINEMATOGRÁFICOS (CRT, SCANLINES)
         ========================================================= */
-        #fx-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.2;
-        }
+        #fx-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         
         .scanlines {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -57,58 +55,62 @@
 
         .vignette {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.95) 100%);
-            z-index: 991; pointer-events: none; animation: pulse-vig 5s infinite alternate;
+            background: radial-gradient(circle at center, transparent 40%, #000 120%);
+            z-index: 991; pointer-events: none; animation: pulse-vig 4s infinite alternate;
         }
 
         .crt-noise {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
-            opacity: 0.04; z-index: 992; pointer-events: none;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+            opacity: 0.05; z-index: 992; pointer-events: none; mix-blend-mode: overlay;
         }
 
-        #screen-tear {
+        #screen-fx {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; mix-blend-mode: overlay; z-index: 9999;
-            opacity: 0; pointer-events: none;
+            opacity: 0; pointer-events: none; transition: opacity 0.1s;
         }
 
         /* =========================================================
-           HUD E ELEMENTOS PERIFÉRICOS
+           HUD E TERMINAL LATERAL
         ========================================================= */
-        .hud-element {
-            position: absolute; z-index: 800; font-size: 10px; color: var(--text-dim);
-            text-transform: uppercase; letter-spacing: 2px; pointer-events: none;
-            text-shadow: 0 0 5px rgba(255,0,0,0.3);
+        .hud-el {
+            position: absolute; z-index: 800; font-size: 11px; color: var(--text-dim);
+            text-transform: uppercase; letter-spacing: 1px; pointer-events: none;
         }
-        #hud-top-left { top: 20px; left: 20px; display: flex; flex-direction: column; gap: 5px; }
-        #hud-top-right { top: 20px; right: 20px; text-align: right; }
-        #hud-bottom-left { bottom: 20px; left: 20px; width: 250px; max-height: 100px; overflow: hidden; opacity: 0.7;}
+        #hud-tl { top: 20px; left: 20px; display: flex; flex-direction: column; gap: 5px; }
+        #hud-tr { top: 20px; right: 20px; text-align: right; }
+        #hud-br { bottom: 20px; right: 20px; text-align: right; }
         
-        .status-indicator {
+        .status-dot {
             display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-            background: var(--red-main); box-shadow: 0 0 10px var(--red-main);
+            background: var(--red-main); box-shadow: 0 0 8px var(--red-main);
             margin-right: 8px; animation: blink-status 1s infinite;
         }
 
-        .log-line { margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #lateral-terminal {
+            position: absolute; bottom: 20px; left: 20px; width: 300px; height: 150px;
+            background: rgba(5,0,0,0.6); border-left: 2px solid var(--red-dark);
+            padding: 10px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;
+            z-index: 800; font-size: 10px; color: var(--text-dim); mask-image: linear-gradient(to top, black 50%, transparent 100%);
+        }
+        .log-entry { margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.8; animation: slide-in-left 0.2s ease-out; }
+        .log-entry.warn { color: #ffaa00; }
+        .log-entry.err { color: var(--red-main); text-shadow: 0 0 5px var(--red-main); }
 
         /* =========================================================
-           CURSOR CUSTOMIZADO
+           CURSOR
         ========================================================= */
-        #custom-cursor {
+        #cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
             pointer-events: none; z-index: 10000; transform: translate(-50%, -50%);
-            display: flex; justify-content: center; align-items: center;
+            display: flex; justify-content: center; align-items: center; mix-blend-mode: difference;
         }
-        #custom-cursor::before {
-            content: ''; position: absolute; width: 4px; height: 4px;
-            background: var(--red-main); border-radius: 50%; box-shadow: 0 0 8px var(--red-main);
-        }
-        #custom-cursor::after {
+        #cursor::before { content: ''; position: absolute; width: 4px; height: 4px; background: var(--red-main); }
+        #cursor::after {
             content: ''; position: absolute; width: 24px; height: 24px;
-            border: 1px dashed var(--red-main); border-radius: 50%;
-            animation: spin 4s linear infinite; opacity: 0.5;
+            border: 1px solid var(--red-main); border-radius: 50%;
+            animation: spin 4s linear infinite; opacity: 0.5; clip-path: polygon(0 0, 100% 0, 100% 80%, 80% 100%, 0 100%);
         }
         .cursor-click { animation: cursor-pulse 0.3s ease-out; }
 
@@ -124,428 +126,521 @@
             position: absolute; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 5%; overflow-y: auto; overflow-x: hidden;
-            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            transform: scale(0.98) translateY(10px);
         }
         .screen.active {
-            opacity: 1; pointer-events: all;
-            animation: screen-boot 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 1; pointer-events: all; transform: scale(1) translateY(0);
         }
-        
-        .screen::-webkit-scrollbar { width: 4px; }
-        .screen::-webkit-scrollbar-track { background: var(--bg-base); }
-        .screen::-webkit-scrollbar-thumb { background: var(--red-dark); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); border-left: 1px solid var(--red-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--red-main); }
 
         /* =========================================================
-           TIPOGRAFIA E TÍTULOS
+           TIPOGRAFIA
         ========================================================= */
-        h1, h2, h3 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 4px; }
-        
+        h1, h2, h3 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 2px; }
+
         .glitch-text {
-            position: relative; font-size: 28px; font-weight: 900;
-            text-shadow: var(--glow-text); margin-bottom: 20px; text-align: center;
+            position: relative; font-size: 32px; font-weight: 900;
+            text-shadow: var(--glow-text); margin-bottom: 10px; text-align: center;
+            letter-spacing: 6px;
         }
         .glitch-text::before, .glitch-text::after {
             content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: transparent; opacity: 0.8;
+            background: var(--bg-base); opacity: 0.8;
         }
         .glitch-text::before { left: 2px; text-shadow: -2px 0 #00ffff; animation: glitch-1 2s infinite linear alternate-reverse; clip-path: polygon(0 0, 100% 0, 100% 30%, 0 30%); }
         .glitch-text::after { left: -2px; text-shadow: -2px 0 #ff00ff; animation: glitch-2 3s infinite linear alternate-reverse; clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0 100%); }
 
-        .typewriter-text { font-size: 16px; line-height: 1.6; color: var(--text-light); white-space: pre-wrap; }
-        .cursor-blink { display: inline-block; width: 10px; height: 18px; background: var(--red-main); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 5px;}
+        .typewriter { font-size: 15px; line-height: 1.6; color: var(--text-light); white-space: pre-wrap; }
+        .cursor-blink { display: inline-block; width: 8px; height: 16px; background: var(--red-main); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 4px;}
 
         /* =========================================================
-           BOTÕES CYBERPUNK
+           COMPONENTES UI (Botões, Inputs, Metal Plates)
         ========================================================= */
         .cyber-btn {
-            position: relative; background: rgba(20, 0, 0, 0.6);
-            border: 1px solid var(--red-dark); color: var(--text-light);
-            font-family: var(--font-head); font-size: 16px; font-weight: 700;
-            padding: 15px 40px; text-transform: uppercase; letter-spacing: 3px;
-            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-            transition: all 0.3s ease; outline: none; margin-top: 20px; min-width: 250px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.9); overflow: hidden;
+            position: relative; background: rgba(10, 0, 0, 0.8);
+            border: 1px solid var(--red-dark); color: var(--red-main);
+            font-family: var(--font-head); font-size: 14px; font-weight: 700;
+            padding: 15px 35px; text-transform: uppercase; letter-spacing: 4px;
+            transition: all 0.3s ease; outline: none; margin-top: 20px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,1); overflow: hidden;
+            display: inline-block;
         }
         .cyber-btn::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,0,60,0.3), transparent);
-            transition: transform 0.5s ease;
-        }
-        .cyber-btn::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
-            background: var(--red-main); box-shadow: 0 0 10px var(--red-main);
+            content: ''; position: absolute; top: 0; left: 0; width: 10px; height: 100%;
+            background: var(--red-main); transition: width 0.3s ease; z-index: -1; opacity: 0.2;
         }
         .cyber-btn:hover {
-            background: rgba(60, 0, 0, 0.8); border-color: var(--red-main);
-            color: #fff; box-shadow: var(--glow-box); text-shadow: 0 0 8px #fff;
-            transform: translateY(-2px);
+            color: #fff; border-color: var(--red-main); text-shadow: 0 0 5px #fff;
+            box-shadow: var(--glow-box); transform: translateY(-2px);
         }
-        .cyber-btn:hover::before { transform: translateX(100%); }
+        .cyber-btn:hover::before { width: 100%; opacity: 0.4; }
 
-        /* =========================================================
-           PLACA DE AVISO METÁLICA (WARNING SCREEN)
-        ========================================================= */
         .metal-plate {
-            position: relative; width: 100%; max-width: 650px;
-            background: linear-gradient(135deg, #2a2a2a 0%, #111 50%, #0a0a0a 100%);
-            border: 2px solid #333; border-radius: 4px; padding: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.9), inset 0 0 40px rgba(0,0,0,1), 0 0 20px rgba(255,0,60,0.2);
-            display: flex; flex-direction: column; align-items: center;
+            position: relative; width: 100%; max-width: 600px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #050505 100%);
+            border: 1px solid #333; padding: 40px 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,1), inset 0 0 30px rgba(0,0,0,1);
         }
-        /* Bordas listradas industriais */
         .metal-plate::before {
-            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 2px dashed rgba(255, 0, 60, 0.4); pointer-events: none; z-index: 1;
+            content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 1px solid rgba(255,0,60,0.2); pointer-events: none;
         }
-        /* Parafusos nos cantos */
-        .screw {
-            position: absolute; width: 12px; height: 12px; border-radius: 50%;
-            background: radial-gradient(circle, #555, #111); border: 1px solid #000;
-            box-shadow: inset 0 0 2px #fff, 0 1px 2px rgba(0,0,0,0.8); z-index: 2;
-        }
-        .screw::after { content: ''; position: absolute; top: 50%; left: 10%; width: 80%; height: 2px; background: #0a0a0a; transform: translateY(-50%) rotate(45deg); box-shadow: 0 1px 0 rgba(255,255,255,0.2); }
-        .screw.tl { top: 20px; left: 20px; } .screw.tr { top: 20px; right: 20px; transform: rotate(30deg); }
-        .screw.bl { bottom: 20px; left: 20px; transform: rotate(70deg); } .screw.br { bottom: 20px; right: 20px; transform: rotate(-20deg); }
-        
-        .alert-beacon {
-            width: 100%; height: 4px; background: var(--red-dark); position: absolute; top: 0; left: 0;
-            animation: beacon-flash 1s infinite alternate; box-shadow: 0 0 20px var(--red-main);
-        }
-        .warning-icon { font-size: 50px; text-shadow: var(--glow-text); margin-bottom: 20px; animation: pulse-red 1s infinite; }
+        .screws::before, .screws::after { content:'+'; position:absolute; top: 10px; color:#444; font-size:12px; }
+        .screws::before { left: 10px; } .screws::after { right: 10px; }
+        .screws-b::before, .screws-b::after { content:'+'; position:absolute; bottom: 10px; color:#444; font-size:12px; }
+        .screws-b::before { left: 10px; } .screws-b::after { right: 10px; }
 
-        /* =========================================================
-           FORMULÁRIOS & UI AVANÇADA
-        ========================================================= */
-        .form-container { width: 100%; max-width: 700px; display: flex; flex-direction: column; gap: 30px; padding-bottom: 50px; }
+        /* FORMULÁRIOS */
+        .form-wrap { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 20px; padding-bottom: 60px; }
+        .form-header { display: flex; justify-content: space-between; border-bottom: 1px solid var(--red-dark); padding-bottom: 10px; margin-bottom: 20px;}
         
-        .input-group { position: relative; display: flex; flex-direction: column; gap: 8px; }
-        .input-group label {
-            font-family: var(--font-head); font-size: 11px; color: var(--red-main);
-            letter-spacing: 2px; display: flex; align-items: center; text-shadow: 0 0 5px rgba(255,0,0,0.3);
-        }
-        .input-group label::before { content: '>'; color: var(--text-dim); margin-right: 8px; animation: blink 1.5s infinite; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
+        .input-group label { font-family: var(--font-head); font-size: 10px; color: var(--red-main); letter-spacing: 1px; display: flex; align-items: center; }
+        .input-group label::before { content: '>'; color: var(--text-dim); margin-right: 5px; }
 
         .cyber-input {
-            width: 100%; background: rgba(5, 0, 0, 0.7); border: 1px solid var(--red-dark);
-            border-left: 4px solid var(--red-main); color: var(--text-light);
-            font-family: var(--font-mono); font-size: 16px; padding: 15px 20px;
-            outline: none; transition: all 0.3s ease; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+            width: 100%; background: rgba(5,0,0,0.8); border: 1px solid #222;
+            border-left: 3px solid var(--red-dark); color: var(--text-light);
+            font-family: var(--font-mono); font-size: 14px; padding: 12px 15px;
+            outline: none; transition: all 0.3s;
         }
         .cyber-input:focus {
-            background: rgba(20, 0, 0, 0.9); border-color: var(--red-main);
-            box-shadow: inset 0 0 20px rgba(255,0,60,0.1), 0 0 15px rgba(255,0,60,0.3);
+            border-color: var(--red-main); border-left-color: var(--red-main);
+            box-shadow: inset 0 0 10px var(--red-dim); background: rgba(20,0,0,0.9);
         }
-        .cyber-input::placeholder { color: rgba(255,255,255,0.15); }
-        textarea.cyber-input { min-height: 120px; resize: vertical; }
+        textarea.cyber-input { min-height: 80px; resize: vertical; }
 
-        /* Custom Radio Buttons */
-        .radio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; }
+        .radio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
         .radio-btn {
-            background: rgba(10, 0, 0, 0.8); border: 1px solid var(--red-dark);
-            color: var(--text-dim); padding: 12px; text-align: center; font-size: 13px;
-            text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            position: relative; overflow: hidden;
+            background: rgba(10,0,0,0.5); border: 1px solid #333;
+            color: var(--text-dim); padding: 10px; text-align: center; font-size: 12px;
+            text-transform: uppercase; transition: all 0.2s; position: relative;
         }
-        .radio-btn:hover { border-color: var(--red-main); color: #fff; background: rgba(30,0,0,0.6); }
+        .radio-btn:hover { border-color: var(--red-dark); color: #fff; }
         .radio-btn.selected {
-            background: rgba(255,0,60,0.15); border-color: var(--red-main); color: #fff;
-            box-shadow: 0 0 15px rgba(255,0,60,0.3); font-weight: bold; text-shadow: 0 0 5px #fff;
+            background: var(--red-dim); border-color: var(--red-main); color: #fff;
+            box-shadow: 0 0 10px var(--red-dim); font-weight: bold;
         }
-        .radio-btn.selected::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--red-main); }
+        .radio-btn.selected::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--red-main); }
 
-        /* Container de Divisões */
-        .division-box {
-            display: none; flex-direction: column; gap: 25px; padding: 40px 25px 25px;
-            background: linear-gradient(180deg, rgba(20,0,0,0.8) 0%, rgba(5,0,0,0.9) 100%);
-            border: 1px solid var(--red-dark); position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.9); animation: slide-down 0.5s ease;
+        /* DIVISÕES */
+        .division-container {
+            display: none; flex-direction: column; gap: 20px; padding: 30px 20px;
+            background: rgba(10,0,0,0.4); border: 1px solid var(--red-dark);
+            position: relative; animation: fade-in 0.4s ease; margin-top: 10px;
         }
-        .division-box::before, .division-box::after {
-            content: ''; position: absolute; width: 30px; height: 30px; border-color: var(--red-main); border-style: solid; box-shadow: 0 0 10px var(--red-main);
-        }
-        .division-box::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-        .division-box::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
-        .div-title-badge {
-            position: absolute; top: -14px; left: 20px; background: var(--bg-base);
-            color: var(--red-main); padding: 5px 15px; font-family: var(--font-head);
-            font-size: 12px; font-weight: 900; border: 1px solid var(--red-main); box-shadow: 0 0 10px rgba(0,0,0,0.9);
+        .div-badge {
+            position: absolute; top: -10px; left: 15px; background: var(--bg-base);
+            color: var(--text-light); padding: 2px 10px; font-family: var(--font-head);
+            font-size: 11px; border: 1px solid var(--red-main); letter-spacing: 2px;
         }
 
-        /* =========================================================
-           LOADING E RADAR
+        /* NOVOS CARTÕES DE DIVISÃO */
+        .division-cards {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px;
+        }
+        .div-card {
+            background: rgba(10, 0, 0, 0.6); border: 1px solid #333; position: relative;
+            padding: 20px 15px; text-align: center; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            overflow: hidden; display: flex; flex-direction: column; align-items: center; gap: 12px;
+        }
+        .div-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-20deg); transition: 0.5s;
+        }
+        .div-card:hover::before { left: 150%; }
+        .div-card svg { width: 40px; height: 40px; stroke: var(--text-dim); transition: 0.3s; }
+        .div-card span { font-family: var(--font-head); font-size: 13px; color: var(--text-dim); font-weight: 900; letter-spacing: 2px; transition: 0.3s; }
+        
+        .div-card:hover { background: rgba(30, 0, 0, 0.8); border-color: var(--text-light); transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
+        .div-card:hover svg { stroke: var(--text-light); }
+        .div-card:hover span { color: var(--text-light); }
+        
+        /* ESTILOS ESPECÍFICOS POR DIVISÃO SELECIONADA */
+        .div-card.selected.tatico { background: rgba(255, 0, 60, 0.15); border-color: var(--red-main); box-shadow: inset 0 0 20px rgba(255,0,60,0.3); }
+        .div-card.selected.tatico svg { stroke: var(--red-main); filter: drop-shadow(0 0 8px var(--red-main)); }
+        .div-card.selected.tatico span { color: var(--red-main); text-shadow: 0 0 10px var(--red-main); }
+        
+        .div-card.selected.cyber { background: rgba(0, 255, 65, 0.15); border-color: var(--green-sys); box-shadow: inset 0 0 20px rgba(0,255,65,0.3); }
+        .div-card.selected.cyber svg { stroke: var(--green-sys); filter: drop-shadow(0 0 8px var(--green-sys)); }
+        .div-card.selected.cyber span { color: var(--green-sys); text-shadow: 0 0 10px var(--green-sys); }
+        
+        .div-card.selected.carisma { background: rgba(180, 0, 255, 0.15); border-color: #b400ff; box-shadow: inset 0 0 20px rgba(180,0,255,0.3); }
+        .div-card.selected.carisma svg { stroke: #b400ff; filter: drop-shadow(0 0 8px #b400ff); }
+        .div-card.selected.carisma span { color: #b400ff; text-shadow: 0 0 10px #b400ff; }
+        
+        /* Divisão Cyber Específica (Formulário) */
+           PROGRESSO E TRANSMISSÃO
         ========================================================= */
-        .radar-container {
-            position: relative; width: 200px; height: 200px; border-radius: 50%;
-            border: 2px solid var(--red-dark); box-shadow: inset 0 0 40px rgba(255,0,60,0.1);
-            background: repeating-radial-gradient(transparent, transparent 20px, rgba(255,0,60,0.1) 21px);
+        .risk-meter {
+            width: 100%; height: 4px; background: #222; margin-top: 5px; position: relative; overflow: hidden;
         }
+        .risk-fill { height: 100%; width: 0%; background: var(--red-main); transition: width 0.5s ease; }
+
+        .tx-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 20px; align-items: center;}
+        
+        .radar-advanced {
+            position: relative; width: 180px; height: 180px; border-radius: 50%;
+            border: 2px solid var(--red-dark); background: radial-gradient(circle, rgba(255,0,60,0.1) 0%, transparent 70%);
+            box-shadow: 0 0 30px rgba(255,0,60,0.2), inset 0 0 20px rgba(0,0,0,1);
+        }
+        .radar-grid { position: absolute; top:0; left:0; right:0; bottom:0; border-radius:50%; border: 1px dashed rgba(255,0,60,0.2); transform: scale(0.6); }
         .radar-sweep {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent 70%, rgba(255,0,60,0.8) 100%);
-            animation: sweep 2s linear infinite; clip-path: circle(50% at 50% 50%);
+            background: conic-gradient(from 0deg, transparent 60%, rgba(255,0,60,0.6) 100%);
+            animation: sweep 1.5s linear infinite; clip-path: circle(50% at 50% 50%);
         }
-        .radar-crosshair {
-            position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,0,60,0.5);
-        }
-        .radar-crosshair::after {
-            content: ''; position: absolute; top: -100px; left: 50%; width: 1px; height: 200px; background: rgba(255,0,60,0.5);
-        }
-        #loading-logs { font-size: 12px; color: var(--text-dim); margin-top: 30px; min-height: 20px; }
+        
+        .tx-bar-bg { width: 100%; height: 15px; background: #111; border: 1px solid #333; position: relative; }
+        #tx-bar-fill { height: 100%; width: 0%; background: var(--red-main); box-shadow: 0 0 10px var(--red-main); transition: width 0.2s linear; }
+        .tx-info { display: flex; justify-content: space-between; width: 100%; font-size: 11px; color: var(--text-dim); font-family: var(--font-head); }
 
         /* =========================================================
            NOTIFICAÇÕES
         ========================================================= */
-        #notification-area {
-            position: fixed; top: 20px; right: 20px; width: 300px; z-index: 9000;
+        #notif-area {
+            position: fixed; top: 20px; right: 20px; width: 280px; z-index: 9000;
             display: flex; flex-direction: column; gap: 10px; pointer-events: none;
         }
-        .sys-notif {
-            background: rgba(10, 0, 0, 0.9); border-left: 4px solid var(--red-main);
-            padding: 12px 15px; color: #fff; font-size: 12px; display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: notif-slide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .notif {
+            background: rgba(5, 0, 0, 0.95); border-left: 3px solid var(--red-main);
+            padding: 12px; color: var(--text-light); font-size: 11px; display: flex; align-items: flex-start; gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8); animation: notif-in 0.3s ease forwards; border-right: 1px solid #222; border-bottom: 1px solid #222;
         }
-        
+        .notif.err { border-left-color: #ffaa00; }
+        .notif.succ { border-left-color: var(--green-sys); }
+
         /* =========================================================
            ANIMAÇÕES
         ========================================================= */
-        @keyframes pulse-vig { 0% { opacity: 0.8; } 100% { opacity: 1; } }
+        @keyframes pulse-vig { 0% { opacity: 0.7; } 100% { opacity: 1; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes blink-status { 0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--red-main); } 50% { opacity: 0.3; box-shadow: none; } }
+        @keyframes blink-status { 0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--red-main); } 50% { opacity: 0.3; box-shadow: none; } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes cursor-pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
-        @keyframes screen-boot { 0% { opacity: 0; transform: scale(0.95); filter: blur(5px) brightness(2); } 100% { opacity: 1; transform: scale(1); filter: none; } }
         @keyframes sweep { 100% { transform: rotate(360deg); } }
-        @keyframes slide-down { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes beacon-flash { 0% { background: var(--red-dark); box-shadow: none; } 100% { background: var(--red-main); box-shadow: 0 0 20px var(--red-main); } }
-        @keyframes pulse-red { 0%, 100% { text-shadow: var(--glow-text); transform: scale(1); } 50% { text-shadow: 0 0 30px red; transform: scale(1.1); } }
-        @keyframes notif-slide { 0% { transform: translateX(120%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
-        
+        @keyframes fade-in { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes slide-in-left { 0% { opacity: 0; transform: translateX(-20px); } 100% { opacity: 0.8; transform: translateX(0); } }
+        @keyframes notif-in { 0% { transform: translateX(100%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+        @keyframes notif-out { 0% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(100%); opacity: 0; } }
+        @keyframes shake { 0%, 100% {transform: translate(0,0);} 10%, 30%, 50%, 70%, 90% {transform: translate(-2px, 1px);} 20%, 40%, 60%, 80% {transform: translate(2px, -1px);} }
+        @keyframes scan-img { 0% { top: 0; } 100% { top: 100%; } }
+        @keyframes glitch-1 { 0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); } 40% { clip-path: inset(40% 0 50% 0); } 60% { clip-path: inset(80% 0 5% 0); } 80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 50% 0); } }
+        @keyframes glitch-2 { 0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(30% 0 20% 0); } 40% { clip-path: inset(70% 0 10% 0); } 60% { clip-path: inset(20% 0 50% 0); } 80% { clip-path: inset(50% 0 30% 0); } 100% { clip-path: inset(5% 0 80% 0); } }
+
+        /* RESPONSIVO */
         @media (max-width: 768px) {
-            h1, h2 { font-size: 20px; }
-            .cyber-btn { width: 100%; padding: 15px; }
-            .metal-plate { padding: 20px; }
-            #hud-top-right { display: none; }
-            #hud-bottom-left { display: none; }
+            h1, h2 { font-size: 22px; }
+            .cyber-btn { width: 100%; text-align: center; }
+            #hud-tr, #hud-br { display: none; }
             .radio-grid { grid-template-columns: 1fr 1fr; }
+            #lateral-terminal { width: 200px; height: 100px; font-size: 9px; bottom: 10px; left: 10px; }
+            .screen { padding: 80px 5% 20px 5%; justify-content: flex-start; }
+            .metal-plate { padding: 25px 15px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- OVERLAYS VISUAIS -->
+    <!-- OVERLAYS -->
     <canvas id="fx-canvas"></canvas>
     <div class="scanlines"></div>
     <div class="vignette"></div>
     <div class="crt-noise"></div>
-    <div id="screen-tear"></div>
-    <div id="custom-cursor"></div>
+    <div id="screen-fx"></div>
+    <div id="cursor"></div>
 
-    <!-- HUD (Heads Up Display) -->
-    <div id="hud-top-left" class="hud-element">
-        <div><span class="status-indicator"></span>CONEXÃO SEGURA</div>
-        <div id="hud-ip">IP: OFUSCANDO...</div>
-        <div>LATÊNCIA: <span id="hud-ping">24</span>ms</div>
+    <!-- HUD -->
+    <div id="hud-tl" class="hud-el">
+        <div><span class="status-dot"></span>SYS_NODE: ATIVO</div>
+        <div id="hud-ip">ROUTING...</div>
+        <div>LAT: <span id="hud-ping">--</span>ms</div>
     </div>
-    <div id="hud-top-right" class="hud-element">
+    <div id="hud-tr" class="hud-el">
         <div id="hud-time">00:00:00</div>
-        <div>SYS_VER: 4.2.1</div>
+        <div style="color:var(--red-dark)">v7.4.9_MIL</div>
     </div>
-    <div id="hud-bottom-left" class="hud-element">
-        <div id="terminal-logs"></div>
+    <div id="hud-br" class="hud-el">
+        <div id="risk-txt">RISCO: DESCONHECIDO</div>
+        <div class="risk-meter" style="width: 120px;"><div class="risk-fill" id="hud-risk-bar"></div></div>
     </div>
 
-    <!-- NOTIFICAÇÕES FLUTUANTES -->
-    <div id="notification-area"></div>
+    <!-- TERMINAL LATERAL -->
+    <div id="lateral-terminal"></div>
+
+    <!-- NOTIFICAÇÕES -->
+    <div id="notif-area"></div>
 
     <div id="app-container">
-        
+
         <!-- TELA 0: BOOT -->
-        <div id="screen-boot" class="screen active">
-            <h1 class="glitch-text" data-text="CSL SYS_CORE">CSL SYS_CORE</h1>
-            <p style="color: var(--text-dim); font-size: 12px; margin-bottom: 40px; letter-spacing: 2px;">INICIALIZAÇÃO REQUERIDA</p>
-            <button class="cyber-btn" onclick="System.init()">[ BOOT SEQUENCE ]</button>
+        <div id="scr-boot" class="screen active">
+            <div style="text-align: left; width: 100%; max-width: 500px; font-size: 12px; color: var(--green-sys); margin-bottom: 30px; text-shadow: 0 0 5px var(--green-sys);" id="boot-logs"></div>
+            <h1 class="glitch-text" data-text="CSL_CORE" style="color:var(--text-light)">CSL_CORE</h1>
+            <p style="color: var(--text-dim); font-size: 11px; margin-bottom: 40px; letter-spacing: 4px;">ACESSO MILITAR RESTRITO</p>
+            <button class="cyber-btn" id="btn-init" style="opacity:0; pointer-events:none;">[ INICIALIZAR SISTEMA ]</button>
         </div>
 
-        <!-- TELA 1: AVISO MILITAR -->
-        <div id="screen-warning" class="screen">
-            <div class="metal-plate">
-                <div class="alert-beacon"></div>
-                <div class="screw tl"></div><div class="screw tr"></div>
-                <div class="screw bl"></div><div class="screw br"></div>
-                
-                <div class="warning-icon">⚠</div>
-                <h2 style="color:#ff0000; margin-bottom: 20px; text-shadow: 0 0 10px red;">NÍVEL DE ACESSO: CRÍTICO</h2>
-                
-                <div style="background: rgba(0,0,0,0.6); padding: 20px; border: 1px solid var(--red-dark); width: 100%; margin-bottom: 30px; box-shadow: inset 0 0 15px #000;">
-                    <p id="warning-text" class="typewriter-text"></p><span class="cursor-blink"></span>
+        <!-- TELA 1: AVISO CRÍTICO -->
+        <div id="scr-warning" class="screen">
+            <div class="metal-plate" id="warning-plate">
+                <div class="screws"></div><div class="screws-b"></div>
+                <div style="text-align:center; margin-bottom: 20px;">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--red-main)" stroke-width="2" style="filter: drop-shadow(0 0 5px var(--red-main));">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
                 </div>
-                
-                <button class="cyber-btn" id="btn-entendido" style="display:none; width: 80%;" onclick="System.switchScreen('screen-form')">ENTENDIDO</button>
+                <h2 style="color:var(--red-main); text-align:center; margin-bottom: 20px; font-size: 18px;">ATENÇÃO.</h2>
+                <div class="typewriter" id="warn-txt"></div><span class="cursor-blink" id="warn-cursor"></span>
+                <div style="text-align:center; margin-top: 30px;">
+                    <button class="cyber-btn" id="btn-accept" style="display:none; width: 100%;" onclick="System.goToForm()">ENTENDIDO</button>
+                </div>
             </div>
         </div>
 
-        <!-- TELA 2: FORMULÁRIO -->
-        <div id="screen-form" class="screen" style="justify-content: flex-start; padding-top: 80px;">
-            <h2 class="glitch-text" data-text="PROTOCOLO DE ADMISSÃO">PROTOCOLO DE ADMISSÃO</h2>
-            <p style="color: var(--text-dim); font-size: 12px; margin-bottom: 30px; letter-spacing: 1px; text-align: center;">REGISTRE SEUS DADOS. TENTATIVAS DE INJEÇÃO RESULTARÃO EM BANIMENTO.</p>
-
-            <form id="recruitment-form" class="form-container">
-                
-                <div class="input-group">
-                    <label>IDENTIFICAÇÃO PRIMÁRIA (NOME/VULGO)</label>
-                    <input type="text" id="f-nome" class="cyber-input" placeholder="Insira seu vulgo..." autocomplete="off">
+        <!-- TELA 2: FORMULÁRIO PRINCIPAL -->
+        <div id="scr-form" class="screen" style="justify-content: flex-start; padding-top: 60px;">
+            <div class="form-wrap">
+                <div class="form-header">
+                    <div>
+                        <h2 class="glitch-text" data-text="RECRUTAMENTO" style="font-size: 20px; text-align:left; margin:0;">RECRUTAMENTO</h2>
+                        <div style="font-size: 10px; color: var(--text-dim); margin-top:5px;">SESSÃO CRIPTOGRAFADA: AES-256</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size: 10px; color: var(--text-dim);">COMPLETUDE</div>
+                        <div class="risk-meter" style="width: 100px; margin-left:auto;"><div class="risk-fill" id="form-progress" style="background:var(--green-sys);"></div></div>
+                    </div>
                 </div>
 
+                <!-- DADOS GERAIS -->
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 15px;">
+                    <div class="input-group">
+                        <label>VULGO (IDENTIFICAÇÃO)</label>
+                        <input type="text" id="f-vulgo" class="cyber-input required" placeholder="_">
+                    </div>
+                    <div class="input-group">
+                        <label>IDADE</label>
+                        <input type="number" id="f-idade" class="cyber-input required" placeholder="_">
+                    </div>
+                </div>
                 <div class="input-group">
-                    <label>IDADE</label>
-                    <input type="number" id="f-idade" class="cyber-input" placeholder="Anos de operação..." autocomplete="off">
+                    <label>ID DE REGISTRO / TAG</label>
+                    <input type="text" id="f-id" class="cyber-input required" placeholder="_">
                 </div>
 
-                <div class="input-group" style="margin-top: 10px;">
-                    <label>SELECIONE O VETOR DE ENTRADA (DIVISÃO)</label>
+                <!-- SELEÇÃO DE DIVISÃO -->
+                <div class="input-group" style="margin-top: 15px;">
+                    <label style="color:#fff; font-size: 12px; border-bottom: 1px solid #333; padding-bottom:5px;">VETOR DE ENTRADA (SELECIONE SUA DIVISÃO)</label>
+                    
+                    <div class="division-cards">
+                        <div class="div-card tatico" onclick="UI.selectDiv(this, 'tatico')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
+                            <span>CONFLITO TÁTICO</span>
+                        </div>
+                        <div class="div-card cyber" onclick="UI.selectDiv(this, 'cyber')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                            <span>CYBER OP.</span>
+                        </div>
+                        <div class="div-card carisma" onclick="UI.selectDiv(this, 'carisma')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            <span>CARISMA</span>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="f-divisao" class="required">
+                </div>
+
+                <!-- FORM: CONFLITO TÁTICO -->
+                <div id="div-tatico" class="division-container">
+                    <div class="div-badge">DIR_TÁTICO</div>
+                    <div class="input-group"><label>FAMÍLIAS/ORGS ANTERIORES</label><input type="text" id="t-orgs" class="cyber-input"></div>
+                    
                     <div class="radio-grid">
-                        <div class="radio-btn sel-div" data-val="Porra Louca" onclick="UI.selectDiv(this, 'Porra Louca')">Porra Louca</div>
-                        <div class="radio-btn sel-div" data-val="Cybers" onclick="UI.selectDiv(this, 'Cybers')">Cybers</div>
-                        <div class="radio-btn sel-div" data-val="Carisma" onclick="UI.selectDiv(this, 'Carisma')">Carisma</div>
+                        <div class="input-group"><label>EXP EM TRETAS?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'t-exp')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'t-exp')">NÃO</div></div><input type="hidden" id="t-exp">
+                        </div>
+                        <div class="input-group"><label>SABE GASTAR/TRAVAR?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'t-gastar')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'t-gastar')">NÃO</div></div><input type="hidden" id="t-gastar">
+                        </div>
                     </div>
-                    <input type="hidden" id="f-divisao">
-                </div>
 
-                <!-- DIVISÃO: PORRA LOUCA -->
-                <div id="div-porra-louca" class="division-box">
-                    <div class="div-title-badge">DIR: PORRA LOUCA</div>
+                    <div class="input-group"><label>ESTILO DE GASTAÇÃO</label>
+                        <div class="radio-grid"><div class="radio-btn" onclick="UI.sel(this,'t-estilo')">ARABIANO</div><div class="radio-btn" onclick="UI.sel(this,'t-estilo')">BATE E VOLTA</div><div class="radio-btn" onclick="UI.sel(this,'t-estilo')">ARGUMENTATIVO</div></div><input type="hidden" id="t-estilo">
+                    </div>
+
+                    <div class="radio-grid">
+                        <div class="input-group"><label>FONE/MIC BOM?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'t-mic')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'t-mic')">NÃO</div></div><input type="hidden" id="t-mic">
+                        </div>
+                        <div class="input-group"><label>JÁ EXPLANOU ALGUÉM?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'t-x9')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'t-x9')">NÃO</div></div><input type="hidden" id="t-x9">
+                        </div>
+                    </div>
+
+                    <div class="radio-grid">
+                        <div class="input-group"><label>HORAS ONLINE/DIA</label><input type="text" id="t-horas" class="cyber-input" placeholder="Ex: 4h"></div>
+                        <div class="input-group"><label>AGUENTA CALLS LONGAS?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'t-call')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'t-call')">NÃO</div></div><input type="hidden" id="t-call">
+                        </div>
+                    </div>
+
+                    <div class="radio-grid">
+                        <div class="input-group"><label>PERDE PACIÊNCIA FÁCIL?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'t-paciencia')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'t-paciencia')">NÃO</div></div><input type="hidden" id="t-paciencia">
+                        </div>
+                        <div class="input-group"><label>SEGUE ORDENS?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'t-ordens')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'t-ordens')">NÃO</div></div><input type="hidden" id="t-ordens">
+                        </div>
+                    </div>
                     
-                    <div class="input-group">
-                        <label>ID DE REGISTRO APP</label>
-                        <input type="text" id="f-pl-id" class="cyber-input">
-                    </div>
-                    <div class="input-group">
-                        <label>FAMÍLIAS/ORGS ANTERIORES</label>
-                        <input type="text" id="f-pl-familias" class="cyber-input">
-                    </div>
-                    <div class="input-group">
-                        <label>EXPERIÊNCIA EM CONFLITOS?</label>
-                        <div class="radio-grid">
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-exp')">Sim</div>
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-exp')">Não</div>
-                        </div>
-                        <input type="hidden" id="f-pl-exp">
-                    </div>
-                    <div class="input-group">
-                        <label>SABE GASTAR?</label>
-                        <div class="radio-grid">
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-gastar')">Sim</div>
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-gastar')">Não</div>
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-gastar')">Aprendendo</div>
-                        </div>
-                        <input type="hidden" id="f-pl-gastar">
-                    </div>
-                    <div class="input-group">
-                        <label>ESTILO DE GASTAÇÃO</label>
-                        <div class="radio-grid">
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-estilo')">Arabiano</div>
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-estilo')">Bate e Volta</div>
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-estilo')">Argumentativo</div>
-                        </div>
-                        <input type="hidden" id="f-pl-estilo">
-                    </div>
-                    <div class="input-group">
-                        <label>HARDWARE DE ÁUDIO BOM?</label>
-                        <div class="radio-grid">
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-fone')">Sim</div>
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-pl-fone')">Não</div>
-                        </div>
-                        <input type="hidden" id="f-pl-fone">
-                    </div>
-                    <div class="input-group">
-                        <label>OBJETIVO NA FAMÍLIA</label>
-                        <textarea id="f-pl-obj" class="cyber-input"></textarea>
-                    </div>
+                    <div class="input-group"><label>COMO REAGE SOB PRESSÃO?</label><input type="text" id="t-pressao" class="cyber-input"></div>
+                    <div class="input-group"><label>SEU PAPEL E OBJETIVO NA FAMÍLIA</label><textarea id="t-obj" class="cyber-input"></textarea></div>
                 </div>
 
-                <!-- DIVISÃO: CYBERS -->
-                <div id="div-cybers" class="division-box">
-                    <div class="div-title-badge">DIR: CYBERS</div>
+                <!-- FORM: CYBER OP -->
+                <div id="div-cyber" class="division-container">
+                    <div class="div-badge">DIR_CYBER</div>
                     
-                    <div class="input-group">
-                        <label>ID DE REGISTRO APP</label>
-                        <input type="text" id="f-cy-id" class="cyber-input">
-                    </div>
-                    <div class="input-group">
-                        <label>STACK (LINGUAGENS/TOOLS)</label>
-                        <input type="text" id="f-cy-ling" class="cyber-input" placeholder="Python, Bash, JS, C...">
-                    </div>
-                    <div class="input-group">
-                        <label>SISTEMAS OPERACIONAIS</label>
-                        <input type="text" id="f-cy-linux" class="cyber-input" placeholder="Linux, Termux, Kali...">
-                    </div>
-                    <div class="input-group">
-                        <label>NÍVEL EM AUTOMAÇÃO/BOTS</label>
-                        <div class="radio-grid">
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-cy-bots')">Avançado</div>
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-cy-bots')">Intermediário</div>
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-cy-bots')">Iniciante</div>
-                        </div>
-                        <input type="hidden" id="f-cy-bots">
-                    </div>
-                    <div class="input-group">
-                        <label>OBJETIVO NA INFRAESTRUTURA</label>
-                        <textarea id="f-cy-obj" class="cyber-input"></textarea>
-                    </div>
-                </div>
-
-                <!-- DIVISÃO: CARISMA -->
-                <div id="div-carisma" class="division-box">
-                    <div class="div-title-badge">DIR: CARISMA</div>
+                    <div class="input-group"><label>LINGUAGENS QUE CONHECE</label><input type="text" id="c-ling" class="cyber-input" placeholder="Ex: JS, Python, Bash..."></div>
                     
-                    <div class="input-group">
-                        <label>ID DE REGISTRO APP</label>
-                        <input type="text" id="f-ca-id" class="cyber-input">
-                    </div>
-                    <div class="input-group">
-                        <label>NÍVEL DE ATIVIDADE</label>
-                        <div class="radio-grid">
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-ca-ativo')">Alto</div>
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-ca-ativo')">Médio</div>
-                            <div class="radio-btn" onclick="UI.selectOpt(this, 'f-ca-ativo')">Baixo</div>
+                    <div class="radio-grid">
+                        <div class="input-group"><label>SABE O QUE É PYTHON?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'c-py')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'c-py')">NÃO</div></div><input type="hidden" id="c-py">
                         </div>
-                        <input type="hidden" id="f-ca-ativo">
+                        <div class="input-group"><label>ENG. SOCIAL?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'c-eng')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'c-eng')">NÃO</div></div><input type="hidden" id="c-eng">
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label>OBJETIVO NA FAMÍLIA</label>
-                        <textarea id="f-ca-obj" class="cyber-input"></textarea>
+
+                    <div class="radio-grid">
+                        <div class="input-group"><label>LINUX / TERMUX?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'c-linux')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'c-linux')">NÃO</div></div><input type="hidden" id="c-linux">
+                        </div>
+                        <div class="input-group"><label>CRIA AUTOMAÇÕES/BOTS?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'c-bots')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'c-bots')">NÃO</div></div><input type="hidden" id="c-bots">
+                        </div>
+                    </div>
+
+                    <div class="radio-grid">
+                        <div class="input-group"><label>CONHECE APIS / WEBHOOKS?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'c-api')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'c-api')">NÃO</div></div><input type="hidden" id="c-api">
+                        </div>
+                        <div class="input-group"><label>VPN / PROXY?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'c-vpn')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'c-vpn')">NÃO</div></div><input type="hidden" id="c-vpn">
+                        </div>
+                    </div>
+
+                    <div class="input-group"><label>NÍVEL TÉCNICO</label>
+                        <div class="radio-grid"><div class="radio-btn" onclick="UI.sel(this,'c-nivel')">INICIANTE</div><div class="radio-btn" onclick="UI.sel(this,'c-nivel')">INTERMEDIÁRIO</div><div class="radio-btn" onclick="UI.sel(this,'c-nivel')">AVANÇADO</div></div><input type="hidden" id="c-nivel">
+                    </div>
+
+                    <div class="input-group"><label>ÁREA DE MAIOR INTERESSE</label>
+                        <div class="radio-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                            <div class="radio-btn" onclick="UI.sel(this,'c-area')">BOTS</div><div class="radio-btn" onclick="UI.sel(this,'c-area')">INTERFACES</div><div class="radio-btn" onclick="UI.sel(this,'c-area')">AUTOMAÇÃO</div>
+                            <div class="radio-btn" onclick="UI.sel(this,'c-area')">SISTEMAS</div><div class="radio-btn" onclick="UI.sel(this,'c-area')">PROGRAMAÇÃO</div><div class="radio-btn" onclick="UI.sel(this,'c-area')">DESIGN</div>
+                        </div><input type="hidden" id="c-area">
+                    </div>
+
+                    <div class="input-group"><label>COMO VOCÊ APRENDE TECNOLOGIA?</label><input type="text" id="c-aprende" class="cyber-input"></div>
+                    <div class="input-group"><label>JÁ CRIOU ALGUM PROJETO? QUAL?</label><input type="text" id="c-proj" class="cyber-input"></div>
+                    <div class="input-group"><label>OBJETIVO NA DIVISÃO CYBER</label><textarea id="c-obj" class="cyber-input"></textarea></div>
+                </div>
+
+                <!-- FORM: CARISMA -->
+                <div id="div-carisma" class="division-container">
+                    <div class="div-badge">DIR_CARISMA</div>
+                    <div class="input-group"><label>NÍVEL DE ATIVIDADE</label>
+                        <div class="radio-grid"><div class="radio-btn" onclick="UI.sel(this,'ca-ativo')">ALTO</div><div class="radio-btn" onclick="UI.sel(this,'ca-ativo')">MÉDIO</div><div class="radio-btn" onclick="UI.sel(this,'ca-ativo')">BAIXO</div></div><input type="hidden" id="ca-ativo">
+                    </div>
+                    
+                    <div class="radio-grid">
+                        <div class="input-group"><label>MANTÉM CALLS ATIVAS?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'ca-call')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'ca-call')">NÃO</div></div><input type="hidden" id="ca-call">
+                        </div>
+                        <div class="input-group"><label>RESOLVE CONFLITOS?</label>
+                            <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'ca-res')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'ca-res')">NÃO</div></div><input type="hidden" id="ca-res">
+                        </div>
+                    </div>
+
+                    <div class="input-group"><label>JÁ ADMINISTROU GRUPOS?</label>
+                        <div class="radio-grid" style="grid-template-columns: 1fr 1fr;"><div class="radio-btn" onclick="UI.sel(this,'ca-adm')">SIM</div><div class="radio-btn" onclick="UI.sel(this,'ca-adm')">NÃO</div></div><input type="hidden" id="ca-adm">
+                    </div>
+
+                    <div class="input-group"><label>QUAL SUA IMPORTÂNCIA PARA A FAMÍLIA?</label><textarea id="ca-imp" class="cyber-input"></textarea></div>
+                    <div class="input-group"><label>OBJETIVO GERAL</label><textarea id="ca-obj" class="cyber-input"></textarea></div>
+                </div>
+
+                <!-- PROVA DE LEALDADE (OBRIGATÓRIO) -->
+                <div id="sec-prova" style="display:none; margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+                    <h3 style="color:#fff; font-size:14px; margin-bottom: 5px;">PROVA DE LEALDADE</h3>
+                    <p style="font-size:11px; color:var(--text-dim); margin-bottom: 15px;">Faça o upload da imagem exigida no protocolo. Formatos: JPG, PNG.</p>
+                    
+                    <div class="proof-box" id="drop-zone">
+                        <div id="proof-icon">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--red-main)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        </div>
+                        <div id="proof-text" style="font-size:12px; margin: 10px 0;">ARRASTE A IMAGEM OU CLIQUE PARA BUSCAR</div>
+                        <button type="button" class="upload-btn" onclick="document.getElementById('file-input').click()">SELECIONAR ARQUIVO</button>
+                        <input type="file" id="file-input" accept="image/png, image/jpeg" class="required-file">
+                        
+                        <div id="image-preview-container">
+                            <img id="image-preview" src="">
+                            <div class="scanner-line" id="scanner"></div>
+                        </div>
+                        <div id="proof-status">AGUARDANDO UPLOAD...</div>
                     </div>
                 </div>
 
-                <div id="submit-wrapper" style="display:none; text-align: center; margin-top: 20px;">
-                    <button type="button" class="cyber-btn" onclick="Network.transmit()">[ TRANSMITIR DADOS ]</button>
+                <!-- SUBMIT -->
+                <div id="submit-area" style="display:none; text-align: center; margin-top: 30px;">
+                    <button type="button" class="cyber-btn" style="width:100%; max-width:400px; padding: 20px; font-size: 16px;" onclick="Network.initTransmission()">[ TRANSMITIR DADOS AO MAINFRAME ]</button>
                 </div>
-            </form>
+            </div>
         </div>
 
-        <!-- TELA 3: UPLOAD / LOADING -->
-        <div id="screen-loading" class="screen">
-            <div class="radar-container">
-                <div class="radar-crosshair"></div>
-                <div class="radar-sweep"></div>
+        <!-- TELA 3: TRANSMISSÃO -->
+        <div id="scr-tx" class="screen">
+            <div class="tx-container">
+                <div class="radar-advanced">
+                    <div class="radar-grid"></div>
+                    <div class="radar-sweep"></div>
+                </div>
+                <h2 style="margin-top: 20px; font-size: 16px;" id="tx-title">ESTABELECENDO CONEXÃO</h2>
+                
+                <div class="tx-bar-bg"><div id="tx-bar-fill"></div></div>
+                <div class="tx-info">
+                    <span id="tx-pct">0%</span>
+                    <span id="tx-log">handshake_init...</span>
+                </div>
+                
+                <div style="font-size: 10px; color: var(--text-dim); text-align: left; width: 100%; background: #050000; padding: 10px; border: 1px solid #222; margin-top: 10px;" id="tx-console">
+                    > Conectando ao nó oculto...
+                </div>
             </div>
-            <h2 style="margin-top: 40px; text-shadow: var(--glow-text);">CRIPTOGRAFANDO</h2>
-            <div id="loading-logs">Handshake iniciado...</div>
         </div>
 
         <!-- TELA 4: FINAL -->
-        <div id="screen-final" class="screen">
-            <div class="metal-plate" style="border-color: #00ff00; box-shadow: 0 0 30px rgba(0,255,0,0.1);">
-                <div class="screw tl"></div><div class="screw tr"></div>
-                <div class="screw bl"></div><div class="screw br"></div>
-                <h2 style="color: #00ff00; text-shadow: 0 0 10px #00ff00;">TRANSMISSÃO CONCLUÍDA</h2>
-                <p style="color: var(--text-light); text-align: center; margin-top: 20px; line-height: 1.6;">
-                    Seus dados foram criptografados e enviados ao Mainframe CsL.<br><br>
-                    Aguarde contato. Não nos procure, nós encontraremos você.
+        <div id="scr-final" class="screen">
+            <div class="metal-plate" style="border-color: var(--green-sys); box-shadow: 0 0 30px rgba(0,255,0,0.1); text-align:center;">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--green-sys)" stroke-width="2" style="margin-bottom:20px; filter: drop-shadow(0 0 10px var(--green-sys));">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <h2 style="color: var(--green-sys); text-shadow: 0 0 10px var(--green-sys); font-size: 20px;">TRANSMISSÃO CONCLUÍDA</h2>
+                <p style="color: var(--text-light); margin-top: 20px; font-size: 13px;">
+                    Protocolo finalizado. Seus dados e provas foram criptografados e armazenados nos servidores.
                 </p>
-                <div style="margin-top: 30px; font-size: 10px; color: var(--text-dim);">SESSÃO ENCERRADA. PODE FECHAR ESTA TELA.</div>
+                <p style="color: var(--text-dim); margin-top: 10px; font-size: 12px;">
+                    Aguarde o contato. Nós encontraremos você.
+                </p>
+                <div style="margin-top: 40px; font-size: 10px; color: var(--red-dark);">[ SESSION_TERMINATED ]</div>
             </div>
         </div>
 
@@ -553,480 +648,447 @@
 
 <script>
 /**
- * ENGINE CENTRAL CsL
- * Arquitetura Modular em Vanilla JS
+ * CsL RECRUITMENT SYSTEM CORE v7.4.9
+ * Arquitetura Vanilla JS Modular
  */
 
-// ==========================================
-// 1. AUDIO ENGINE (WebAudio API Cinematográfica)
-// ==========================================
-const AudioCore = {
-    ctx: null,
-    droneGain: null,
-    isOn: false,
-
+// =========================================================
+// 1. ÁUDIO CORE (Sintetizador Procedural)
+// =========================================================
+const Audio = {
+    ctx: null, mainGain: null,
     init() {
-        if(this.isOn) return;
+        if(this.ctx) return;
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         this.ctx = new AudioContext();
-        this.isOn = true;
+        this.mainGain = this.ctx.createGain();
+        this.mainGain.gain.value = 0.2;
+        this.mainGain.connect(this.ctx.destination);
         this.startDrone();
     },
-
-    createReverb() {
-        let len = this.ctx.sampleRate * 2.5; 
-        let buffer = this.ctx.createBuffer(2, len, this.ctx.sampleRate);
-        for (let c = 0; c < 2; c++) {
-            let data = buffer.getChannelData(c);
-            for (let i = 0; i < len; i++) {
-                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4); 
-            }
-        }
-        let conv = this.ctx.createConvolver();
-        conv.buffer = buffer;
-        return conv;
-    },
-
     startDrone() {
         if(!this.ctx) return;
-        const osc1 = this.ctx.createOscillator(); osc1.type = 'sawtooth'; osc1.frequency.value = 40;
-        const osc2 = this.ctx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = 41;
-        
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass'; filter.frequency.value = 100;
-
-        const lfo = this.ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.05;
-        const lfoGain = this.ctx.createGain(); lfoGain.gain.value = 50;
-        lfo.connect(lfoGain); lfoGain.connect(filter.frequency);
-
-        this.droneGain = this.ctx.createGain(); this.droneGain.gain.value = 0.3;
-
-        osc1.connect(filter); osc2.connect(filter);
-        filter.connect(this.droneGain);
-        this.droneGain.connect(this.ctx.destination);
-
-        osc1.start(); osc2.start(); lfo.start();
+        const osc = this.ctx.createOscillator(); osc.type = 'sine'; osc.frequency.value = 45;
+        const filter = this.ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 100;
+        osc.connect(filter); filter.connect(this.mainGain); osc.start();
     },
-
     play(type) {
-        if(!this.ctx) return;
+        if(!this.ctx || this.ctx.state === 'suspended') return;
         const t = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-        
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        osc.connect(gain); gain.connect(this.mainGain);
 
         if(type === 'click') {
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(600, t);
-            osc.frequency.exponentialRampToValueAtTime(100, t + 0.1);
-            gain.gain.setValueAtTime(0.1, t);
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+            osc.type = 'square'; osc.frequency.setValueAtTime(800, t); osc.frequency.exponentialRampToValueAtTime(100, t + 0.1);
+            gain.gain.setValueAtTime(0.3, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
             osc.start(t); osc.stop(t + 0.1);
-        } 
-        else if(type === 'type') {
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(1500 + Math.random()*500, t);
-            gain.gain.setValueAtTime(0.03, t);
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+        } else if(type === 'type') {
+            osc.type = 'triangle'; osc.frequency.setValueAtTime(1200 + Math.random()*800, t);
+            gain.gain.setValueAtTime(0.05, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
             osc.start(t); osc.stop(t + 0.05);
-        }
-        else if(type === 'glitch') {
-            let bufSize = this.ctx.sampleRate * 0.2;
-            let buffer = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
-            let data = buffer.getChannelData(0);
-            for(let i=0; i<bufSize; i++) data[i] = Math.random() * 2 - 1;
-            let noise = this.ctx.createBufferSource();
-            noise.buffer = buffer;
-            
-            let filter = this.ctx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 2000;
-            let nGain = this.ctx.createGain(); nGain.gain.setValueAtTime(0.2, t); nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
-            
-            noise.connect(filter); filter.connect(nGain); nGain.connect(this.ctx.destination);
-            noise.start(t);
-        }
-        else if(type === 'impact') {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(150, t);
-            osc.frequency.exponentialRampToValueAtTime(20, t + 0.5);
-            
-            let dist = this.ctx.createWaveShaper();
-            let curve = new Float32Array(44100);
-            for(let i=0; i<44100; i++) { let x = i * 2 / 44100 - 1; curve[i] = (3 + 20) * x * 20 * (Math.PI / 180) / (Math.PI + 20 * Math.abs(x)); }
-            dist.curve = curve;
-
-            gain.gain.setValueAtTime(0.5, t);
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 1);
-
-            let rev = this.createReverb();
-            
-            osc.disconnect(); gain.disconnect();
-            osc.connect(dist); dist.connect(gain);
-            gain.connect(rev); rev.connect(this.ctx.destination); gain.connect(this.ctx.destination);
-
-            osc.start(t); osc.stop(t + 1);
+        } else if(type === 'err') {
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, t); osc.frequency.linearRampToValueAtTime(50, t + 0.3);
+            gain.gain.setValueAtTime(0.4, t); gain.gain.linearRampToValueAtTime(0.01, t + 0.3);
+            osc.start(t); osc.stop(t + 0.3);
+            if(navigator.vibrate) navigator.vibrate([50, 50, 50]);
+        } else if(type === 'impact') {
+            osc.type = 'sine'; osc.frequency.setValueAtTime(100, t); osc.frequency.exponentialRampToValueAtTime(10, t + 0.8);
+            gain.gain.setValueAtTime(0.8, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.8);
+            osc.start(t); osc.stop(t + 0.8);
+            if(navigator.vibrate) navigator.vibrate(100);
         }
     }
 };
 
-// ==========================================
-// 2. VISUAL ENGINE (Canvas & Cursor)
-// ==========================================
+// =========================================================
+// 2. ENGINE VISUAL (Canvas, Glitch, UI Utils)
+// =========================================================
 const Visuals = {
-    canvas: document.getElementById('fx-canvas'),
-    ctx: null,
-    w: 0, h: 0,
-    drops: [], particles: [],
-    chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*<>[]{}",
-    
+    c: document.getElementById('fx-canvas'), ctx: null,
+    w: 0, h: 0, chars: "01X", drops: [],
+
     init() {
-        this.ctx = this.canvas.getContext('2d');
-        this.resize();
-        window.addEventListener('resize', () => this.resize());
-        
-        const cols = this.w / 15;
-        for(let x = 0; x < cols; x++) this.drops[x] = Math.random() * -100;
-
-        for(let i=0; i<50; i++) this.particles.push(this.createParticle());
-
+        this.ctx = this.c.getContext('2d');
+        this.resize(); window.addEventListener('resize', () => this.resize());
+        for(let i=0; i<this.w/20; i++) this.drops[i] = Math.random() * -100;
         this.loop();
         this.setupCursor();
     },
-
-    resize() {
-        this.w = this.canvas.width = window.innerWidth;
-        this.h = this.canvas.height = window.innerHeight;
-    },
-
-    createParticle() {
-        return {
-            x: Math.random() * this.w, y: this.h + Math.random() * 200,
-            s: Math.random() * 2 + 1, v: Math.random() * 2 + 0.5,
-            a: Math.random() * 0.5 + 0.1
-        };
-    },
-
+    resize() { this.w = this.c.width = window.innerWidth; this.h = this.c.height = window.innerHeight; },
     loop() {
-        this.ctx.fillStyle = 'rgba(3, 0, 0, 0.15)'; 
-        this.ctx.fillRect(0, 0, this.w, this.h);
-
-        this.ctx.fillStyle = 'rgba(255, 0, 60, 0.4)';
-        this.ctx.font = '15px monospace';
-        for(let i = 0; i < this.drops.length; i++) {
-            const text = this.chars[Math.floor(Math.random() * this.chars.length)];
-            this.ctx.fillText(text, i * 15, this.drops[i] * 15);
-            if(this.drops[i] * 15 > this.h && Math.random() > 0.95) this.drops[i] = 0;
+        this.ctx.fillStyle = 'rgba(2, 0, 0, 0.1)'; this.ctx.fillRect(0, 0, this.w, this.h);
+        this.ctx.fillStyle = 'rgba(255, 0, 60, 0.15)'; this.ctx.font = '10px monospace';
+        for(let i=0; i<this.drops.length; i++) {
+            const char = this.chars[Math.floor(Math.random() * this.chars.length)];
+            this.ctx.fillText(char, i*20, this.drops[i]*20);
+            if(this.drops[i]*20 > this.h && Math.random() > 0.98) this.drops[i] = 0;
             this.drops[i]++;
         }
-
-        for(let i = 0; i < this.particles.length; i++) {
-            let p = this.particles[i];
-            this.ctx.fillStyle = `rgba(255, 0, 60, ${p.a})`;
-            this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); this.ctx.fill();
-            p.y -= p.v; p.x += Math.sin(p.y * 0.05) * 0.5;
-            if(p.y < -10) this.particles[i] = this.createParticle();
-        }
-
         requestAnimationFrame(() => this.loop());
     },
-
     setupCursor() {
-        const isTouch = matchMedia('(pointer: coarse)').matches;
-        if(isTouch) {
-            document.getElementById('custom-cursor').style.display = 'none';
-            document.body.style.cursor = 'auto';
-            return;
-        }
-
-        const cursor = document.getElementById('custom-cursor');
-        let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
-        let cX = mouseX, cY = mouseY;
-
-        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-        document.addEventListener('mousedown', () => { 
-            cursor.classList.add('cursor-click'); AudioCore.play('click');
-            setTimeout(() => cursor.classList.remove('cursor-click'), 300);
-        });
-
-        const renderCursor = () => {
-            cX += (mouseX - cX) * 0.2; cY += (mouseY - cY) * 0.2;
-            cursor.style.transform = `translate(${cX}px, ${cY}px)`;
-            requestAnimationFrame(renderCursor);
-        };
-        renderCursor();
+        if(matchMedia('(pointer: coarse)').matches) { document.getElementById('cursor').style.display='none'; document.body.style.cursor='auto'; return; }
+        const c = document.getElementById('cursor');
+        let mx=window.innerWidth/2, my=window.innerHeight/2, cx=mx, cy=my;
+        document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+        document.addEventListener('mousedown', () => { c.classList.add('cursor-click'); Audio.play('click'); setTimeout(()=>c.classList.remove('cursor-click'),300); });
+        const render = () => {
+            cx += (mx - cx)*0.3; cy += (my - cy)*0.3;
+            c.style.transform = `translate(${cx}px, ${cy}px)`; requestAnimationFrame(render);
+        }; render();
     },
-
-    cinematicGlitch() {
-        AudioCore.play('glitch');
-        if(navigator.vibrate) navigator.vibrate(50);
-        const tear = document.getElementById('screen-tear');
-        tear.style.opacity = '1';
-        setTimeout(() => tear.style.opacity = '0', 50);
-        setTimeout(() => tear.style.opacity = '0.8', 100);
-        setTimeout(() => tear.style.opacity = '0', 150);
+    glitch() {
+        Audio.play('err');
+        const fx = document.getElementById('screen-fx');
+        fx.style.opacity = '1'; document.body.style.filter = 'invert(1) hue-rotate(180deg)';
+        setTimeout(() => { fx.style.opacity = '0'; document.body.style.filter = 'none'; }, 50);
+        setTimeout(() => fx.style.opacity = '0.5', 100);
+        setTimeout(() => fx.style.opacity = '0', 150);
+    },
+    notify(msg, type='info') {
+        const area = document.getElementById('notif-area');
+        const d = document.createElement('div'); d.className = `notif ${type}`;
+        d.innerHTML = `<span>${type==='err'?'⚠':'[SYS]'}</span> ${msg}`;
+        area.appendChild(d); Audio.play(type==='err'?'err':'type');
+        setTimeout(() => { d.style.animation = 'notif-out 0.3s ease forwards'; setTimeout(()=>d.remove(), 300); }, 4000);
     }
 };
 
-// ==========================================
-// 3. SISTEMAS FALSOS (HUD, Relógio, Terminal)
-// ==========================================
+// =========================================================
+// 3. SISTEMA PRINCIPAL & TERMINAL
+// =========================================================
 const System = {
-    currentScreen: 'screen-boot',
-    
+    currScr: 'scr-boot',
+    termLogs: [
+        "Intercepting proxy nodes...", "Bypassing federal firewall...", "Injecting payload stealth_v2...",
+        "Scanning local fingerprints...", "Evading cyber-police trace...", "Establishing secure tunnel...",
+        "WARN: Federal IPs detected in network...", "Scrubbing MAC address..."
+    ],
+
     init() {
-        AudioCore.init();
-        AudioCore.play('impact');
-        this.runClock();
-        this.runFakePing();
-        this.runFakeTerminal();
-        this.genFakeIP();
-        
         Visuals.init();
-        this.switchScreen('screen-warning');
-        
-        setTimeout(() => {
-            const txt = "ATENÇÃO\n\nNesse exato momento estamos sendo observados e monitorados.\nRecomendamos não utilizar a TAG CsL publicamente em redes externas.\n\nA quebra do sigilo resultará em consequências irreversíveis.";
-            UI.typeText('warning-text', txt, () => {
-                document.getElementById('btn-entendido').style.display = 'block';
-                AudioCore.play('impact');
-            });
-        }, 1500);
+        this.runTerminal();
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('hud-time').innerText = d.toTimeString().split(' ')[0] + " GMT-3";
+            if(Math.random()>0.8) document.getElementById('hud-ping').innerText = Math.floor(Math.random()*30+10);
+        }, 1000);
+        document.getElementById('hud-ip').innerText = `IP: 10.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.XXX`;
+
+        // Sequência de Boot Fake
+        const bLogs = ["Initializing Kernel...", "Mounting secure volumes...", "Verifying integrity...", "WARNING: ACTIVE FEDERAL INVESTIGATION DETECTED...", "Rerouting via dark nodes...", "Connecting to contingency mainframe..."];
+        const bEl = document.getElementById('boot-logs');
+        let i=0;
+        const bt = setInterval(() => {
+            if(i<bLogs.length) { bEl.innerHTML += `> ${bLogs[i]}<br>`; i++; }
+            else { 
+                clearInterval(bt); 
+                const btn = document.getElementById('btn-init');
+                btn.style.opacity='1'; btn.style.pointerEvents='all';
+                btn.onclick = () => { Audio.init(); Audio.play('impact'); this.goToWarning(); };
+            }
+        }, 500);
+
+        // Inputs sound
+        document.querySelectorAll('input, textarea').forEach(el => {
+            el.addEventListener('focus', () => Audio.play('click'));
+            el.addEventListener('input', () => { if(Math.random()>0.4) Audio.play('type'); FormManager.checkProgress(); });
+        });
     },
 
-    switchScreen(id) {
-        Visuals.cinematicGlitch();
-        document.getElementById(this.currentScreen).classList.remove('active');
-        this.currentScreen = id;
+    switch(id) {
+        Visuals.glitch();
+        document.getElementById(this.currScr).classList.remove('active');
+        this.currScr = id;
         document.getElementById(id).classList.add('active');
     },
 
-    runClock() {
+    runTerminal() {
+        const term = document.getElementById('lateral-terminal');
         setInterval(() => {
-            const d = new Date();
-            document.getElementById('hud-time').innerText = 
-                String(d.getHours()).padStart(2,'0') + ":" + 
-                String(d.getMinutes()).padStart(2,'0') + ":" + 
-                String(d.getSeconds()).padStart(2,'0') + " GMT-3";
+            if(Math.random()>0.3 && this.currScr !== 'scr-tx') {
+                const p = document.createElement('div'); p.className = 'log-entry';
+                if(Math.random()>0.9) { p.classList.add('err'); p.innerText = "> CRITICAL: FEDERAL PING BLOCKED."; }
+                else p.innerText = `> ${this.termLogs[Math.floor(Math.random()*this.termLogs.length)]}`;
+                term.appendChild(p);
+                if(term.children.length > 8) term.removeChild(term.firstChild);
+            }
+        }, 1500);
+    },
+
+    goToWarning() {
+        this.switch('scr-warning');
+        setTimeout(() => {
+            const txt = "ALERTA CRÍTICO DE SEGURANÇA.\n\nNossos servidores centrais estão sob INVESTIGAÇÃO ATIVA pelas autoridades federais e divisões de inteligência cibernética.\n\nVocê está acessando um nó de contingência da organização CsL.\nToda atividade aqui está sendo ofuscada, mas o risco de interceptação é MÁXIMO.\n\nA quebra de sigilo ou vazamento resultará em retaliação e eliminação total de seus rastros.\n\nPara provar sua lealdade no meio do caos, a prova física é inegociável.\nSerá OBRIGATÓRIO escrever 'CsL' em um local significativo (parede, rua, carro, etc) em TAMANHO GRANDE.\n\nO candidato deverá enviar uma imagem como prova na próxima etapa.\nSomente avance se estiver disposto a assumir as consequências da operação.";
+            
+            const el = document.getElementById('warn-txt');
+            let i=0;
+            const t = setInterval(() => {
+                if(i < txt.length) {
+                    el.innerHTML += txt.charAt(i); i++;
+                    if(i%3===0) Audio.play('type');
+                    if(Math.random()>0.98) { document.getElementById('warning-plate').style.animation = 'shake 0.2s'; setTimeout(()=>document.getElementById('warning-plate').style.animation='none', 200); }
+                } else {
+                    clearInterval(t);
+                    document.getElementById('btn-accept').style.display = 'block';
+                    Audio.play('impact');
+                }
+            }, 30);
         }, 1000);
     },
 
-    runFakePing() {
-        setInterval(() => {
-            document.getElementById('hud-ping').innerText = Math.floor(Math.random() * 40 + 15);
-        }, 2000);
-    },
-
-    genFakeIP() {
-        const ip = `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
-        document.getElementById('hud-ip').innerText = `IP: ${ip} (MASKED)`;
-    },
-
-    runFakeTerminal() {
-        const logs = [
-            "Bypassing node proxy...", "Decrypting AES-256...", "Listening on port 443...",
-            "Tracing connection...", "Firewall rules updated...", "Kernel panic ignored...",
-            "Root access preserved...", "Scanning local network..."
-        ];
-        const term = document.getElementById('terminal-logs');
-        setInterval(() => {
-            const p = document.createElement('div');
-            p.className = 'log-line';
-            p.innerText = `> ${logs[Math.floor(Math.random() * logs.length)]}`;
-            term.appendChild(p);
-            if(term.children.length > 5) term.removeChild(term.firstChild);
-        }, 3500);
-    }
+    goToForm() { this.switch('scr-form'); Audio.play('click'); }
 };
 
-// ==========================================
-// 4. UI HANDLERS (Formulários e Notificações)
-// ==========================================
+// =========================================================
+// 4. GERENCIAMENTO DE FORMULÁRIO E ARQUIVOS
+// =========================================================
 const UI = {
-    typeText(id, text, callback) {
-        const el = document.getElementById(id);
-        el.innerHTML = '';
-        let i = 0;
-        function t() {
-            if(i < text.length) {
-                el.innerHTML += text.charAt(i); i++;
-                if(i%2===0) AudioCore.play('type');
-                setTimeout(t, Math.random() * 30 + 20);
-            } else if(callback) callback();
-        }
-        t();
-    },
-
-    notify(msg) {
-        AudioCore.play('click');
-        const area = document.getElementById('notification-area');
-        const div = document.createElement('div');
-        div.className = 'sys-notif';
-        div.innerHTML = `<span>⚠</span> ${msg}`;
-        area.appendChild(div);
-        setTimeout(() => { div.style.opacity='0'; setTimeout(()=>div.remove(), 500); }, 4000);
-    },
-
-    selectDiv(el, val) {
-        AudioCore.play('click');
-        document.querySelectorAll('.sel-div').forEach(n => n.classList.remove('selected'));
-        el.classList.add('selected');
-        document.getElementById('f-divisao').value = val;
-
-        document.getElementById('div-porra-louca').style.display = 'none';
-        document.getElementById('div-cybers').style.display = 'none';
-        document.getElementById('div-carisma').style.display = 'none';
-
-        if(val === 'Porra Louca') document.getElementById('div-porra-louca').style.display = 'flex';
-        else if(val === 'Cybers') document.getElementById('div-cybers').style.display = 'flex';
-        else if(val === 'Carisma') document.getElementById('div-carisma').style.display = 'flex';
-
-        document.getElementById('submit-wrapper').style.display = 'block';
-    },
-
-    selectOpt(el, hiddenId) {
-        AudioCore.play('click');
-        const parent = el.parentElement;
-        parent.querySelectorAll('.radio-btn').forEach(n => n.classList.remove('selected'));
+    sel(el, hiddenId) {
+        Audio.play('click');
+        const p = el.parentElement;
+        p.querySelectorAll('.radio-btn').forEach(n => n.classList.remove('selected'));
         el.classList.add('selected');
         document.getElementById(hiddenId).value = el.innerText;
+        FormManager.checkProgress();
+    },
+    selectDiv(el, divId) {
+        Audio.play('impact');
+        document.querySelectorAll('.div-card').forEach(n => n.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('f-divisao').value = divId;
+
+        ['div-tatico', 'div-cyber', 'div-carisma'].forEach(id => document.getElementById(id).style.display = 'none');
+        document.getElementById(`div-${divId}`).style.display = 'flex';
+        
+        document.getElementById('sec-prova').style.display = 'block';
+        document.getElementById('submit-area').style.display = 'block';
+        FormManager.checkProgress();
     }
 };
 
-document.querySelectorAll('input, textarea').forEach(el => {
-    el.addEventListener('focus', () => AudioCore.play('click'));
-    el.addEventListener('input', () => { if(Math.random()>0.5) AudioCore.play('type'); });
-});
+const FormManager = {
+    imageFile: null,
 
-// ==========================================
-// 5. REDE / WEBHOOK (Discord com Retries)
-// ==========================================
-const Network = {
-    // Nova URL exata conforme requisitado pelo usuário
-    webhook: "https://discord.com/api/webhooks/1479268013814448200/_qhwmgJFg-UXoHGhO_NRX5tXEvFQZyBkoyUZzsMcrRPYk_-W_3kN17TS5k61ULA5h8D_",
+    init() {
+        const fi = document.getElementById('file-input');
+        const dz = document.getElementById('drop-zone');
 
-    async transmit() {
-        const nome = document.getElementById('f-nome').value.trim();
-        const idade = document.getElementById('f-idade').value.trim();
+        fi.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
+        dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+        dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+        dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); this.handleFile(e.dataTransfer.files[0]); });
+    },
+
+    handleFile(file) {
+        if(!file) return;
+        if(!file.type.match('image.*')) return Visuals.notify('FORMATO INVÁLIDO. APENAS JPG/PNG.', 'err');
+        if(file.size > 5 * 1024 * 1024) return Visuals.notify('ARQUIVO MUITO GRANDE (MAX 5MB).', 'err');
+
+        Audio.play('click');
+        this.imageFile = file;
+        const reader = new FileReader();
+        
+        document.getElementById('proof-text').style.display = 'none';
+        document.querySelector('.upload-btn').style.display = 'none';
+        document.getElementById('proof-icon').style.display = 'none';
+        
+        const previewCon = document.getElementById('image-preview-container');
+        const previewImg = document.getElementById('image-preview');
+        const status = document.getElementById('proof-status');
+        
+        previewCon.style.display = 'block';
+        status.innerText = "IMAGEM DETECTADA. INICIANDO SCAN...";
+        status.style.color = "var(--text-light)";
+
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            setTimeout(() => { status.innerText = "VERIFICANDO AUTENTICIDADE..."; Audio.play('type'); }, 1000);
+            setTimeout(() => { status.innerText = "VALIDANDO PROVA..."; Audio.play('type'); }, 2500);
+            setTimeout(() => { 
+                status.innerText = "[ PROVA VALIDADA PARA TRANSMISSÃO ]"; 
+                status.style.color = "var(--green-sys)"; 
+                document.getElementById('scanner').style.display = 'none';
+                previewImg.style.filter = 'none';
+                Audio.play('impact');
+                this.checkProgress();
+            }, 4000);
+        };
+        reader.readAsDataURL(file);
+    },
+
+    checkProgress() {
         const div = document.getElementById('f-divisao').value;
+        if(!div) return;
+        
+        let totalFields = 3; // Vulgo, idade, id
+        let filledFields = [document.getElementById('f-vulgo'), document.getElementById('f-idade'), document.getElementById('f-id')].filter(el => el.value.trim() !== '').length;
 
-        if(!nome || !idade || !div) return UI.notify("ERRO: DADOS GERAIS INCOMPLETOS.");
+        const checkDiv = (prefix, total) => {
+            totalFields += total;
+            document.getElementById(`div-${div}`).querySelectorAll('input[type="hidden"], input[type="text"], textarea').forEach(el => {
+                if(el.value.trim() !== '') filledFields++;
+            });
+        };
+
+        if(div === 'tatico') checkDiv('t', 10);
+        else if(div === 'cyber') checkDiv('c', 11);
+        else if(div === 'carisma') checkDiv('ca', 5);
+
+        totalFields += 1; // Prova
+        if(this.imageFile) filledFields++;
+
+        let pct = Math.floor((filledFields / totalFields) * 100);
+        if(pct > 100) pct = 100;
+        
+        document.getElementById('form-progress').style.width = `${pct}%`;
+        
+        const riskBar = document.getElementById('hud-risk-bar');
+        const riskTxt = document.getElementById('risk-txt');
+        if(pct < 30) { riskBar.style.width='80%'; riskBar.style.background='var(--red-main)'; riskTxt.innerText='RISCO: ALTO (INCOMPLETO)'; }
+        else if(pct < 80) { riskBar.style.width='40%'; riskBar.style.background='#ffaa00'; riskTxt.innerText='RISCO: MÉDIO'; }
+        else { riskBar.style.width='10%'; riskBar.style.background='var(--green-sys)'; riskTxt.innerText='RISCO: BAIXO (ACEITÁVEL)'; }
+    }
+};
+
+// =========================================================
+// 5. REDE & WEBHOOK (Transmissão via FormData p/ Imagem)
+// =========================================================
+const Network = {
+    webhookUrl: "https://discord.com/api/webhooks/1479268013814448200/_qhwmgJFg-UXoHGhO_NRX5tXEvFQZyBkoyUZzsMcrRPYk_-W_3kN17TS5k61ULA5h8D_",
+
+    initTransmission() {
+        const v = id => document.getElementById(id).value.trim();
+        const vulgo = v('f-vulgo'), idade = v('f-idade'), idReg = v('f-id'), div = v('f-divisao');
+
+        if(!vulgo || !idade || !idReg || !div) return Visuals.notify('PREENCHA IDENTIFICAÇÃO E DIVISÃO.', 'err');
+        if(!FormManager.imageFile) return Visuals.notify('PROVA DE LEALDADE (IMAGEM) É OBRIGATÓRIA.', 'err');
 
         let fields = [
-            { name: "👤 Vulgo", value: `\`${nome}\``, inline: true },
+            { name: "👤 Vulgo", value: `\`${vulgo}\``, inline: true },
             { name: "🔞 Idade", value: `\`${idade}\``, inline: true },
-            { name: "🛡️ Divisão", value: `**${div}**`, inline: true },
-            { name: "💻 Dispositivo", value: `\`${navigator.userAgent.substring(0,40)}...\``, inline: false }
+            { name: "🆔 ID", value: `\`${idReg}\``, inline: true }
         ];
 
-        let valid = true;
+        const clean = str => { let s = str?str.trim():""; s=s.replace(/`/g,"'"); return s.length>800?s.substring(0,800)+"...":s||"Não inf."; };
 
-        // Helper para pegar valor dos inputs
-        const v = (id) => document.getElementById(id).value.trim();
+        if(div === 'tatico') {
+            fields.push(
+                { name: "🏛️ Orgs", value: clean(v('t-orgs')), inline: true }, { name: "⚔️ Exp Treta", value: v('t-exp')||"-", inline: true },
+                { name: "🔥 Sabe Gastar", value: v('t-gastar')||"-", inline: true }, { name: "🎭 Estilo", value: v('t-estilo')||"-", inline: true },
+                { name: "🎙️ Mic", value: v('t-mic')||"-", inline: true }, { name: "🐀 Já explanou?", value: v('t-x9')||"-", inline: true },
+                { name: "⏱️ Hrs/Dia", value: clean(v('t-horas')), inline: true }, { name: "📞 Calls Longas", value: v('t-call')||"-", inline: true },
+                { name: "😡 Paciência", value: v('t-paciencia')||"-", inline: true }, { name: "🫡 Ordens", value: v('t-ordens')||"-", inline: true },
+                { name: "🌊 Pressão", value: clean(v('t-pressao')), inline: false }, { name: "🎯 Papel/Obj", value: `\`\`\`\n${clean(v('t-obj'))}\n\`\`\``, inline: false }
+            );
+        } else if(div === 'cyber') {
+            fields.push(
+                { name: "💻 Stack", value: clean(v('c-ling')), inline: false }, { name: "🐍 Python", value: v('c-py')||"-", inline: true },
+                { name: "🎭 Eng. Social", value: v('c-eng')||"-", inline: true }, { name: "🐧 Linux", value: v('c-linux')||"-", inline: true },
+                { name: "🤖 Bots/Auto", value: v('c-bots')||"-", inline: true }, { name: "🔗 API", value: v('c-api')||"-", inline: true },
+                { name: "🛡️ VPN", value: v('c-vpn')||"-", inline: true }, { name: "📈 Nível", value: v('c-nivel')||"-", inline: true },
+                { name: "⚙️ Área", value: v('c-area')||"-", inline: true }, { name: "📚 Aprendizado", value: clean(v('c-aprende')), inline: false },
+                { name: "🏗️ Projetos", value: clean(v('c-proj')), inline: false }, { name: "🎯 Objetivo", value: `\`\`\`\n${clean(v('c-obj'))}\n\`\`\``, inline: false }
+            );
+        } else if(div === 'carisma') {
+            fields.push(
+                { name: "📈 Atividade", value: v('ca-ativo')||"-", inline: true }, { name: "🗣️ Mantém Call", value: v('ca-call')||"-", inline: true },
+                { name: "🤝 Resolve Conf", value: v('ca-res')||"-", inline: true }, { name: "👑 Já foi ADM", value: v('ca-adm')||"-", inline: true },
+                { name: "🌟 Importância", value: clean(v('ca-imp')), inline: false }, { name: "🎯 Objetivo", value: `\`\`\`\n${clean(v('ca-obj'))}\n\`\`\``, inline: false }
+            );
+        }
+
+        const divNames = { 'tatico': 'CONFLITO TÁTICO', 'cyber': 'CYBER OPERATIONS', 'carisma': 'CARISMA' };
         
-        // Helper crítico: Limita texto grande (Discord rejeita Embeds > 1024 chars) e remove crases soltas
-        const cleanText = (str) => {
-            let s = str ? str.trim() : "";
-            s = s.replace(/`/g, "'"); // Remove crases que quebram o markdown do discord
-            return s.length > 950 ? s.substring(0, 950) + "..." : (s || "Não informado");
+        const embed = {
+            title: `☠️ NOVO RECRUTA: ${divNames[div]}`,
+            color: div==='cyber'?65280:16711740, // Verde para cyber, vermelho pro resto
+            fields: fields,
+            image: { url: "attachment://prova.png" },
+            footer: { text: `SYS_ID: ${Math.random().toString(36).substr(2,8).toUpperCase()} | OS: ${navigator.platform}` },
+            timestamp: new Date().toISOString()
         };
 
-        if(div === 'Porra Louca') {
-            if(!v('f-pl-id') || !v('f-pl-familias') || !v('f-pl-exp') || !v('f-pl-gastar') || !v('f-pl-estilo') || !v('f-pl-fone') || !v('f-pl-obj')) valid = false;
-            
-            if(valid) fields.push(
-                { name: "🆔 ID", value: v('f-pl-id'), inline: true },
-                { name: "🏛️ Famílias", value: v('f-pl-familias'), inline: true },
-                { name: "⚔️ Exp", value: v('f-pl-exp'), inline: true },
-                { name: "🔥 Gastar", value: v('f-pl-gastar'), inline: true },
-                { name: "🎭 Estilo", value: v('f-pl-estilo'), inline: true },
-                { name: "🎙️ Fone", value: v('f-pl-fone'), inline: true },
-                { name: "🎯 Objetivo", value: `\`\`\`\n${cleanText(v('f-pl-obj'))}\n\`\`\``, inline: false }
-            );
-        } else if(div === 'Cybers') {
-            if(!v('f-cy-id') || !v('f-cy-ling') || !v('f-cy-linux') || !v('f-cy-bots') || !v('f-cy-obj')) valid = false;
-            
-            if(valid) fields.push(
-                { name: "🆔 ID", value: v('f-cy-id'), inline: true },
-                { name: "💻 Stack", value: v('f-cy-ling'), inline: false },
-                { name: "🐧 OS", value: v('f-cy-linux'), inline: true },
-                { name: "🤖 Bots", value: v('f-cy-bots'), inline: true },
-                { name: "🎯 Objetivo", value: `\`\`\`\n${cleanText(v('f-cy-obj'))}\n\`\`\``, inline: false }
-            );
-        } else if(div === 'Carisma') {
-            if(!v('f-ca-id') || !v('f-ca-ativo') || !v('f-ca-obj')) valid = false;
-            
-            if(valid) fields.push(
-                { name: "🆔 ID", value: v('f-ca-id'), inline: true },
-                { name: "📱 Ativo", value: v('f-ca-ativo'), inline: true },
-                { name: "🎯 Objetivo", value: `\`\`\`\n${cleanText(v('f-ca-obj'))}\n\`\`\``, inline: false }
-            );
-        }
+        const formData = new FormData();
+        formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
+        formData.append('file', FormManager.imageFile, 'prova.png');
 
-        if(!valid) {
-            AudioCore.play('glitch');
-            return UI.notify("ERRO: PROTOCOLO DA DIVISÃO INCOMPLETO.");
-        }
+        this.startTxUI(formData);
+    },
 
-        System.switchScreen('screen-loading');
-        AudioCore.play('impact');
-
-        const payload = {
-            username: "Sistema CsL",
-            avatar_url: "https://i.imgur.com/kP859n1.png",
-            embeds: [{
-                title: `☠️ NOVO RECRUTA: ${div.toUpperCase()}`,
-                color: 16711740,
-                fields: fields,
-                footer: { text: `Sessão: ${Math.random().toString(36).substr(2, 9).toUpperCase()} | IP: OFUSCADO` },
-                timestamp: new Date().toISOString()
-            }]
-        };
-
-        const logEl = document.getElementById('loading-logs');
-        const fLogs = ["Handshake OK...", "Criptografando payload...", "Contornando WAF...", "Transmitindo blocos...", "Verificando integridade..."];
-        for(let i=0; i<fLogs.length; i++) {
-            setTimeout(() => { logEl.innerText = fLogs[i]; AudioCore.play('type'); }, (i+1)*800);
-        }
-
-        let success = false;
-        let attempts = 0;
+    startTxUI(formData) {
+        System.switch('scr-tx');
+        Audio.play('impact');
         
-        setTimeout(async () => {
-            while(!success && attempts < 3) {
-                try {
-                    const res = await fetch(this.webhook, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    // Tratamento de Erros da API do Discord
-                    if(res.ok) {
-                        success = true;
-                    } else {
-                        const errorResponse = await res.text();
-                        console.error(`[SYS] O Discord rejeitou o envio. HTTP ${res.status}:`, errorResponse);
-                        throw new Error(`HTTP ${res.status}`);
-                    }
-                } catch(e) {
-                    attempts++;
-                    console.warn(`[SYS] Retentativa ${attempts}/3... Falha na conexão ou na URL do webhook.`);
-                    await new Promise(r => setTimeout(r, 1000));
-                }
+        const logs = [
+            "Encrypting applicant profile...", "Compressing visual proof (AES-256)...",
+            "Routing through secure nodes...", "Bypassing external surveillance...",
+            "Syncing recruitment database...", "Establishing final handshake..."
+        ];
+        
+        const bar = document.getElementById('tx-bar-fill');
+        const pctEl = document.getElementById('tx-pct');
+        const logEl = document.getElementById('tx-log');
+        const cons = document.getElementById('tx-console');
+        
+        let progress = 0;
+        let logIdx = 0;
+
+        const sim = setInterval(() => {
+            progress += Math.random() * 8;
+            if(progress > 95) progress = 95; // Para no 95 até o fetch voltar
+            
+            bar.style.width = `${progress}%`;
+            pctEl.innerText = `${Math.floor(progress)}%`;
+            
+            if(Math.random() > 0.6 && logIdx < logs.length) {
+                logEl.innerText = logs[logIdx];
+                cons.innerHTML += `<br>> ${logs[logIdx]}`;
+                cons.scrollTop = cons.scrollHeight;
+                Audio.play('type');
+                logIdx++;
             }
+        }, 300);
 
+        // Fetch real
+        this.sendPayload(formData).then(success => {
+            clearInterval(sim);
             if(success) {
-                System.switchScreen('screen-final');
-                AudioCore.play('impact');
+                bar.style.width = `100%`; pctEl.innerText = `100%`;
+                logEl.innerText = "TRANSMISSION_COMPLETE";
+                setTimeout(() => { System.switch('scr-final'); Audio.play('impact'); }, 1000);
             } else {
-                UI.notify("FALHA NA TRANSMISSÃO. CONEXÃO INTERCEPTADA.");
-                System.switchScreen('screen-form');
+                Visuals.glitch();
+                System.switch('scr-form');
+                Visuals.notify('FALHA NA CONEXÃO COM O MAINFRAME. INTERCEPTAÇÃO DETECTADA.', 'err');
             }
-        }, 4500);
+        });
+    },
+
+    async sendPayload(formData) {
+        let attempts = 0;
+        while(attempts < 3) {
+            try {
+                const res = await fetch(this.webhookUrl, { method: "POST", body: formData });
+                if(res.ok) return true;
+                console.warn(`[SYS] Retentativa ${attempts+1} falhou. HTTP:`, res.status);
+                attempts++;
+            } catch(e) {
+                console.warn(`[SYS] Erro de rede. Retentativa ${attempts+1}...`);
+                attempts++;
+            }
+            if(attempts < 3) await new Promise(r => setTimeout(r, 1500));
+        }
+        return false;
     }
 };
 
+// Bootstrap
+window.onload = () => {
+    FormManager.init();
+    System.init();
+};
 </script>
 </body>
 </html>
