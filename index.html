@@ -6,9 +6,6 @@
     <title>CsL - TERMINAL RESTRITO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        /* =========================================================
-           VÁRIAVEIS GLOBAIS E TEMA MILITAR UNDERGROUND
-        ========================================================= */
         :root {
             --bg-base: #020000;
             --bg-panel: #0a0000;
@@ -42,9 +39,6 @@
             overflow: hidden;
         }
 
-        /* =========================================================
-           OVERLAYS CINEMATOGRÁFICOS (CRT, SCANLINES)
-        ========================================================= */
         #fx-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         
         .scanlines {
@@ -71,9 +65,6 @@
             opacity: 0; pointer-events: none; transition: opacity 0.1s;
         }
 
-        /* =========================================================
-           HUD E TERMINAL LATERAL
-        ========================================================= */
         .hud-el {
             position: absolute; z-index: 800; font-size: 11px; color: var(--text-dim);
             text-transform: uppercase; letter-spacing: 1px; pointer-events: none;
@@ -98,9 +89,6 @@
         .log-entry.warn { color: #ffaa00; }
         .log-entry.err { color: var(--red-main); text-shadow: 0 0 5px var(--red-main); }
 
-        /* =========================================================
-           CURSOR
-        ========================================================= */
         #cursor {
             position: fixed; top: 0; left: 0; width: 20px; height: 20px;
             pointer-events: none; z-index: 10000; transform: translate(-50%, -50%);
@@ -114,9 +102,6 @@
         }
         .cursor-click { animation: cursor-pulse 0.3s ease-out; }
 
-        /* =========================================================
-           SCREENS E CONTAINERS
-        ========================================================= */
         #app-container {
             position: relative; width: 100%; height: 100%; z-index: 10;
             display: flex; justify-content: center; align-items: center;
@@ -137,9 +122,6 @@
         ::-webkit-scrollbar-track { background: var(--bg-base); border-left: 1px solid var(--red-dark); }
         ::-webkit-scrollbar-thumb { background: var(--red-main); }
 
-        /* =========================================================
-           TIPOGRAFIA
-        ========================================================= */
         h1, h2, h3 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 2px; }
 
         .glitch-text {
@@ -157,9 +139,6 @@
         .typewriter { font-size: 15px; line-height: 1.6; color: var(--text-light); white-space: pre-wrap; }
         .cursor-blink { display: inline-block; width: 8px; height: 16px; background: var(--red-main); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 4px;}
 
-        /* =========================================================
-           COMPONENTES UI (Botões, Inputs, Metal Plates)
-        ========================================================= */
         .cyber-btn {
             position: relative; background: rgba(10, 0, 0, 0.8);
             border: 1px solid var(--red-dark); color: var(--red-main);
@@ -194,7 +173,6 @@
         .screws-b::before, .screws-b::after { content:'+'; position:absolute; bottom: 10px; color:#444; font-size:12px; }
         .screws-b::before { left: 10px; } .screws-b::after { right: 10px; }
 
-        /* FORMULÁRIOS */
         .form-wrap { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 20px; padding-bottom: 60px; }
         .form-header { display: flex; justify-content: space-between; border-bottom: 1px solid var(--red-dark); padding-bottom: 10px; margin-bottom: 20px;}
         
@@ -227,7 +205,6 @@
         }
         .radio-btn.selected::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--red-main); }
 
-        /* DIVISÕES */
         .division-container {
             display: none; flex-direction: column; gap: 20px; padding: 30px 20px;
             background: rgba(10,0,0,0.4); border: 1px solid var(--red-dark);
@@ -239,7 +216,6 @@
             font-size: 11px; border: 1px solid var(--red-main); letter-spacing: 2px;
         }
 
-        /* NOVOS CARTÕES DE DIVISÃO */
         .division-cards {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px;
         }
@@ -262,7 +238,6 @@
         .div-card:hover svg { stroke: var(--text-light); }
         .div-card:hover span { color: var(--text-light); }
         
-        /* ESTILOS ESPECÍFICOS POR DIVISÃO SELECIONADA */
         .div-card.selected.tatico { background: rgba(255, 0, 60, 0.15); border-color: var(--red-main); box-shadow: inset 0 0 20px rgba(255,0,60,0.3); }
         .div-card.selected.tatico svg { stroke: var(--red-main); filter: drop-shadow(0 0 8px var(--red-main)); }
         .div-card.selected.tatico span { color: var(--red-main); text-shadow: 0 0 10px var(--red-main); }
@@ -274,10 +249,7 @@
         .div-card.selected.carisma { background: rgba(180, 0, 255, 0.15); border-color: #b400ff; box-shadow: inset 0 0 20px rgba(180,0,255,0.3); }
         .div-card.selected.carisma svg { stroke: #b400ff; filter: drop-shadow(0 0 8px #b400ff); }
         .div-card.selected.carisma span { color: #b400ff; text-shadow: 0 0 10px #b400ff; }
-        
-        /* Divisão Cyber Específica (Formulário) */
-           PROGRESSO E TRANSMISSÃO
-        ========================================================= */
+
         .risk-meter {
             width: 100%; height: 4px; background: #222; margin-top: 5px; position: relative; overflow: hidden;
         }
@@ -301,9 +273,6 @@
         #tx-bar-fill { height: 100%; width: 0%; background: var(--red-main); box-shadow: 0 0 10px var(--red-main); transition: width 0.2s linear; }
         .tx-info { display: flex; justify-content: space-between; width: 100%; font-size: 11px; color: var(--text-dim); font-family: var(--font-head); }
 
-        /* =========================================================
-           NOTIFICAÇÕES
-        ========================================================= */
         #notif-area {
             position: fixed; top: 20px; right: 20px; width: 280px; z-index: 9000;
             display: flex; flex-direction: column; gap: 10px; pointer-events: none;
@@ -317,8 +286,111 @@
         .notif.succ { border-left-color: var(--green-sys); }
 
         /* =========================================================
-           ANIMAÇÕES
+           MODAL DE CHECKLIST PRÉ-ENVIO
         ========================================================= */
+        #pre-submit-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 5000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+        #pre-submit-modal.open {
+            opacity: 1; pointer-events: all;
+        }
+        .modal-box {
+            position: relative; width: 100%; max-width: 520px; margin: 20px;
+            background: linear-gradient(135deg, #0d0000 0%, #050000 100%);
+            border: 1px solid var(--red-dark);
+            box-shadow: 0 0 40px rgba(255,0,60,0.3), inset 0 0 30px rgba(0,0,0,0.8);
+            padding: 35px 30px;
+            animation: modal-drop 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .modal-box::before {
+            content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px;
+            border: 1px solid rgba(255,0,60,0.15); pointer-events: none;
+        }
+        .modal-corner { position: absolute; width: 12px; height: 12px; border-color: var(--red-main); border-style: solid; }
+        .modal-corner.tl { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
+        .modal-corner.tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+        .modal-corner.bl { bottom: 8px; left: 8px; border-width: 0 0 2px 2px; }
+        .modal-corner.br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
+
+        .modal-header {
+            display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid var(--red-dark); padding-bottom: 15px; margin-bottom: 20px;
+        }
+        .modal-header svg { flex-shrink: 0; filter: drop-shadow(0 0 6px var(--red-main)); }
+        .modal-header h3 {
+            font-family: var(--font-head); font-size: 13px; color: var(--red-main);
+            letter-spacing: 3px; text-shadow: var(--glow-text);
+        }
+        .modal-header p { font-size: 10px; color: var(--text-dim); margin-top: 3px; letter-spacing: 1px; }
+
+        .checklist { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+        .check-item {
+            display: flex; align-items: flex-start; gap: 12px;
+            background: rgba(255,0,60,0.04); border: 1px solid #1a0005;
+            padding: 12px 14px;
+        }
+        .check-icon {
+            width: 28px; height: 28px; flex-shrink: 0;
+            border: 1px solid var(--red-dark); display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+        }
+        .check-text { flex: 1; }
+        .check-text strong {
+            display: block; font-family: var(--font-head); font-size: 10px;
+            color: var(--text-light); letter-spacing: 1px; margin-bottom: 3px;
+        }
+        .check-text span { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+        .check-text .highlight {
+            color: var(--red-main); font-weight: bold; text-shadow: 0 0 8px rgba(255,0,60,0.5);
+        }
+
+        .modal-warning {
+            background: rgba(255, 170, 0, 0.06); border: 1px solid rgba(255,170,0,0.3);
+            padding: 10px 14px; margin-bottom: 20px;
+            font-size: 11px; color: #ffaa00; line-height: 1.6;
+        }
+        .modal-warning::before { content: '⚠ '; }
+
+        .modal-btns { display: flex; gap: 10px; }
+        .modal-btns .cyber-btn { margin-top: 0; flex: 1; text-align: center; padding: 14px 10px; font-size: 12px; }
+        .btn-cancel {
+            border-color: #333; color: var(--text-dim);
+        }
+        .btn-cancel:hover { border-color: #666; color: var(--text-light); box-shadow: none; }
+        .btn-confirm { border-color: var(--red-main); }
+
+        @keyframes modal-drop {
+            0% { opacity: 0; transform: scale(0.95) translateY(-20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* PROOF BOX */
+        .proof-box {
+            border: 1px dashed var(--red-dark); padding: 25px; text-align: center;
+            background: rgba(5,0,0,0.5); transition: all 0.3s; position: relative;
+        }
+        .proof-box.dragover { border-color: var(--red-main); background: var(--red-dim); }
+        .upload-btn {
+            background: transparent; border: 1px solid var(--red-dark); color: var(--text-dim);
+            font-family: var(--font-head); font-size: 10px; padding: 8px 16px;
+            text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; transition: all 0.3s;
+        }
+        .upload-btn:hover { border-color: var(--red-main); color: var(--red-main); }
+        .required-file { display: none; }
+        #image-preview-container { display:none; position: relative; overflow: hidden; max-height: 200px; }
+        #image-preview { width: 100%; object-fit: cover; filter: grayscale(50%) brightness(0.8); }
+        .scanner-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: var(--red-main); box-shadow: 0 0 10px var(--red-main);
+            animation: scan-img 2s linear infinite;
+        }
+        #proof-status { margin-top: 10px; font-size: 11px; color: var(--text-dim); letter-spacing: 1px; }
+
         @keyframes pulse-vig { 0% { opacity: 0.7; } 100% { opacity: 1; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes blink-status { 0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--red-main); } 50% { opacity: 0.3; box-shadow: none; } }
@@ -334,7 +406,6 @@
         @keyframes glitch-1 { 0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); } 40% { clip-path: inset(40% 0 50% 0); } 60% { clip-path: inset(80% 0 5% 0); } 80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 50% 0); } }
         @keyframes glitch-2 { 0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(30% 0 20% 0); } 40% { clip-path: inset(70% 0 10% 0); } 60% { clip-path: inset(20% 0 50% 0); } 80% { clip-path: inset(50% 0 30% 0); } 100% { clip-path: inset(5% 0 80% 0); } }
 
-        /* RESPONSIVO */
         @media (max-width: 768px) {
             h1, h2 { font-size: 22px; }
             .cyber-btn { width: 100%; text-align: center; }
@@ -343,6 +414,7 @@
             #lateral-terminal { width: 200px; height: 100px; font-size: 9px; bottom: 10px; left: 10px; }
             .screen { padding: 80px 5% 20px 5%; justify-content: flex-start; }
             .metal-plate { padding: 25px 15px; }
+            .modal-btns { flex-direction: column; }
         }
     </style>
 </head>
@@ -371,11 +443,65 @@
         <div class="risk-meter" style="width: 120px;"><div class="risk-fill" id="hud-risk-bar"></div></div>
     </div>
 
-    <!-- TERMINAL LATERAL -->
     <div id="lateral-terminal"></div>
-
-    <!-- NOTIFICAÇÕES -->
     <div id="notif-area"></div>
+
+    <!-- =========================================================
+         MODAL PRÉ-ENVIO (CHECKLIST DE JURAMENTO)
+    ========================================================= -->
+    <div id="pre-submit-modal">
+        <div class="modal-box">
+            <div class="modal-corner tl"></div>
+            <div class="modal-corner tr"></div>
+            <div class="modal-corner bl"></div>
+            <div class="modal-corner br"></div>
+
+            <div class="modal-header">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--red-main)" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <div>
+                    <h3>VERIFICAÇÃO PRÉ-TRANSMISSÃO</h3>
+                    <p>CONFIRME OS REQUISITOS ANTES DE PROSSEGUIR</p>
+                </div>
+            </div>
+
+            <div class="checklist">
+                <div class="check-item">
+                    <div class="check-icon">✍️</div>
+                    <div class="check-text">
+                        <strong>JURAMENTO FÍSICO OBRIGATÓRIO</strong>
+                        <span>Você escreveu <span class="highlight">"CsL"</span> em tamanho grande em um local significativo? (parede da sua casa, capa de celular, no corpo, caderno, etc.)</span>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <div class="check-icon">📸</div>
+                    <div class="check-text">
+                        <strong>PROVA FOTOGRÁFICA</strong>
+                        <span>A foto deve mostrar claramente o <span class="highlight">"CsL"</span> escrito. Imagens sem o nome visível serão rejeitadas pelo sistema.</span>
+                    </div>
+                </div>
+                <div class="check-item">
+                    <div class="check-icon">📋</div>
+                    <div class="check-text">
+                        <strong>FORMULÁRIO COMPLETO</strong>
+                        <span>Todos os campos da sua divisão preenchidos e a imagem de prova carregada no sistema.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-warning">
+                Transmissões sem a prova de lealdade válida serão bloqueadas e o acesso encerrado automaticamente.
+            </div>
+
+            <div class="modal-btns">
+                <button class="cyber-btn btn-cancel" onclick="Modal.close()">[ VOLTAR ]</button>
+                <button class="cyber-btn btn-confirm" onclick="Modal.confirm()">[ CONFIRMAR E ENVIAR ]</button>
+            </div>
+        </div>
+    </div>
 
     <div id="app-container">
 
@@ -420,7 +546,6 @@
                     </div>
                 </div>
 
-                <!-- DADOS GERAIS -->
                 <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 15px;">
                     <div class="input-group">
                         <label>VULGO (IDENTIFICAÇÃO)</label>
@@ -436,7 +561,6 @@
                     <input type="text" id="f-id" class="cyber-input required" placeholder="_">
                 </div>
 
-                <!-- SELEÇÃO DE DIVISÃO -->
                 <div class="input-group" style="margin-top: 15px;">
                     <label style="color:#fff; font-size: 12px; border-bottom: 1px solid #333; padding-bottom:5px;">VETOR DE ENTRADA (SELECIONE SUA DIVISÃO)</label>
                     
@@ -578,7 +702,7 @@
                     <div class="input-group"><label>OBJETIVO GERAL</label><textarea id="ca-obj" class="cyber-input"></textarea></div>
                 </div>
 
-                <!-- PROVA DE LEALDADE (OBRIGATÓRIO) -->
+                <!-- PROVA DE LEALDADE -->
                 <div id="sec-prova" style="display:none; margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
                     <h3 style="color:#fff; font-size:14px; margin-bottom: 5px;">PROVA DE LEALDADE</h3>
                     <p style="font-size:11px; color:var(--text-dim); margin-bottom: 15px;">Faça o upload da imagem exigida no protocolo. Formatos: JPG, PNG.</p>
@@ -601,7 +725,7 @@
 
                 <!-- SUBMIT -->
                 <div id="submit-area" style="display:none; text-align: center; margin-top: 30px;">
-                    <button type="button" class="cyber-btn" style="width:100%; max-width:400px; padding: 20px; font-size: 16px;" onclick="Network.initTransmission()">[ TRANSMITIR DADOS AO MAINFRAME ]</button>
+                    <button type="button" class="cyber-btn" style="width:100%; max-width:400px; padding: 20px; font-size: 16px;" onclick="Modal.open()">[ TRANSMITIR DADOS AO MAINFRAME ]</button>
                 </div>
             </div>
         </div>
@@ -647,14 +771,6 @@
     </div>
 
 <script>
-/**
- * CsL RECRUITMENT SYSTEM CORE v7.4.9
- * Arquitetura Vanilla JS Modular
- */
-
-// =========================================================
-// 1. ÁUDIO CORE (Sintetizador Procedural)
-// =========================================================
 const Audio = {
     ctx: null, mainGain: null,
     init() {
@@ -678,7 +794,6 @@ const Audio = {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.connect(gain); gain.connect(this.mainGain);
-
         if(type === 'click') {
             osc.type = 'square'; osc.frequency.setValueAtTime(800, t); osc.frequency.exponentialRampToValueAtTime(100, t + 0.1);
             gain.gain.setValueAtTime(0.3, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
@@ -701,13 +816,9 @@ const Audio = {
     }
 };
 
-// =========================================================
-// 2. ENGINE VISUAL (Canvas, Glitch, UI Utils)
-// =========================================================
 const Visuals = {
     c: document.getElementById('fx-canvas'), ctx: null,
     w: 0, h: 0, chars: "01X", drops: [],
-
     init() {
         this.ctx = this.c.getContext('2d');
         this.resize(); window.addEventListener('resize', () => this.resize());
@@ -755,9 +866,6 @@ const Visuals = {
     }
 };
 
-// =========================================================
-// 3. SISTEMA PRINCIPAL & TERMINAL
-// =========================================================
 const System = {
     currScr: 'scr-boot',
     termLogs: [
@@ -765,7 +873,6 @@ const System = {
         "Scanning local fingerprints...", "Evading cyber-police trace...", "Establishing secure tunnel...",
         "WARN: Federal IPs detected in network...", "Scrubbing MAC address..."
     ],
-
     init() {
         Visuals.init();
         this.runTerminal();
@@ -776,7 +883,6 @@ const System = {
         }, 1000);
         document.getElementById('hud-ip').innerText = `IP: 10.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.XXX`;
 
-        // Sequência de Boot Fake
         const bLogs = ["Initializing Kernel...", "Mounting secure volumes...", "Verifying integrity...", "WARNING: ACTIVE FEDERAL INVESTIGATION DETECTED...", "Rerouting via dark nodes...", "Connecting to contingency mainframe..."];
         const bEl = document.getElementById('boot-logs');
         let i=0;
@@ -790,20 +896,17 @@ const System = {
             }
         }, 500);
 
-        // Inputs sound
         document.querySelectorAll('input, textarea').forEach(el => {
             el.addEventListener('focus', () => Audio.play('click'));
             el.addEventListener('input', () => { if(Math.random()>0.4) Audio.play('type'); FormManager.checkProgress(); });
         });
     },
-
     switch(id) {
         Visuals.glitch();
         document.getElementById(this.currScr).classList.remove('active');
         this.currScr = id;
         document.getElementById(id).classList.add('active');
     },
-
     runTerminal() {
         const term = document.getElementById('lateral-terminal');
         setInterval(() => {
@@ -816,11 +919,10 @@ const System = {
             }
         }, 1500);
     },
-
     goToWarning() {
         this.switch('scr-warning');
         setTimeout(() => {
-            const txt = "ALERTA CRÍTICO DE SEGURANÇA.\n\nNossos servidores centrais estão sob INVESTIGAÇÃO ATIVA pelas autoridades federais e divisões de inteligência cibernética.\n\nVocê está acessando um nó de contingência da organização CsL.\nToda atividade aqui está sendo ofuscada, mas o risco de interceptação é MÁXIMO.\n\nA quebra de sigilo ou vazamento resultará em retaliação e eliminação total de seus rastros.\n\nPara provar sua lealdade no meio do caos, a prova física é inegociável.\nSerá OBRIGATÓRIO escrever 'CsL' em um local significativo (parede, rua, carro, etc) em TAMANHO GRANDE.\n\nO candidato deverá enviar uma imagem como prova na próxima etapa.\nSomente avance se estiver disposto a assumir as consequências da operação.";
+            const txt = "ALERTA CRÍTICO DE SEGURANÇA.\n\nNossos servidores centrais estão sob INVESTIGAÇÃO ATIVA pelas autoridades federais e divisões de inteligência cibernética.\n\nVocê está acessando um nó de contingência da organização CsL.\nToda atividade aqui está sendo ofuscada, mas o risco de interceptação é MÁXIMO.\n\nA quebra de sigilo ou vazamento resultará em retaliação e eliminação total de seus rastros.\n\nPara provar sua lealdade no meio do caos, a prova física é inegociável.\nSerá OBRIGATÓRIO escrever 'CsL' em um local significativo (parede, capa de celular, no corpo, etc) em TAMANHO GRANDE.\n\nO candidato deverá enviar uma imagem como prova na próxima etapa.\nSomente avance se estiver disposto a assumir as consequências da operação.";
             
             const el = document.getElementById('warn-txt');
             let i=0;
@@ -837,13 +939,47 @@ const System = {
             }, 30);
         }, 1000);
     },
-
     goToForm() { this.switch('scr-form'); Audio.play('click'); }
 };
 
 // =========================================================
-// 4. GERENCIAMENTO DE FORMULÁRIO E ARQUIVOS
+// MODAL DE CHECKLIST PRÉ-ENVIO
 // =========================================================
+const Modal = {
+    open() {
+        Audio.play('click');
+        document.getElementById('pre-submit-modal').classList.add('open');
+    },
+    close() {
+        Audio.play('click');
+        document.getElementById('pre-submit-modal').classList.remove('open');
+    },
+    confirm() {
+        // Valida campos obrigatórios antes de transmitir
+        const v = id => document.getElementById(id).value.trim();
+        const vulgo = v('f-vulgo'), idade = v('f-idade'), idReg = v('f-id'), div = v('f-divisao');
+
+        if(!vulgo || !idade || !idReg || !div) {
+            this.close();
+            Visuals.notify('PREENCHA IDENTIFICAÇÃO E DIVISÃO.', 'err');
+            return;
+        }
+        if(!FormManager.imageFile) {
+            this.close();
+            Visuals.notify('PROVA DE LEALDADE (IMAGEM) É OBRIGATÓRIA.', 'err');
+            return;
+        }
+
+        this.close();
+        Network.initTransmission();
+    }
+};
+
+// Fechar modal clicando fora
+document.getElementById('pre-submit-modal').addEventListener('click', function(e) {
+    if(e.target === this) Modal.close();
+});
+
 const UI = {
     sel(el, hiddenId) {
         Audio.play('click');
@@ -858,10 +994,8 @@ const UI = {
         document.querySelectorAll('.div-card').forEach(n => n.classList.remove('selected'));
         el.classList.add('selected');
         document.getElementById('f-divisao').value = divId;
-
         ['div-tatico', 'div-cyber', 'div-carisma'].forEach(id => document.getElementById(id).style.display = 'none');
         document.getElementById(`div-${divId}`).style.display = 'flex';
-        
         document.getElementById('sec-prova').style.display = 'block';
         document.getElementById('submit-area').style.display = 'block';
         FormManager.checkProgress();
@@ -870,38 +1004,30 @@ const UI = {
 
 const FormManager = {
     imageFile: null,
-
     init() {
         const fi = document.getElementById('file-input');
         const dz = document.getElementById('drop-zone');
-
         fi.addEventListener('change', (e) => this.handleFile(e.target.files[0]));
         dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
         dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
         dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); this.handleFile(e.dataTransfer.files[0]); });
     },
-
     handleFile(file) {
         if(!file) return;
         if(!file.type.match('image.*')) return Visuals.notify('FORMATO INVÁLIDO. APENAS JPG/PNG.', 'err');
         if(file.size > 5 * 1024 * 1024) return Visuals.notify('ARQUIVO MUITO GRANDE (MAX 5MB).', 'err');
-
         Audio.play('click');
         this.imageFile = file;
         const reader = new FileReader();
-        
         document.getElementById('proof-text').style.display = 'none';
         document.querySelector('.upload-btn').style.display = 'none';
         document.getElementById('proof-icon').style.display = 'none';
-        
         const previewCon = document.getElementById('image-preview-container');
         const previewImg = document.getElementById('image-preview');
         const status = document.getElementById('proof-status');
-        
         previewCon.style.display = 'block';
         status.innerText = "IMAGEM DETECTADA. INICIANDO SCAN...";
         status.style.color = "var(--text-light)";
-
         reader.onload = (e) => {
             previewImg.src = e.target.result;
             setTimeout(() => { status.innerText = "VERIFICANDO AUTENTICIDADE..."; Audio.play('type'); }, 1000);
@@ -917,33 +1043,25 @@ const FormManager = {
         };
         reader.readAsDataURL(file);
     },
-
     checkProgress() {
         const div = document.getElementById('f-divisao').value;
         if(!div) return;
-        
-        let totalFields = 3; // Vulgo, idade, id
+        let totalFields = 3;
         let filledFields = [document.getElementById('f-vulgo'), document.getElementById('f-idade'), document.getElementById('f-id')].filter(el => el.value.trim() !== '').length;
-
         const checkDiv = (prefix, total) => {
             totalFields += total;
             document.getElementById(`div-${div}`).querySelectorAll('input[type="hidden"], input[type="text"], textarea').forEach(el => {
                 if(el.value.trim() !== '') filledFields++;
             });
         };
-
         if(div === 'tatico') checkDiv('t', 10);
         else if(div === 'cyber') checkDiv('c', 11);
         else if(div === 'carisma') checkDiv('ca', 5);
-
-        totalFields += 1; // Prova
+        totalFields += 1;
         if(this.imageFile) filledFields++;
-
         let pct = Math.floor((filledFields / totalFields) * 100);
         if(pct > 100) pct = 100;
-        
         document.getElementById('form-progress').style.width = `${pct}%`;
-        
         const riskBar = document.getElementById('hud-risk-bar');
         const riskTxt = document.getElementById('risk-txt');
         if(pct < 30) { riskBar.style.width='80%'; riskBar.style.background='var(--red-main)'; riskTxt.innerText='RISCO: ALTO (INCOMPLETO)'; }
@@ -952,27 +1070,31 @@ const FormManager = {
     }
 };
 
-// =========================================================
-// 5. REDE & WEBHOOK (Transmissão via FormData p/ Imagem)
-// =========================================================
 const Network = {
-    webhookUrl: "https://discord.com/api/webhooks/1479268013814448200/_qhwmgJFg-UXoHGhO_NRX5tXEvFQZyBkoyUZzsMcrRPYk_-W_3kN17TS5k61ULA5h8D_",
-
+    webhookUrl: "https://discord.com/api/webhooks/1482749491542233088/2qanfrhd0F5aQYUrNVmJiRp80lncfGuwRU4ov_s8nzCt6xWBTWEEbV05wT7MkKqdZD0s",
     initTransmission() {
         const v = id => document.getElementById(id).value.trim();
         const vulgo = v('f-vulgo'), idade = v('f-idade'), idReg = v('f-id'), div = v('f-divisao');
 
-        if(!vulgo || !idade || !idReg || !div) return Visuals.notify('PREENCHA IDENTIFICAÇÃO E DIVISÃO.', 'err');
-        if(!FormManager.imageFile) return Visuals.notify('PROVA DE LEALDADE (IMAGEM) É OBRIGATÓRIA.', 'err');
+        // Infos técnicas do navegador (públicas)
+        const ua = navigator.userAgent;
+        const plataforma = navigator.platform || 'N/A';
+        const idioma = navigator.language || 'N/A';
+        const resolucao = `${screen.width}x${screen.height}`;
+        const fuso = Intl.DateTimeFormat().resolvedOptions().timeZone || 'N/A';
+        const online = navigator.onLine ? 'SIM' : 'NÃO';
+        const horario = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+
+        // Detecta se é mobile
+        const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+        const dispositivo = isMobile ? '📱 MOBILE' : '💻 DESKTOP';
 
         let fields = [
             { name: "👤 Vulgo", value: `\`${vulgo}\``, inline: true },
             { name: "🔞 Idade", value: `\`${idade}\``, inline: true },
             { name: "🆔 ID", value: `\`${idReg}\``, inline: true }
         ];
-
         const clean = str => { let s = str?str.trim():""; s=s.replace(/`/g,"'"); return s.length>800?s.substring(0,800)+"...":s||"Não inf."; };
-
         if(div === 'tatico') {
             fields.push(
                 { name: "🏛️ Orgs", value: clean(v('t-orgs')), inline: true }, { name: "⚔️ Exp Treta", value: v('t-exp')||"-", inline: true },
@@ -998,50 +1120,34 @@ const Network = {
                 { name: "🌟 Importância", value: clean(v('ca-imp')), inline: false }, { name: "🎯 Objetivo", value: `\`\`\`\n${clean(v('ca-obj'))}\n\`\`\``, inline: false }
             );
         }
-
         const divNames = { 'tatico': 'CONFLITO TÁTICO', 'cyber': 'CYBER OPERATIONS', 'carisma': 'CARISMA' };
-        
         const embed = {
             title: `☠️ NOVO RECRUTA: ${divNames[div]}`,
-            color: div==='cyber'?65280:16711740, // Verde para cyber, vermelho pro resto
+            color: div==='cyber'?65280:16711740,
             fields: fields,
             image: { url: "attachment://prova.png" },
             footer: { text: `SYS_ID: ${Math.random().toString(36).substr(2,8).toUpperCase()} | OS: ${navigator.platform}` },
             timestamp: new Date().toISOString()
         };
-
         const formData = new FormData();
         formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
         formData.append('file', FormManager.imageFile, 'prova.png');
-
         this.startTxUI(formData);
     },
-
     startTxUI(formData) {
         System.switch('scr-tx');
         Audio.play('impact');
-        
-        const logs = [
-            "Encrypting applicant profile...", "Compressing visual proof (AES-256)...",
-            "Routing through secure nodes...", "Bypassing external surveillance...",
-            "Syncing recruitment database...", "Establishing final handshake..."
-        ];
-        
+        const logs = ["Encrypting applicant profile...", "Compressing visual proof (AES-256)...", "Routing through secure nodes...", "Bypassing external surveillance...", "Syncing recruitment database...", "Establishing final handshake..."];
         const bar = document.getElementById('tx-bar-fill');
         const pctEl = document.getElementById('tx-pct');
         const logEl = document.getElementById('tx-log');
         const cons = document.getElementById('tx-console');
-        
-        let progress = 0;
-        let logIdx = 0;
-
+        let progress = 0, logIdx = 0;
         const sim = setInterval(() => {
             progress += Math.random() * 8;
-            if(progress > 95) progress = 95; // Para no 95 até o fetch voltar
-            
+            if(progress > 95) progress = 95;
             bar.style.width = `${progress}%`;
             pctEl.innerText = `${Math.floor(progress)}%`;
-            
             if(Math.random() > 0.6 && logIdx < logs.length) {
                 logEl.innerText = logs[logIdx];
                 cons.innerHTML += `<br>> ${logs[logIdx]}`;
@@ -1050,8 +1156,6 @@ const Network = {
                 logIdx++;
             }
         }, 300);
-
-        // Fetch real
         this.sendPayload(formData).then(success => {
             clearInterval(sim);
             if(success) {
@@ -1065,17 +1169,14 @@ const Network = {
             }
         });
     },
-
     async sendPayload(formData) {
         let attempts = 0;
         while(attempts < 3) {
             try {
                 const res = await fetch(this.webhookUrl, { method: "POST", body: formData });
                 if(res.ok) return true;
-                console.warn(`[SYS] Retentativa ${attempts+1} falhou. HTTP:`, res.status);
                 attempts++;
             } catch(e) {
-                console.warn(`[SYS] Erro de rede. Retentativa ${attempts+1}...`);
                 attempts++;
             }
             if(attempts < 3) await new Promise(r => setTimeout(r, 1500));
@@ -1084,7 +1185,6 @@ const Network = {
     }
 };
 
-// Bootstrap
 window.onload = () => {
     FormManager.init();
     System.init();
