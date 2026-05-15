@@ -4,412 +4,404 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>CsL — Sistema de Recrutamento</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#080808;--bg2:#0f0f0f;--bg3:#141414;--bg4:#1a1a1a;
-  --red:#cc0000;--red2:#ff1a1a;--red3:#ff4444;--red-glow:rgba(204,0,0,.35);
-  --gold:#e6a817;--gold2:#f5c842;--gold-glow:rgba(230,168,23,.3);
-  --gray:#1c1c1c;--gray2:#242424;--gray3:#2e2e2e;
-  --dim:#3a3a3a;--dim2:#666;--dim3:#999;
-  --text:#d0d0d0;--text2:#e8e8e8;--white:#f5f5f5;
-  --border:rgba(255,255,255,.07);--border2:rgba(204,0,0,.3);
-  --f1:'Orbitron',sans-serif;--f2:'Barlow Condensed',sans-serif;--f3:'Share Tech Mono',monospace;--f4:'Courier Prime',monospace;
-  --scan-speed:6s;
-  --base:16px;
+  --bg:#050508;--bg2:#0a0a10;--bg3:#0f0f18;--bg4:#141420;
+  --red:#cc0000;--red2:#ff1a1a;--red3:#ff4444;--red-glow:rgba(204,0,0,.4);
+  --gold:#e6a817;--gold2:#f5c842;--gold-glow:rgba(230,168,23,.35);
+  --cyan:#00ccff;--cyan2:#33ddff;--cyan-glow:rgba(0,204,255,.25);
+  --green:#00ff88;--green-glow:rgba(0,255,136,.2);
+  --gray:#1a1a24;--gray2:#22222e;--gray3:#2c2c3a;
+  --dim:#3a3a50;--dim2:#5a5a7a;--dim3:#8a8aaa;
+  --text:#c0c0d8;--text2:#e0e0f0;--white:#f0f0ff;
+  --border:rgba(255,255,255,.06);--border-r:rgba(204,0,0,.25);--border-c:rgba(0,204,255,.2);
+  --f1:'Orbitron',sans-serif;--f2:'Rajdhani',sans-serif;--f3:'Share Tech Mono',monospace;--f4:'Barlow Condensed',sans-serif;
 }
-:root.light{
-  --bg:#f0eded;--bg2:#e8e5e5;--bg3:#ddd9d9;--bg4:#d0cccc;
-  --gray:#ccc8c8;--gray2:#bbb7b7;--gray3:#aaa6a6;
-  --dim:#888;--dim2:#555;--dim3:#333;
-  --text:#2a2a2a;--text2:#111;--white:#000;
-  --border:rgba(0,0,0,.1);--border2:rgba(204,0,0,.35);
-}
-:root[data-font="mono"]{ --f2:'Share Tech Mono',monospace; --base:15px; }
-:root[data-font="condensed"]{ --f2:'Barlow Condensed',sans-serif; --base:16px; }
-:root[data-font="courier"]{ --f2:'Courier Prime',monospace; --base:15px; }
-
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-family:var(--f2);overflow:hidden;font-size:var(--base);}
+html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-family:var(--f2);overflow:hidden;font-size:16px;}
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--red);}
 *{cursor:none!important;}
 
-/* CURSOR */
-#cur{position:fixed;pointer-events:none;z-index:99999;width:7px;height:7px;border-radius:50%;background:var(--red);transform:translate(-50%,-50%);mix-blend-mode:screen;box-shadow:0 0 10px var(--red);}
-#cur2{position:fixed;pointer-events:none;z-index:99998;width:28px;height:28px;border:1px solid var(--red2);border-radius:50%;transform:translate(-50%,-50%);transition:left .12s,top .12s;opacity:.4;}
+/* ── CURSOR ── */
+#cur{position:fixed;pointer-events:none;z-index:99999;width:8px;height:8px;border-radius:50%;background:var(--red);transform:translate(-50%,-50%);mix-blend-mode:screen;box-shadow:0 0 14px var(--red2),0 0 28px var(--red);}
+#cur2{position:fixed;pointer-events:none;z-index:99998;width:32px;height:32px;border:1px solid var(--cyan);border-radius:50%;transform:translate(-50%,-50%);transition:left .1s,top .1s;opacity:.35;}
+#cur-trail{position:fixed;pointer-events:none;z-index:99997;}
 
+/* ── CANVAS BACKGROUND ── */
 canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
-.grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.04;
+/* ── OVERLAYS ── */
+.grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.045;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:180px 180px;}
+  background-size:160px 160px;}
 .scanlines{position:fixed;inset:0;z-index:9996;pointer-events:none;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0,rgba(0,0,0,.06) 1px,transparent 1px,transparent 3px);}
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.055) 0,rgba(0,0,0,.055) 1px,transparent 1px,transparent 3px);}
 .vig{position:fixed;inset:0;z-index:9995;pointer-events:none;
-  background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.8) 100%);}
+  background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.88) 100%);}
+
+/* Scan line animada */
 .vhs-glitch{position:fixed;inset:0;z-index:9994;pointer-events:none;}
-.vhs-glitch::before{content:'';position:absolute;left:0;right:0;height:1px;background:rgba(204,0,0,.4);animation:vhsscan var(--scan-speed) linear infinite;box-shadow:0 0 4px var(--red);}
+.vhs-glitch::before{content:'';position:absolute;left:0;right:0;height:1px;background:rgba(0,204,255,.25);animation:vhsscan 7s linear infinite;box-shadow:0 0 5px var(--cyan);}
+.vhs-glitch::after{content:'';position:absolute;left:0;right:0;height:1px;background:rgba(204,0,0,.2);animation:vhsscan2 11s linear infinite;animation-delay:3s;}
 @keyframes vhsscan{0%{top:-2%}100%{top:102%}}
-.vhs-stripe{position:fixed;pointer-events:none;z-index:9993;height:2px;background:rgba(204,0,0,.12);width:100%;animation:stripeAnim 8s ease-in-out infinite;}
-@keyframes stripeAnim{0%,100%{opacity:0;top:20%}30%{opacity:1}50%{opacity:0;top:60%}70%{opacity:.8;top:80%}90%{opacity:0}}
+@keyframes vhsscan2{0%{top:102%}100%{top:-2%}}
 
-#app{position:relative;z-index:10;width:100%;height:100%;}
+/* ── CORNERS ── */
+.corner{position:fixed;z-index:9990;pointer-events:none;width:28px;height:28px;}
+.corner-tl{top:10px;left:10px;border-top:1px solid rgba(204,0,0,.5);border-left:1px solid rgba(204,0,0,.5);}
+.corner-tr{top:10px;right:10px;border-top:1px solid rgba(0,204,255,.4);border-right:1px solid rgba(0,204,255,.4);}
+.corner-bl{bottom:10px;left:10px;border-bottom:1px solid rgba(0,204,255,.4);border-left:1px solid rgba(0,204,255,.4);}
+.corner-br{bottom:10px;right:10px;border-bottom:1px solid rgba(204,0,0,.5);border-right:1px solid rgba(204,0,0,.5);}
 
-.scr{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
-  opacity:0;pointer-events:none;padding:20px;
-  transition:opacity .5s cubic-bezier(.25,.46,.45,.94),transform .5s cubic-bezier(.25,.46,.45,.94);
-  transform:translateY(10px);}
-.scr.on{opacity:1;pointer-events:all;transform:translateY(0);}
-.scr.out{opacity:0;transform:translateY(-10px);pointer-events:none;}
-.scr.scroll-scr{justify-content:flex-start;overflow-y:auto;overflow-x:hidden;padding:0;-webkit-overflow-scrolling:touch;}
-
-/* HUD */
+/* ── HUD ── */
 #hud{position:fixed;inset:0;z-index:500;pointer-events:none;}
-.hud-tl,.hud-tr,.hud-bl{position:absolute;display:flex;flex-direction:column;gap:4px;}
-.hud-tl{top:14px;left:16px;}
-.hud-tr{top:14px;right:16px;align-items:flex-end;}
-.hud-bl{bottom:14px;left:16px;}
-.ht{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:1.5px;text-transform:uppercase;line-height:1.4;}
-.ht b{color:rgba(204,0,0,.7);}
-.hud-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--red);margin-right:5px;animation:blink 1.6s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.hud-tl,.hud-tr,.hud-bl,.hud-br{position:absolute;display:flex;flex-direction:column;gap:4px;}
+.hud-tl{top:16px;left:18px;}
+.hud-tr{top:16px;right:18px;align-items:flex-end;}
+.hud-bl{bottom:16px;left:18px;}
+.hud-br{bottom:16px;right:18px;align-items:flex-end;}
+.ht{font-family:var(--f3);font-size:9px;color:var(--dim2);letter-spacing:1.5px;text-transform:uppercase;line-height:1.6;}
+.ht b{color:rgba(204,0,0,.8);}
+.ht.c{color:rgba(0,204,255,.5);}
+.hud-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--red);margin-right:5px;animation:blink 1.4s ease-in-out infinite;box-shadow:0 0 6px var(--red);}
+.hud-dot.g{background:var(--green);box-shadow:0 0 6px var(--green);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
 
-.corner{position:fixed;z-index:9990;pointer-events:none;width:22px;height:22px;}
-.corner-tl{top:8px;left:8px;border-top:1px solid rgba(204,0,0,.35);border-left:1px solid rgba(204,0,0,.35);}
-.corner-tr{top:8px;right:8px;border-top:1px solid rgba(204,0,0,.35);border-right:1px solid rgba(204,0,0,.35);}
-.corner-bl{bottom:8px;left:8px;border-bottom:1px solid rgba(204,0,0,.35);border-left:1px solid rgba(204,0,0,.35);}
-.corner-br{bottom:8px;right:8px;border-bottom:1px solid rgba(204,0,0,.35);border-right:1px solid rgba(204,0,0,.35);}
+/* ── NOTIFS ── */
+#notifs{position:fixed;top:16px;right:18px;z-index:9000;display:flex;flex-direction:column;gap:6px;pointer-events:none;width:290px;align-items:flex-end;}
+.nf{background:rgba(10,10,16,.95);border-left:2px solid var(--red);padding:12px 15px;font-family:var(--f3);font-size:11px;color:var(--text);display:flex;gap:9px;align-items:center;width:100%;animation:nfin .2s ease;backdrop-filter:blur(10px);}
+.nf.ok{border-left-color:var(--green);}
+.nf.w{border-left-color:var(--gold);}
+@keyframes nfin{from{transform:translateX(20px);opacity:0}}
+@keyframes nfout{to{transform:translateX(20px);opacity:0}}
 
-#notifs{position:fixed;top:14px;right:16px;z-index:9000;display:flex;flex-direction:column;gap:5px;pointer-events:none;width:280px;align-items:flex-end;}
-.nf{background:var(--bg2);border-left:2px solid var(--red);padding:12px 14px;font-family:var(--f3);font-size:12px;color:var(--text);display:flex;gap:8px;align-items:center;width:100%;animation:nfin .2s ease;}
-.nf.ok{border-left-color:#22cc55;}
-.nf.w{border-left-color:#e67e22;}
-@keyframes nfin{from{transform:translateX(16px);opacity:0}}
-@keyframes nfout{to{transform:translateX(16px);opacity:0}}
-
-@keyframes fadeup{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+/* ── KEYFRAMES ── */
+@keyframes fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-@keyframes scalein{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes scalein{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 @keyframes rtt{to{transform:rotate(360deg)}}
 @keyframes rtt2{to{transform:rotate(-360deg)}}
-@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
-@keyframes glitch{
-  0%,90%,100%{clip-path:none;transform:none}
-  91%{clip-path:rect(0,100%,28%,0);transform:translateX(-3px)}
-  93%{clip-path:rect(30%,100%,70%,0);transform:translateX(3px)}
-  95%{clip-path:rect(65%,100%,100%,0);transform:translateX(-2px)}
-  97%{clip-path:none;transform:skewX(-2deg)}
-}
-@keyframes glitch2{
-  0%,88%,100%{clip-path:none;transform:none;opacity:0}
-  89%{clip-path:rect(0,100%,45%,0);transform:translateX(4px);opacity:.5}
-  91%{clip-path:rect(50%,100%,100%,0);transform:translateX(-4px);opacity:.5}
-  93%{clip-path:none;opacity:0}
-}
-@keyframes chk{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes pulse2{0%,100%{box-shadow:0 0 10px var(--red-glow)}50%{box-shadow:0 0 30px var(--red-glow),0 0 60px rgba(204,0,0,.15)}}
+@keyframes goldpulse{0%,100%{box-shadow:0 0 12px var(--gold-glow),inset 0 0 12px rgba(230,168,23,.04)}50%{box-shadow:0 0 32px var(--gold-glow),inset 0 0 24px rgba(230,168,23,.1)}}
+@keyframes cyanpulse{0%,100%{box-shadow:0 0 10px var(--cyan-glow)}50%{box-shadow:0 0 28px var(--cyan-glow),0 0 50px rgba(0,204,255,.1)}}
+@keyframes chk{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
 @keyframes typeblnk{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes ndpulse{0%,100%{transform:scale(.7);opacity:.3}50%{transform:scale(1.4);opacity:1}}
-@keyframes scanh{0%{left:-100%}100%{left:100%}}
-@keyframes goldpulse{0%,100%{box-shadow:0 0 12px rgba(230,168,23,.3),inset 0 0 12px rgba(230,168,23,.05)}50%{box-shadow:0 0 28px rgba(230,168,23,.6),inset 0 0 20px rgba(230,168,23,.12)}}
+@keyframes ndpulse{0%,100%{transform:scale(.6);opacity:.2}50%{transform:scale(1.5);opacity:1}}
+@keyframes scanh{0%{left:-100%}100%{left:150%}}
+@keyframes glitch{0%,88%,100%{clip-path:none;transform:none}89%{clip-path:polygon(0 0,100% 0,100% 30%,0 30%);transform:translateX(-4px)}91%{clip-path:polygon(0 35%,100% 35%,100% 70%,0 70%);transform:translateX(4px)}93%{clip-path:polygon(0 72%,100% 72%,100% 100%,0 100%);transform:translateX(-2px)}95%{clip-path:none;transform:skewX(-1deg)}}
+@keyframes glitch2{0%,86%,100%{clip-path:none;transform:none;opacity:0}87%{clip-path:polygon(0 0,100% 0,100% 40%,0 40%);transform:translateX(5px);opacity:.4}89%{clip-path:polygon(0 45%,100% 45%,100% 100%,0 100%);transform:translateX(-5px);opacity:.4}91%{clip-path:none;opacity:0}}
+@keyframes hextile{0%,100%{opacity:.03}50%{opacity:.09}}
+@keyframes borderflow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes floatin{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes zoomin{from{opacity:0;transform:scale(1.05)}to{opacity:1;transform:scale(1)}}
+@keyframes slideright{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideleft{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes barfill{from{width:0}to{width:100%}}
+@keyframes energywave{0%{transform:scaleX(0);transform-origin:left}50%{transform:scaleX(1);transform-origin:left}51%{transform:scaleX(1);transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
+@keyframes counter{from{opacity:0}to{opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.4}94%{opacity:1}96%{opacity:.6}97%{opacity:1}}
 
-/* MODAL PERSONALIZAÇÃO */
-#modal-pref{position:fixed;inset:0;z-index:99000;background:rgba(0,0,0,.97);display:flex;justify-content:center;align-items:center;padding:20px;}
-#modal-pref.hide{display:none;}
-.pref-box{width:100%;max-width:500px;background:var(--bg2);border:1px solid var(--border2);border-top:2px solid var(--red);}
-.pref-hd{padding:26px 26px 18px;border-bottom:1px solid var(--border);}
-.pref-hd h2{font-family:var(--f1);font-size:20px;color:var(--red);letter-spacing:3px;}
-.pref-hd p{font-family:var(--f3);font-size:11px;color:var(--dim2);margin-top:5px;letter-spacing:2px;}
-.pref-body{padding:22px 26px;display:flex;flex-direction:column;gap:22px;}
-.pref-sec label{display:block;font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
-.pref-opts{display:flex;flex-wrap:wrap;gap:8px;}
-.popt{background:transparent;border:1px solid var(--border);color:var(--dim2);padding:10px 16px;font-family:var(--f3);font-size:11px;letter-spacing:1px;transition:all .2s;cursor:pointer!important;}
-.popt:hover{border-color:var(--dim2);color:var(--text);}
-.popt.sel{border-color:var(--red);color:var(--red);background:rgba(204,0,0,.06);}
-.pref-foot{padding:18px 26px;border-top:1px solid var(--border);}
-.pbtn{width:100%;font-family:var(--f1);font-size:16px;letter-spacing:3px;color:var(--red);background:transparent;border:1px solid var(--red);padding:15px;position:relative;overflow:hidden;transition:all .25s;cursor:pointer!important;}
-.pbtn::before{content:'';position:absolute;inset:0;background:var(--red);transform:translateX(-101%);transition:.25s;z-index:0;}
-.pbtn:hover{color:#fff;}
-.pbtn:hover::before{transform:translateX(0);}
-.pbtn span{position:relative;z-index:1;}
+/* ── APP ── */
+#app{position:relative;z-index:10;width:100%;height:100%;}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;pointer-events:none;padding:20px;transition:opacity .5s cubic-bezier(.25,.46,.45,.94),transform .5s cubic-bezier(.25,.46,.45,.94);transform:translateY(12px);}
+.scr.on{opacity:1;pointer-events:all;transform:translateY(0);}
+.scr.out{opacity:0;transform:translateY(-12px);pointer-events:none;}
+.scr.scroll-scr{justify-content:flex-start;overflow-y:auto;overflow-x:hidden;padding:0;-webkit-overflow-scrolling:touch;}
 
-/* SPLASH */
+/* ══════════════════════════════════════
+   SPLASH
+══════════════════════════════════════ */
 #scr-splash{background:transparent;}
-.splash-inner{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;max-width:540px;position:relative;}
-.sp-logo{position:relative;width:150px;height:150px;margin-bottom:30px;flex-shrink:0;}
-.sp-ring{position:absolute;border-radius:50%;border:1px solid rgba(204,0,0,.12);}
-.sp-ring-1{inset:0;animation:rtt 14s linear infinite;}
-.sp-ring-2{inset:10px;border-color:rgba(204,0,0,.2);animation:rtt2 9s linear infinite;}
-.sp-ring-3{inset:22px;border-color:rgba(204,0,0,.4);animation:rtt 5s linear infinite;}
-.sp-ring-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);top:-3px;left:50%;transform:translateX(-50%);}
-.sp-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
-.sp-csl{font-family:var(--f1);font-size:36px;color:var(--red);letter-spacing:5px;text-shadow:0 0 24px rgba(204,0,0,.5);}
-.sp-by{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:5px;opacity:0;animation:fadeup .5s ease forwards .2s;}
-.sp-name{font-family:var(--f1);font-size:62px;color:var(--white);letter-spacing:8px;line-height:1;margin:6px 0;position:relative;opacity:0;animation:fadeup .5s ease forwards .4s;}
-.sp-name-ghost{position:absolute;inset:0;font-family:var(--f1);font-size:62px;color:var(--red);letter-spacing:8px;animation:glitch2 5s ease-in-out infinite 1s;}
-.sp-role{font-family:var(--f3);font-size:11px;color:var(--dim2);letter-spacing:3px;opacity:0;animation:fadeup .5s ease forwards .6s;}
-.sp-line{width:110px;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);margin:24px 0;opacity:0;animation:fadeup .5s ease forwards .8s;}
-.sp-ver{font-family:var(--f3);font-size:10px;color:rgba(204,0,0,.25);letter-spacing:4px;opacity:0;animation:fadeup .5s ease forwards 1s;}
-.sp-btn{margin-top:34px;font-family:var(--f1);font-size:18px;color:var(--red);background:transparent;border:1px solid rgba(204,0,0,.4);padding:16px 54px;letter-spacing:5px;position:relative;overflow:hidden;transition:all .25s;opacity:0;animation:fadeup .5s ease forwards 1.4s;cursor:pointer!important;}
-.sp-btn::before{content:'';position:absolute;inset:0;background:var(--red);transform:translateX(-101%);transition:.25s;}
-.sp-btn:hover{color:#fff;border-color:var(--red);box-shadow:0 0 34px rgba(204,0,0,.3);}
+.splash-wrap{display:flex;flex-direction:column;align-items:center;width:100%;max-width:580px;position:relative;}
+
+/* Logo principal */
+.sp-logo{position:relative;width:180px;height:180px;margin-bottom:36px;flex-shrink:0;animation:floatin 4s ease-in-out infinite;}
+.sp-hex{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.sp-hex svg{animation:rtt 20s linear infinite;opacity:.15;}
+.sp-ring{position:absolute;border-radius:50%;border:1px solid transparent;}
+.sp-ring-1{inset:0;border-color:rgba(204,0,0,.15);animation:rtt 18s linear infinite;}
+.sp-ring-2{inset:14px;border-color:rgba(0,204,255,.12);animation:rtt2 12s linear infinite;}
+.sp-ring-3{inset:28px;border-color:rgba(204,0,0,.3);animation:rtt 7s linear infinite;}
+.sp-ring-4{inset:42px;border-color:rgba(0,204,255,.2);animation:rtt2 5s linear infinite;}
+.sp-dot{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 14px var(--red2);top:-3.5px;left:50%;transform:translateX(-50%);}
+.sp-dot-c{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);top:50%;left:-2.5px;transform:translateY(-50%);}
+.sp-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;}
+.sp-csl{font-family:var(--f1);font-size:44px;color:var(--red);letter-spacing:6px;text-shadow:0 0 30px rgba(204,0,0,.6),0 0 60px rgba(204,0,0,.2);animation:flicker 6s ease-in-out infinite;}
+
+/* Textos splash */
+.sp-by{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:6px;opacity:0;animation:fadeup .5s ease forwards .15s;text-transform:uppercase;}
+.sp-name{font-family:var(--f1);font-size:56px;color:var(--white);letter-spacing:9px;line-height:1;margin:8px 0;position:relative;opacity:0;animation:fadeup .6s ease forwards .35s;}
+.sp-name-ghost{position:absolute;inset:0;font-family:var(--f1);font-size:56px;color:var(--cyan);letter-spacing:9px;animation:glitch2 6s ease-in-out infinite 1.5s;}
+.sp-role{font-family:var(--f3);font-size:11px;color:rgba(0,204,255,.4);letter-spacing:4px;opacity:0;animation:fadeup .5s ease forwards .55s;}
+
+/* Divisor animado */
+.sp-divider{display:flex;align-items:center;gap:14px;width:100%;max-width:340px;margin:28px 0;opacity:0;animation:fadeup .5s ease forwards .75s;}
+.sp-div-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(204,0,0,.5),transparent);}
+.sp-div-line.c{background:linear-gradient(90deg,transparent,rgba(0,204,255,.4),transparent);}
+.sp-div-ico{width:8px;height:8px;border:1px solid var(--red);transform:rotate(45deg);box-shadow:0 0 8px var(--red);}
+
+/* Stats linha */
+.sp-stats{display:flex;gap:30px;opacity:0;animation:fadeup .5s ease forwards .95s;}
+.sp-stat{text-align:center;}
+.sp-stat-n{font-family:var(--f1);font-size:22px;color:var(--red);letter-spacing:2px;text-shadow:0 0 12px rgba(204,0,0,.4);}
+.sp-stat-l{font-family:var(--f3);font-size:9px;color:var(--dim2);letter-spacing:2px;margin-top:2px;}
+
+/* Botão splash */
+.sp-btn-wrap{position:relative;opacity:0;animation:fadeup .6s ease forwards 1.3s;margin-top:36px;}
+.sp-btn{font-family:var(--f1);font-size:16px;color:var(--red);background:transparent;border:1px solid rgba(204,0,0,.5);padding:18px 60px;letter-spacing:6px;position:relative;overflow:hidden;transition:all .3s;cursor:pointer!important;}
+.sp-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--red),#880000);transform:translateX(-101%);transition:.35s;z-index:0;}
+.sp-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);animation:scanh 2.5s linear infinite;}
+.sp-btn:hover{color:#fff;border-color:var(--red);box-shadow:0 0 40px rgba(204,0,0,.3),0 0 80px rgba(204,0,0,.1);}
 .sp-btn:hover::before{transform:translateX(0);}
 .sp-btn span{position:relative;z-index:1;}
-.vhs-ts{position:absolute;bottom:0;right:0;font-family:var(--f3);font-size:9px;color:rgba(204,0,0,.2);letter-spacing:2px;animation:typeblnk 1.2s step-end infinite;}
+.sp-btn-glow{position:absolute;inset:-2px;background:transparent;border:1px solid transparent;background-clip:padding-box;animation:pulse2 2s ease-in-out infinite;pointer-events:none;border-radius:0;}
 
-/* QUIZ */
-#scr-quiz{background:transparent;}
-.qwrap{width:100%;max-width:560px;background:var(--bg2);border:1px solid var(--border);border-top:2px solid var(--red);}
-.q-hd{padding:24px 26px 18px;border-bottom:1px solid var(--border);}
-.q-hd h2{font-family:var(--f1);font-size:22px;color:var(--white);letter-spacing:3px;}
-.q-hd p{font-family:var(--f3);font-size:11px;color:var(--dim2);margin-top:4px;letter-spacing:1.5px;}
-.q-body{padding:24px 26px;}
-.q-prog-row{display:flex;justify-content:space-between;font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:1px;margin-bottom:8px;}
-.q-pb{width:100%;height:2px;background:var(--gray3);margin-bottom:22px;overflow:hidden;}
-.q-pbf{height:100%;background:var(--red);transition:width .4s ease;box-shadow:0 0 6px var(--red);}
-.q-qst{font-family:var(--f2);font-size:20px;color:var(--white);line-height:1.5;margin-bottom:20px;min-height:60px;font-weight:500;letter-spacing:.3px;}
-.q-opts{display:flex;flex-direction:column;gap:8px;}
-.qopt{background:transparent;border:1px solid var(--border);color:var(--dim3);padding:13px 16px;font-family:var(--f2);font-size:16px;font-weight:500;text-align:left;transition:all .2s;cursor:pointer!important;letter-spacing:.3px;}
-.qopt:hover{border-color:var(--dim2);color:var(--text);}
-.qopt.right{border-color:#22cc55;color:#22cc55;background:rgba(34,204,85,.05);}
-.qopt.wrong{border-color:var(--red);color:var(--red);background:rgba(204,0,0,.05);}
-.qopt:disabled{cursor:not-allowed!important;}
+.sp-ver{font-family:var(--f3);font-size:9px;color:rgba(100,100,140,.25);letter-spacing:4px;margin-top:24px;opacity:0;animation:fadeup .4s ease forwards 1.6s;}
+.sp-ts{font-family:var(--f3);font-size:9px;color:rgba(204,0,0,.2);letter-spacing:2px;animation:typeblnk 1.1s step-end infinite;margin-top:6px;opacity:0;animation:fadeup .4s ease forwards 1.8s, typeblnk 1.1s step-end infinite 1.8s;}
 
-/* BLOQUEIO */
-#scr-block{background:transparent;}
-.blk-box{text-align:center;padding:40px 30px;}
-.blk-ico{width:70px;height:70px;border-radius:50%;border:1px solid var(--red);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 0 28px rgba(204,0,0,.2);}
-.blk-title{font-family:var(--f1);font-size:26px;color:var(--red);letter-spacing:4px;margin-bottom:6px;}
-.blk-tm{font-family:var(--f1);font-size:68px;color:var(--white);margin:20px 0;letter-spacing:5px;}
-.blk-sub{font-family:var(--f3);font-size:12px;color:var(--dim2);letter-spacing:2px;line-height:2;}
+/* ══════════════════════════════════════
+   BOOT SEQUENCE
+══════════════════════════════════════ */
+.boot-wrap{width:100%;max-width:560px;display:flex;flex-direction:column;gap:18px;}
+.boot-hd{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-r);padding-bottom:12px;}
+.boot-hd-l{font-family:var(--f1);font-size:14px;color:var(--red);letter-spacing:3px;}
+.boot-hd-r{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:2px;}
+.boot-bar-wrap{width:100%;height:3px;background:var(--gray2);overflow:hidden;border-radius:0;}
+.boot-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--red),var(--red2));transition:width .3s ease;box-shadow:0 0 8px var(--red);}
+.boot-terminal{background:rgba(5,5,12,.9);border:1px solid var(--border);padding:16px;font-family:var(--f3);font-size:11px;min-height:140px;display:flex;flex-direction:column;gap:5px;backdrop-filter:blur(8px);}
+.bt-line{animation:slideright .15s ease;}
+.bt-line.ok{color:var(--green);}
+.bt-line.w{color:var(--gold);}
+.bt-line.e{color:var(--red);}
+.bt-line.d{color:var(--dim2);}
+.bt-line.c{color:var(--cyan);}
+.boot-status{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:2px;text-align:center;}
 
-/* INTRO TELAS */
-.ibox{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:480px;}
-.i-tag{font-family:var(--f3);font-size:10px;color:rgba(204,0,0,.5);letter-spacing:6px;text-transform:uppercase;}
-.i-title{font-family:var(--f1);font-size:30px;color:var(--white);letter-spacing:4px;text-align:center;}
-.i-pbwrap{width:100%;height:2px;background:var(--gray);overflow:hidden;}
-.i-pbfill{height:100%;background:var(--red);transition:width .35s ease;box-shadow:0 0 6px var(--red);}
-.i-sub{font-family:var(--f3);font-size:11px;color:var(--dim2);letter-spacing:2px;text-align:center;}
+/* Módulos de boot */
+.boot-mods{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.bmod{background:var(--bg2);border:1px solid var(--border);padding:12px;display:flex;justify-content:space-between;align-items:center;animation:fadeup .2s ease;border-left:2px solid transparent;transition:border-color .3s;}
+.bmod.ok{border-left-color:var(--green);}
+.bmod.w{border-left-color:var(--gold);}
+.bmod.e{border-left-color:var(--red);}
+.bmod-l{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:1px;}
+.bmod-r{font-family:var(--f3);font-size:10px;letter-spacing:1px;}
+.bmod.ok .bmod-r{color:var(--green);}
+.bmod.w .bmod-r{color:var(--gold);}
+.bmod.e .bmod-r{color:var(--red);}
 
-#scr-ia .ia-rows{width:100%;display:flex;flex-direction:column;gap:7px;}
-#scr-ia .ia-row{display:flex;justify-content:space-between;padding:10px 13px;background:var(--bg3);border:1px solid var(--border);border-left:1px solid rgba(204,0,0,.3);font-family:var(--f3);font-size:11px;animation:fadeup .2s ease;}
-#scr-ia .ia-row-l{color:var(--dim2);letter-spacing:1px;}
-#scr-ia .ia-row-r{color:var(--red);}
-
-#scr-ib .ib-terminal{width:100%;background:#050505;border:1px solid var(--border);padding:16px;font-family:var(--f3);font-size:12px;min-height:130px;display:flex;flex-direction:column;gap:4px;}
-#scr-ib .ib-line{animation:fadeup .15s ease;}
-#scr-ib .ib-line.ok{color:#22cc55;}
-#scr-ib .ib-line.w{color:#e67e22;}
-#scr-ib .ib-line.r{color:var(--red);}
-#scr-ib .ib-line.d{color:var(--dim2);}
-
-#scr-ic .ic-eye-wrap{position:relative;width:100px;height:58px;}
-.ic-eye-bg{position:absolute;inset:0;border-radius:50%;border:1px solid var(--red);animation:pulse 2.2s ease-in-out infinite;}
-.ic-pupil{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:radial-gradient(circle,var(--red) 40%,transparent 70%);box-shadow:0 0 14px var(--red);}
-.ic-scan-line{position:absolute;top:calc(50% - 1px);height:1px;width:0;background:var(--red);left:10px;animation:scanh 1.5s ease-in-out infinite;}
-#scr-ic .ic-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;}
-.ic-cell{background:var(--bg3);border:1px solid var(--border);padding:10px 12px;}
-.ic-cell-l{font-family:var(--f3);font-size:9px;color:var(--dim);letter-spacing:1px;margin-bottom:3px;}
-.ic-cell-v{font-family:var(--f3);font-size:12px;color:var(--red);}
-
-#scr-id .id-wrap{width:100%;max-width:560px;}
-.id-hdr{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:11px;margin-bottom:16px;font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:2px;}
-.id-logs{display:flex;flex-direction:column;gap:4px;}
-.id-log{display:flex;gap:11px;font-family:var(--f3);font-size:11px;animation:fadeup .15s ease;}
-.id-log .pfx{flex-shrink:0;}
-.id-log.ok .pfx{color:#22cc55;}
-.id-log.w .pfx{color:#e67e22;}
-.id-log.e .pfx{color:var(--red);}
-.id-log .msg{color:var(--dim2);}
-.id-csl{font-family:var(--f1);font-size:68px;color:var(--red);text-align:center;margin-top:22px;opacity:0;letter-spacing:14px;text-shadow:0 0 34px rgba(204,0,0,.4);}
-.id-csl.show{animation:scalein .5s ease forwards;}
-#id-btn{display:none;margin-top:14px;width:100%;}
-
-#scr-ie .ie-radar{position:relative;width:170px;height:170px;border-radius:50%;border:1px solid rgba(204,0,0,.2);}
-#scr-ie .ie-radar::before,#scr-ie .ie-radar::after{content:'';position:absolute;border-radius:50%;border:1px solid rgba(204,0,0,.1);}
-#scr-ie .ie-radar::before{inset:26%}
-#scr-ie .ie-radar::after{inset:50%}
-.ie-rline{position:absolute;top:50%;left:50%;width:50%;height:1px;transform-origin:left;background:linear-gradient(90deg,rgba(204,0,0,.9),transparent);animation:rtt 2s linear infinite;}
-.ie-blip{position:absolute;width:5px;height:5px;background:var(--red);border-radius:50%;box-shadow:0 0 7px var(--red);animation:ndpulse 2.5s ease-in-out infinite;}
-.ie-info{font-family:var(--f3);font-size:11px;color:var(--dim2);letter-spacing:2px;}
-
-/* AVISO */
+/* ══════════════════════════════════════
+   AVISO
+══════════════════════════════════════ */
 #scr-warn{padding:0;justify-content:flex-start;}
 #warn-scroll{flex:1;overflow-y:auto;width:100%;display:flex;justify-content:center;padding:22px 16px 10px;-webkit-overflow-scrolling:touch;}
-.warn-box{width:100%;max-width:560px;background:var(--bg2);border:1px solid var(--border);border-top:2px solid var(--red);}
-.warn-ico{text-align:center;padding:24px 22px 0;}
-.warn-tit{font-family:var(--f1);font-size:26px;color:var(--red);text-align:center;letter-spacing:5px;padding:18px 22px 12px;}
-.warn-body{padding:0 24px 24px;}
-.warn-txt{font-family:var(--f4);font-size:15px;line-height:2.1;color:var(--dim3);white-space:pre-wrap;font-weight:400;}
-.warn-cursor{display:inline-block;width:8px;height:16px;background:var(--red);animation:typeblnk 1s step-end infinite;vertical-align:middle;margin-left:2px;}
-#warn-foot{width:100%;max-width:560px;margin:0 auto;background:var(--bg);border-top:1px solid var(--border);padding:14px 16px;flex-shrink:0;}
+.warn-box{width:100%;max-width:580px;background:rgba(8,8,16,.92);border:1px solid var(--border-r);border-top:2px solid var(--red);backdrop-filter:blur(12px);}
+.warn-top-bar{height:3px;background:linear-gradient(90deg,var(--red),transparent);background-size:200%;animation:borderflow 3s linear infinite;}
+.warn-hd{display:flex;align-items:center;gap:14px;padding:22px 26px 18px;border-bottom:1px solid var(--border);}
+.warn-hd-ico{width:40px;height:40px;border:1px solid rgba(204,0,0,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 16px rgba(204,0,0,.2);animation:pulse2 2.5s ease-in-out infinite;}
+.warn-hd-txt h2{font-family:var(--f1);font-size:18px;color:var(--red);letter-spacing:3px;}
+.warn-hd-txt p{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:2px;margin-top:3px;}
+.warn-body{padding:22px 26px 26px;}
+.warn-txt{font-family:var(--f3);font-size:12px;line-height:2.1;color:var(--dim3);white-space:pre-wrap;}
+.warn-cursor{display:inline-block;width:8px;height:14px;background:var(--red);animation:typeblnk .9s step-end infinite;vertical-align:middle;margin-left:2px;}
+#warn-foot{width:100%;max-width:580px;margin:0 auto;background:rgba(5,5,12,.95);border-top:1px solid var(--border);padding:14px 16px;flex-shrink:0;backdrop-filter:blur(8px);}
 
-/* FORMULÁRIO */
+/* ══════════════════════════════════════
+   FORMULÁRIO
+══════════════════════════════════════ */
 #scr-form{padding:0;justify-content:flex-start;}
 #form-sc{flex:1;overflow-y:auto;width:100%;-webkit-overflow-scrolling:touch;padding:0 14px;}
-.fwrap{width:100%;max-width:760px;margin:0 auto;padding-bottom:110px;}
-.ftop{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding:18px 0 15px;position:sticky;top:0;background:var(--bg);z-index:100;}
-.ftop-l h2{font-family:var(--f1);font-size:24px;color:var(--white);letter-spacing:3px;}
-.ftop-l p{font-family:var(--f3);font-size:10px;color:var(--dim2);margin-top:3px;letter-spacing:1px;}
-.fpbwrap{width:75px;height:2px;background:var(--gray);overflow:hidden;}
-.fpbfill{height:100%;background:var(--red);transition:width .4s;box-shadow:0 0 5px var(--red);}
-.fpb-pct{font-family:var(--f3);font-size:10px;color:var(--dim2);text-align:right;margin-top:5px;}
-.fsec{padding:20px 0;border-bottom:1px solid var(--border);}
-.sec-lbl{font-family:var(--f1);font-size:15px;color:var(--red);letter-spacing:3px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
-.sec-lbl::after{content:'';flex:1;height:1px;background:var(--border);}
+.fwrap{width:100%;max-width:780px;margin:0 auto;padding-bottom:120px;}
 
-.fi{display:flex;flex-direction:column;gap:6px;margin-bottom:15px;}
+.ftop{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding:18px 0 15px;position:sticky;top:0;background:rgba(5,5,8,.97);z-index:100;backdrop-filter:blur(12px);}
+.ftop-l h2{font-family:var(--f1);font-size:22px;color:var(--white);letter-spacing:3px;}
+.ftop-l p{font-family:var(--f3);font-size:10px;color:var(--dim2);margin-top:3px;letter-spacing:1px;}
+.fpbwrap{width:80px;height:3px;background:var(--gray2);overflow:hidden;}
+.fpbfill{height:100%;background:linear-gradient(90deg,var(--red),var(--red2));transition:width .4s;box-shadow:0 0 6px var(--red);}
+.fpb-pct{font-family:var(--f1);font-size:12px;color:var(--red);text-align:right;margin-top:5px;letter-spacing:1px;}
+
+.fsec{padding:22px 0;border-bottom:1px solid var(--border);}
+.sec-lbl{font-family:var(--f1);font-size:14px;color:var(--red);letter-spacing:3px;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border-r),transparent);}
+
+.fi{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
 .fi label{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:2px;text-transform:uppercase;}
-.inp{width:100%;background:var(--bg3);border:none;border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--f2);font-size:17px;padding:11px 0;outline:none;transition:all .2s;border-radius:0;-webkit-appearance:none;font-weight:400;}
-.inp:focus{border-bottom-color:var(--red);color:var(--white);}
+.inp{width:100%;background:var(--bg3);border:none;border-bottom:1px solid var(--border);color:var(--text2);font-family:var(--f2);font-size:17px;padding:11px 0;outline:none;transition:all .25s;border-radius:0;-webkit-appearance:none;font-weight:500;letter-spacing:.3px;}
+.inp:focus{border-bottom-color:var(--red);color:var(--white);background:var(--bg4);}
 .inp::placeholder{color:var(--dim);}
-textarea.inp{min-height:90px;resize:none;border:1px solid var(--border);padding:12px 13px;background:var(--bg3);}
-textarea.inp:focus{border-color:rgba(204,0,0,.35);}
+textarea.inp{min-height:90px;resize:none;border:1px solid var(--border);padding:12px 14px;background:var(--bg3);}
+textarea.inp:focus{border-color:var(--border-r);background:var(--bg4);}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 
-.rrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
-.ro{background:transparent;border:1px solid var(--border);color:var(--dim2);padding:9px 14px;font-family:var(--f2);font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;transition:all .2s;cursor:pointer!important;}
+.rrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:5px;}
+.ro{background:transparent;border:1px solid var(--border);color:var(--dim2);padding:10px 16px;font-family:var(--f2);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;transition:all .2s;cursor:pointer!important;position:relative;overflow:hidden;}
+.ro::before{content:'';position:absolute;inset:0;background:var(--red);transform:translateY(101%);transition:.2s;z-index:0;opacity:.08;}
 .ro:hover{border-color:var(--dim2);color:var(--text);}
-.ro.on{background:rgba(204,0,0,.07);border-color:var(--red);color:var(--white);}
+.ro.on{background:rgba(204,0,0,.08);border-color:var(--red);color:var(--white);}
+.ro.on::before{transform:translateY(0);}
+.ro span{position:relative;z-index:1;}
 
-/* DIVISÕES — 6 cards em grid */
-.divs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;}
-
-.dc{background:var(--bg3);border:1px solid var(--border);padding:18px 8px;text-align:center;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer!important;position:relative;overflow:hidden;}
-.dc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--red);transform:scaleX(0);transition:.25s;}
-.dc:hover::after{transform:scaleX(1);}
-.dc svg{transition:.25s;stroke:var(--dim);}
-.dc span{font-family:var(--f1);font-size:10px;color:var(--dim);letter-spacing:1.5px;transition:.25s;}
-.dc.sel{border-color:rgba(204,0,0,.3);background:rgba(204,0,0,.04);}
-.dc.sel::after{transform:scaleX(1);}
+/* Cards divisão */
+.divs-gold-label{font-family:var(--f3);font-size:9px;color:rgba(230,168,23,.6);letter-spacing:4px;margin-bottom:10px;text-align:center;display:flex;align-items:center;gap:8px;}
+.divs-gold-label::before,.divs-gold-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(230,168,23,.3),transparent);}
+.divs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.dc{background:var(--bg2);border:1px solid var(--border);padding:20px 8px;text-align:center;transition:all .3s;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer!important;position:relative;overflow:hidden;}
+.dc::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--red);transform:scaleX(0);transition:.3s;box-shadow:0 0 8px var(--red);}
+.dc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(204,0,0,.06),transparent 70%);opacity:0;transition:.3s;}
+.dc:hover::before{transform:scaleX(1);}
+.dc:hover::after{opacity:1;}
+.dc svg{transition:.3s;stroke:var(--dim2);}
+.dc-name{font-family:var(--f1);font-size:10px;color:var(--dim2);letter-spacing:1.5px;transition:.3s;}
+.dc.sel{border-color:rgba(204,0,0,.35);background:rgba(204,0,0,.05);}
+.dc.sel::before{transform:scaleX(1);}
+.dc.sel::after{opacity:1;}
 .dc.sel svg{stroke:var(--red);}
-.dc.sel span{color:var(--white);}
+.dc.sel .dc-name{color:var(--white);}
+.dc.gold-card{border-color:rgba(230,168,23,.2);background:rgba(230,168,23,.02);}
+.dc.gold-card::before{background:var(--gold);box-shadow:0 0 8px var(--gold);}
+.dc.gold-card::after{background:radial-gradient(circle at 50% 100%,rgba(230,168,23,.07),transparent 70%);}
+.dc.gold-card svg{stroke:rgba(230,168,23,.6);}
+.dc.gold-card .dc-name{color:rgba(230,168,23,.7);}
+.dc.gold-card:hover{border-color:rgba(230,168,23,.45);animation:goldpulse 2s ease-in-out infinite;}
+.dc.gold-card.sel{border-color:rgba(230,168,23,.5);background:rgba(230,168,23,.06);animation:goldpulse 2s ease-in-out infinite;}
+.dc.gold-card.sel svg{stroke:var(--gold);}
+.dc.gold-card.sel .dc-name{color:var(--gold2);}
+.dc-badge{position:absolute;top:6px;right:6px;font-family:var(--f3);font-size:7px;letter-spacing:1px;padding:2px 6px;border:1px solid;}
+.dc-badge.top{color:var(--gold);border-color:rgba(230,168,23,.4);background:rgba(230,168,23,.08);}
+.dc-badge.new{color:var(--green);border-color:rgba(0,255,136,.4);background:rgba(0,255,136,.06);}
 
-/* Card OURO */
-.dc.gold-card{border-color:rgba(230,168,23,.25);background:rgba(230,168,23,.03);}
-.dc.gold-card::after{background:var(--gold);}
-.dc.gold-card span{color:var(--gold);font-size:10px;}
-.dc.gold-card svg{stroke:var(--gold);}
-.dc.gold-card:hover{border-color:rgba(230,168,23,.5);animation:goldpulse 2s ease-in-out infinite;}
-.dc.gold-card.sel{border-color:rgba(230,168,23,.6);background:rgba(230,168,23,.07);animation:goldpulse 2s ease-in-out infinite;}
-.dc.gold-card.sel span{color:var(--gold2);}
-.dc.gold-card.sel svg{stroke:var(--gold2);}
-.dc-badge{position:absolute;top:5px;right:5px;font-family:var(--f3);font-size:7px;letter-spacing:1px;padding:2px 5px;border:1px solid;border-radius:0;}
-.dc-badge.top{color:var(--gold);border-color:rgba(230,168,23,.5);background:rgba(230,168,23,.1);}
-.dc-badge.new{color:#22cc55;border-color:rgba(34,204,85,.5);background:rgba(34,204,85,.08);}
+/* Formulário divisão */
+.dform{display:none;flex-direction:column;padding:20px 0 0;animation:fadeup .35s ease;}
+.dform-hd{display:flex;align-items:center;gap:12px;font-family:var(--f1);font-size:16px;letter-spacing:3px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.dform-hd::before{content:'▶';font-size:10px;}
+.div-info-box{background:rgba(230,168,23,.03);border:1px solid rgba(230,168,23,.18);border-left:3px solid var(--gold);padding:15px 16px;margin-bottom:18px;}
+.dib-title{font-family:var(--f1);font-size:11px;color:var(--gold);letter-spacing:3px;margin-bottom:10px;}
+.dib-title::before{content:'▸ ';}
+.div-info-box p{font-family:var(--f3);font-size:12px;color:var(--dim3);line-height:2;}
 
-.dform{display:none;flex-direction:column;padding:18px 0 0;animation:fadeup .3s ease;}
-.dform-hd{font-family:var(--f1);font-size:17px;letter-spacing:3px;margin-bottom:16px;padding-bottom:11px;border-bottom:1px solid var(--border);}
-
-.sbtn-area{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);padding:14px 0 6px;margin-top:8px;}
-.cbtn{position:relative;font-family:var(--f1);font-size:17px;color:var(--red);background:transparent;border:1px solid rgba(204,0,0,.4);padding:16px 28px;letter-spacing:4px;overflow:hidden;transition:all .25s;display:block;width:100%;text-align:center;-webkit-appearance:none;cursor:pointer!important;}
-.cbtn::before{content:'';position:absolute;inset:0;background:var(--red);transform:translateX(-101%);transition:.25s;z-index:0;}
-.cbtn:hover,.cbtn:active{color:#fff;border-color:var(--red);}
+/* Botão submit */
+.sbtn-area{position:sticky;bottom:0;background:rgba(5,5,8,.97);border-top:1px solid var(--border);padding:16px 0 8px;margin-top:10px;backdrop-filter:blur(12px);}
+.cbtn{position:relative;font-family:var(--f1);font-size:16px;color:var(--red);background:transparent;border:1px solid rgba(204,0,0,.45);padding:17px 28px;letter-spacing:4px;overflow:hidden;transition:all .3s;display:block;width:100%;text-align:center;-webkit-appearance:none;cursor:pointer!important;}
+.cbtn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--red),#880000);transform:translateX(-101%);transition:.3s;z-index:0;}
+.cbtn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);animation:scanh 3s linear infinite;opacity:.5;}
+.cbtn:hover,.cbtn:active{color:#fff;border-color:var(--red);box-shadow:0 0 30px rgba(204,0,0,.2);}
 .cbtn:hover::before,.cbtn:active::before{transform:translateX(0);}
 .cbtn span{position:relative;z-index:1;}
 
-/* TRANSMISSÃO */
+/* Quiz do recrutador */
+.rec-quiz-box{background:rgba(5,5,12,.8);border:1px solid var(--border-r);padding:18px;margin-bottom:18px;}
+.rec-quiz-box .rq-hd{font-family:var(--f1);font-size:12px;color:var(--red);letter-spacing:3px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:10px;}
+
+/* ══════════════════════════════════════
+   TRANSMISSÃO
+══════════════════════════════════════ */
 #scr-tx{background:transparent;}
-.tx-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:440px;}
-.tx-radar{position:relative;width:160px;height:160px;border-radius:50%;border:1px solid rgba(204,0,0,.2);}
-.tx-radar::before,.tx-radar::after{content:'';position:absolute;border-radius:50%;border:1px solid rgba(204,0,0,.08);}
-.tx-radar::before{inset:22%}.tx-radar::after{inset:44%}
-.tx-rline{position:absolute;top:50%;left:50%;width:50%;height:1px;transform-origin:left;background:linear-gradient(90deg,rgba(204,0,0,.8),transparent);animation:rtt 1.8s linear infinite;}
-.tx-blip{position:absolute;width:5px;height:5px;background:var(--red);border-radius:50%;box-shadow:0 0 6px var(--red);}
+.tx-wrap{display:flex;flex-direction:column;align-items:center;gap:22px;width:100%;max-width:460px;}
+.tx-radar{position:relative;width:180px;height:180px;border-radius:50%;border:1px solid rgba(204,0,0,.18);flex-shrink:0;}
+.tx-radar::before,.tx-radar::after{content:'';position:absolute;border-radius:50%;border:1px solid;}
+.tx-radar::before{inset:25%;border-color:rgba(0,204,255,.1);}
+.tx-radar::after{inset:50%;border-color:rgba(204,0,0,.08);}
+.tx-rline{position:absolute;top:50%;left:50%;width:50%;height:1px;transform-origin:left;background:linear-gradient(90deg,rgba(204,0,0,.9),transparent);animation:rtt 2s linear infinite;}
+.tx-rline2{position:absolute;top:50%;left:50%;width:50%;height:1px;transform-origin:left;background:linear-gradient(90deg,rgba(0,204,255,.4),transparent);animation:rtt 2s linear infinite;animation-delay:1s;}
+.tx-blip{position:absolute;width:5px;height:5px;background:var(--red);border-radius:50%;box-shadow:0 0 7px var(--red);}
+.tx-blip.c{background:var(--cyan);box-shadow:0 0 7px var(--cyan);}
 .tx-title{font-family:var(--f1);font-size:20px;color:var(--white);letter-spacing:4px;}
-.tx-pbwrap{width:100%;height:2px;background:var(--gray);}
-.tx-pbfill{height:100%;background:var(--red);width:0%;transition:width .2s;box-shadow:0 0 6px var(--red);}
+.tx-pbwrap{width:100%;height:3px;background:var(--gray2);overflow:hidden;}
+.tx-pbfill{height:100%;background:linear-gradient(90deg,var(--red),var(--red2));width:0%;transition:width .2s;box-shadow:0 0 8px var(--red);}
 .tx-row{display:flex;justify-content:space-between;width:100%;font-family:var(--f3);font-size:10px;color:var(--dim2);}
-.tx-log{width:100%;background:#030303;border:1px solid var(--border);padding:12px;font-family:var(--f3);font-size:11px;color:var(--dim2);max-height:110px;overflow-y:auto;}
-.tx-log p{margin-bottom:3px;}.tx-log p.ok{color:#22cc55;}
+.tx-log{width:100%;background:rgba(5,5,12,.9);border:1px solid var(--border);padding:14px;font-family:var(--f3);font-size:11px;color:var(--dim2);max-height:120px;overflow-y:auto;backdrop-filter:blur(8px);}
+.tx-log p{margin-bottom:3px;}.tx-log p.ok{color:var(--green);}
 
-/* FINAL */
+/* ══════════════════════════════════════
+   FINAL
+══════════════════════════════════════ */
 #scr-final{background:transparent;}
-.fn-box{width:100%;max-width:460px;background:var(--bg2);border:1px solid var(--border);border-top:2px solid #22cc55;padding:48px 38px;text-align:center;}
-.fn-chk{width:64px;height:64px;border-radius:50%;border:1px solid #22cc55;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 0 26px rgba(34,204,85,.2);animation:chk .5s cubic-bezier(.19,1,.22,1) forwards;}
-.fn-tit{font-family:var(--f1);font-size:30px;color:#22cc55;letter-spacing:4px;margin-bottom:16px;}
-.fn-txt{font-family:var(--f2);font-size:16px;color:var(--dim2);line-height:2;margin-bottom:6px;font-weight:300;}
-.fn-tag{font-family:var(--f3);font-size:9px;color:rgba(34,204,85,.15);margin-top:30px;letter-spacing:4px;}
+.fn-box{width:100%;max-width:480px;background:rgba(5,5,12,.92);border:1px solid rgba(0,255,136,.2);border-top:2px solid var(--green);padding:50px 40px;text-align:center;backdrop-filter:blur(14px);animation:zoomin .5s ease;}
+.fn-chk{width:70px;height:70px;border-radius:50%;border:1px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 0 30px var(--green-glow),0 0 60px rgba(0,255,136,.1);animation:chk .6s cubic-bezier(.19,1,.22,1) forwards;}
+.fn-tit{font-family:var(--f1);font-size:28px;color:var(--green);letter-spacing:5px;margin-bottom:18px;text-shadow:0 0 20px rgba(0,255,136,.3);}
+.fn-txt{font-family:var(--f2);font-size:16px;color:var(--dim2);line-height:2;margin-bottom:6px;font-weight:400;}
+.fn-tag{font-family:var(--f3);font-size:9px;color:rgba(0,255,136,.12);margin-top:32px;letter-spacing:4px;}
+.fn-id{font-family:var(--f1);font-size:13px;color:rgba(0,255,136,.4);letter-spacing:3px;margin-top:16px;}
 
-/* MODAL CONFIRMAÇÃO */
-#modal-confirm{position:fixed;inset:0;z-index:5000;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.92);opacity:0;pointer-events:none;transition:opacity .3s;padding:20px;}
+/* ══════════════════════════════════════
+   MODAL CONFIRMAÇÃO
+══════════════════════════════════════ */
+#modal-confirm{position:fixed;inset:0;z-index:5000;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.94);opacity:0;pointer-events:none;transition:opacity .3s;padding:20px;backdrop-filter:blur(4px);}
 #modal-confirm.on{opacity:1;pointer-events:all;}
-.mbox{width:100%;max-width:480px;background:var(--bg2);border:1px solid var(--border);border-top:1px solid rgba(204,0,0,.4);padding:28px 24px;animation:scalein .3s ease;}
-.mhd{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-.mhd h3{font-family:var(--f1);font-size:22px;color:var(--white);letter-spacing:2px;}
+.mbox{width:100%;max-width:500px;background:rgba(8,8,16,.97);border:1px solid var(--border-r);border-top:2px solid var(--red);animation:scalein .3s ease;backdrop-filter:blur(14px);}
+.mbox-top{height:3px;background:linear-gradient(90deg,var(--red),var(--cyan),var(--red));background-size:200%;animation:borderflow 2s linear infinite;}
+.mhd{padding:24px 26px 18px;border-bottom:1px solid var(--border);}
+.mhd h3{font-family:var(--f1);font-size:20px;color:var(--white);letter-spacing:3px;}
 .mhd p{font-family:var(--f3);font-size:10px;color:var(--dim2);margin-top:4px;letter-spacing:1px;}
-.mlist{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
-.mi{display:flex;gap:11px;padding:12px 13px;background:var(--bg3);border:1px solid var(--border);}
-.mi strong{display:block;font-family:var(--f2);font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;letter-spacing:.5px;}
+.mlist{display:flex;flex-direction:column;gap:8px;padding:20px 26px;border-bottom:1px solid var(--border);}
+.mi{display:flex;gap:12px;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-left:2px solid var(--border-r);transition:.2s;}
+.mi:hover{border-left-color:var(--red);}
+.mi strong{display:block;font-family:var(--f2);font-size:14px;font-weight:700;color:var(--text2);margin-bottom:2px;letter-spacing:.3px;}
 .mi p{font-family:var(--f2);font-size:13px;color:var(--dim2);line-height:1.5;}
-.malt{background:rgba(230,126,22,.05);border:1px solid rgba(230,126,22,.18);padding:10px 13px;font-family:var(--f3);font-size:11px;color:#e67e22;margin-bottom:16px;}
-.mbtns{display:flex;gap:8px;}
-.mbtns button{flex:1;font-family:var(--f1);font-size:15px;letter-spacing:2px;padding:14px;border:1px solid;transition:all .25s;outline:none;cursor:pointer!important;background:transparent;}
+.malt{background:rgba(230,168,23,.04);border:1px solid rgba(230,168,23,.15);padding:12px 14px;font-family:var(--f3);font-size:11px;color:var(--gold);margin:0 26px 20px;letter-spacing:.5px;line-height:1.8;}
+.mbtns{display:flex;gap:10px;padding:0 26px 24px;}
+.mbtns button{flex:1;font-family:var(--f1);font-size:14px;letter-spacing:2px;padding:15px;border:1px solid;transition:all .25s;outline:none;cursor:pointer!important;background:transparent;}
 .mbk{border-color:var(--border);color:var(--dim2);}
 .mbk:hover{border-color:var(--dim2);color:var(--text);}
-.mgo{border-color:var(--red);color:var(--red);position:relative;overflow:hidden;}
-.mgo::before{content:'';position:absolute;inset:0;background:var(--red);transform:translateX(-101%);transition:.25s;z-index:0;}
+.mgo{border-color:rgba(204,0,0,.5);color:var(--red);position:relative;overflow:hidden;}
+.mgo::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--red),#880000);transform:translateX(-101%);transition:.25s;z-index:0;}
 .mgo:hover::before{transform:translateX(0);}
-.mgo:hover{color:#fff;}.mgo span{position:relative;z-index:1;}
+.mgo:hover{color:#fff;}
+.mgo span{position:relative;z-index:1;}
 
-/* BOTÕES FIXOS */
-#mbtn{position:fixed;bottom:18px;right:18px;z-index:600;width:38px;height:38px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);color:var(--dim2);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .25s;cursor:pointer!important;}
-#mbtn:hover,#mbtn.pl{border-color:var(--red);color:var(--red);}
-#pref-btn{position:fixed;bottom:18px;left:18px;z-index:600;width:38px;height:38px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);color:var(--dim2);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .25s;cursor:pointer!important;}
-#pref-btn:hover{border-color:var(--red);color:var(--red);}
-
-/* BOTÃO VOLUME — só aumentar */
-#vol-btn{position:fixed;bottom:64px;right:18px;z-index:600;width:38px;height:38px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);color:var(--dim2);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .25s;cursor:pointer!important;}
-#vol-btn:hover{border-color:var(--red);color:var(--red);}
-#vol-btn.maxed{border-color:rgba(204,0,0,.3);color:rgba(204,0,0,.4);cursor:not-allowed!important;}
-
-#term-log{position:fixed;bottom:14px;left:64px;width:230px;pointer-events:none;z-index:500;}
-.tl{font-family:var(--f3);font-size:9px;color:rgba(90,90,90,.55);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:fadeup .2s ease;}
-
-/* AVISO COMPATIBILIDADE */
-#compat-alert{
-  display:none;
-  position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
-  z-index:8000;width:calc(100% - 32px);max-width:520px;
-  background:var(--bg2);border:1px solid rgba(230,168,23,.4);
-  border-left:3px solid var(--gold);padding:16px 18px;
-  animation:fadeup .35s ease;
-}
+/* ══════════════════════════════════════
+   COMPATIBILIDADE
+══════════════════════════════════════ */
+#compat-alert{display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:8000;width:calc(100% - 32px);max-width:540px;background:rgba(8,8,16,.96);border:1px solid rgba(230,168,23,.35);border-left:3px solid var(--gold);padding:16px 18px;animation:fadeup .35s ease;backdrop-filter:blur(12px);}
 #compat-alert .ca-tag{font-family:var(--f3);font-size:9px;color:var(--gold);letter-spacing:3px;margin-bottom:8px;}
-#compat-alert .ca-msg{font-family:var(--f2);font-size:15px;color:var(--text2);line-height:1.6;font-weight:400;}
-#compat-alert .ca-sug{font-family:var(--f1);font-size:13px;color:var(--gold);letter-spacing:2px;margin-top:10px;}
+#compat-alert .ca-msg{font-family:var(--f2);font-size:15px;color:var(--text2);line-height:1.6;}
+#compat-alert .ca-sug{font-family:var(--f1);font-size:12px;color:var(--gold);letter-spacing:2px;margin-top:10px;}
 #compat-alert .ca-close{position:absolute;top:10px;right:12px;font-family:var(--f3);font-size:11px;color:var(--dim2);background:none;border:none;cursor:pointer!important;letter-spacing:1px;}
-#compat-alert .ca-switch{margin-top:12px;font-family:var(--f3);font-size:11px;color:var(--gold);background:transparent;border:1px solid rgba(230,168,23,.3);padding:8px 14px;letter-spacing:2px;cursor:pointer!important;transition:all .2s;}
+#compat-alert .ca-switch{margin-top:12px;font-family:var(--f3);font-size:11px;color:var(--gold);background:transparent;border:1px solid rgba(230,168,23,.3);padding:9px 16px;letter-spacing:2px;cursor:pointer!important;transition:all .2s;}
 #compat-alert .ca-switch:hover{background:rgba(230,168,23,.08);border-color:var(--gold);}
 
-/* Caixa info divisão ouro */
-.div-info-box{background:rgba(230,168,23,.04);border:1px solid rgba(230,168,23,.2);border-left:3px solid var(--gold);padding:14px 16px;margin-bottom:16px;}
-.div-info-box p{font-family:var(--f4);font-size:14px;color:var(--dim3);line-height:1.9;}
-.div-info-box .dib-title{font-family:var(--f1);font-size:12px;color:var(--gold);letter-spacing:3px;margin-bottom:8px;}
+/* ══════════════════════════════════════
+   BOTÕES FIXOS
+══════════════════════════════════════ */
+.fixed-btn{position:fixed;z-index:600;width:40px;height:40px;border-radius:50%;background:rgba(8,8,16,.9);border:1px solid var(--border);color:var(--dim2);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .25s;cursor:pointer!important;backdrop-filter:blur(8px);}
+.fixed-btn:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 14px rgba(204,0,0,.2);}
+#mbtn{bottom:20px;right:20px;}
+#mbtn.pl{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 14px var(--cyan-glow);}
+#vol-btn{bottom:68px;right:20px;}
+#vol-btn.maxed{border-color:var(--border);color:var(--dim);opacity:.4;cursor:not-allowed!important;}
 
+/* Term log */
+#term-log{position:fixed;bottom:16px;left:68px;width:240px;pointer-events:none;z-index:500;}
+.tl{font-family:var(--f3);font-size:9px;color:rgba(80,80,110,.45);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:fadeup .2s ease;}
+
+/* Áudio */
+#bg-music{display:none;}
+
+/* ══ RESPONSIVE ══ */
 @media(max-width:600px){
   .g2{grid-template-columns:1fr;}
-  .sp-name{font-size:44px;}
+  .sp-name{font-size:40px;}
   .divs-grid{grid-template-columns:repeat(2,1fr);}
   .mbtns{flex-direction:column;}
+  .sp-stats{gap:20px;}
+  .fn-box{padding:36px 24px;}
 }
 @media(max-width:380px){
-  .sp-name{font-size:36px;}
+  .sp-name{font-size:32px;}
   .divs-grid{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
 <body>
 
-<!-- ÁUDIO DE FUNDO -->
 <audio id="bg-music" src="https://files.catbox.moe/jymrcl.wav" loop preload="auto"></audio>
-
 <canvas id="bg"></canvas>
 <div class="grain"></div>
 <div class="scanlines"></div>
 <div class="vig"></div>
 <div class="vhs-glitch"></div>
-<div class="vhs-stripe" style="top:33%;animation-delay:0s;"></div>
-<div class="vhs-stripe" style="top:67%;animation-delay:3.5s;opacity:.7;"></div>
 
 <div class="corner corner-tl"></div>
 <div class="corner corner-tr"></div>
@@ -422,67 +414,29 @@ textarea.inp:focus{border-color:rgba(204,0,0,.35);}
 <div id="hud">
   <div class="hud-tl">
     <span class="ht"><span class="hud-dot"></span>SISTEMA ATIVO</span>
-    <span class="ht" id="h-ip">IP: —</span>
+    <span class="ht" id="h-ip">IP: MASCARADO</span>
     <span class="ht">PING <b id="h-ping">—</b>ms</span>
   </div>
-  <div class="hud-tr" id="hud-tr-time">
-    <span class="ht" id="h-clk">--:--:--</span>
-    <span class="ht" style="color:rgba(204,0,0,.25)">CsL v9.0</span>
+  <div class="hud-tr">
+    <span class="ht c" id="h-clk">--:--:--</span>
+    <span class="ht" style="color:rgba(0,204,255,.2)">CsL v9.0</span>
   </div>
-  <div class="hud-bl" id="hud-bl"></div>
+  <div class="hud-bl">
+    <span class="ht"><span class="hud-dot g"></span>SESSÃO CRIPTOGRAFADA</span>
+    <span class="ht" id="h-sess">SESS#——</span>
+  </div>
 </div>
+
 <div id="term-log"></div>
 <div id="notifs"></div>
 
-<!-- Botão música -->
-<button id="mbtn" onclick="Music.toggle()">♪</button>
-<!-- Botão só aumentar volume -->
-<button id="vol-btn" onclick="Vol.up()" title="Aumentar volume">▲</button>
-<!-- Botão preferências -->
-<button id="pref-btn" onclick="Pref.open()" title="Personalizar">⚙</button>
-
-<!-- MODAL PERSONALIZAÇÃO -->
-<div id="modal-pref">
-  <div class="pref-box">
-    <div class="pref-hd">
-      <h2>Personalização</h2>
-      <p>Configure sua experiência antes de entrar</p>
-    </div>
-    <div class="pref-body">
-      <div class="pref-sec">
-        <label>Modo Visual</label>
-        <div class="pref-opts">
-          <button class="popt sel" data-theme="dark" onclick="Pref.setTheme(this,'dark')">◉ Escuro</button>
-          <button class="popt" data-theme="light" onclick="Pref.setTheme(this,'light')">○ Claro</button>
-        </div>
-      </div>
-      <div class="pref-sec">
-        <label>Fonte do Sistema</label>
-        <div class="pref-opts">
-          <button class="popt sel" data-font="condensed" onclick="Pref.setFont(this,'condensed')">Condensed</button>
-          <button class="popt" data-font="mono" onclick="Pref.setFont(this,'mono')">Mono</button>
-          <button class="popt" data-font="courier" onclick="Pref.setFont(this,'courier')">Courier</button>
-        </div>
-      </div>
-      <div class="pref-sec">
-        <label>Velocidade da Linha VHS</label>
-        <div class="pref-opts">
-          <button class="popt" data-speed="3s" onclick="Pref.setSpeed(this,'3s')">Rápida</button>
-          <button class="popt sel" data-speed="6s" onclick="Pref.setSpeed(this,'6s')">Normal</button>
-          <button class="popt" data-speed="12s" onclick="Pref.setSpeed(this,'12s')">Lenta</button>
-          <button class="popt" data-speed="0s" onclick="Pref.setSpeed(this,'0s')">Desligado</button>
-        </div>
-      </div>
-    </div>
-    <div class="pref-foot">
-      <button class="pbtn" onclick="Pref.confirm()"><span>▶ Entrar no Sistema</span></button>
-    </div>
-  </div>
-</div>
+<button class="fixed-btn" id="mbtn" onclick="Music.toggle()">♪</button>
+<button class="fixed-btn" id="vol-btn" onclick="Vol.up()" title="Aumentar volume">▲</button>
 
 <!-- MODAL CONFIRMAÇÃO -->
 <div id="modal-confirm">
   <div class="mbox">
+    <div class="mbox-top"></div>
     <div class="mhd">
       <h3>VERIFICAÇÃO FINAL</h3>
       <p>CONFIRME OS DADOS ANTES DO ENVIO</p>
@@ -492,7 +446,7 @@ textarea.inp:focus{border-color:rgba(204,0,0,.35);}
       <div class="mi"><span>🔐</span><div><strong>Compromisso</strong><p>Ao enviar você aceita todas as regras da CsL.</p></div></div>
       <div class="mi"><span>📡</span><div><strong>Transmissão Segura</strong><p>Dados criptografados antes do envio.</p></div></div>
     </div>
-    <div class="malt">⚠ Envios incompletos ou falsos serão descartados e o IP bloqueado.</div>
+    <div class="malt">⚠ Envios incompletos ou falsos serão descartados e o IP bloqueado permanentemente.</div>
     <div class="mbtns">
       <button class="mbk" onclick="Mod.close()">VOLTAR</button>
       <button class="mgo" onclick="Mod.confirm()"><span>TRANSMITIR</span></button>
@@ -500,136 +454,146 @@ textarea.inp:focus{border-color:rgba(204,0,0,.35);}
   </div>
 </div>
 
+<!-- ALERTA COMPATIBILIDADE -->
+<div id="compat-alert">
+  <button class="ca-close" onclick="Compat.hide()">✕</button>
+  <div class="ca-tag">⚠ ANÁLISE DE PERFIL — SISTEMA CsL</div>
+  <div class="ca-msg" id="ca-msg"></div>
+  <div class="ca-sug" id="ca-sug"></div>
+  <button class="ca-switch" id="ca-switch-btn"></button>
+</div>
+
 <div id="app">
 
-<!-- SPLASH -->
+<!-- ════════ SPLASH ════════ -->
 <div id="scr-splash" class="scr on">
-  <div class="splash-inner">
+  <div class="splash-wrap">
     <div class="sp-logo">
-      <div class="sp-ring sp-ring-1"><div class="sp-ring-dot"></div></div>
-      <div class="sp-ring sp-ring-2"></div>
+      <div class="sp-hex">
+        <svg width="180" height="180" viewBox="0 0 180 180"><polygon points="90,10 165,52.5 165,127.5 90,170 15,127.5 15,52.5" fill="none" stroke="rgba(204,0,0,.3)" stroke-width=".5"/></svg>
+      </div>
+      <div class="sp-ring sp-ring-1"><div class="sp-dot"></div></div>
+      <div class="sp-ring sp-ring-2"><div class="sp-dot-c"></div></div>
       <div class="sp-ring sp-ring-3"></div>
-      <div class="sp-center"><span class="sp-csl">CsL</span></div>
+      <div class="sp-ring sp-ring-4"></div>
+      <div class="sp-center">
+        <span class="sp-csl">CsL</span>
+      </div>
     </div>
+
     <p class="sp-by">Sistema criado por</p>
     <h1 class="sp-name">Eclipse<div class="sp-name-ghost">Eclipse</div></h1>
     <p class="sp-role">Arquiteto do Sistema — CsL Core</p>
-    <div class="sp-line"></div>
-    <p class="sp-ver">Sistema de Recrutamento v9.0 — Acesso Restrito</p>
-    <button class="sp-btn" onclick="Go.quiz()"><span>▶ Acessar Sistema</span></button>
-    <span class="vhs-ts" id="sp-ts">REC ● 00:00:00</span>
-  </div>
-</div>
 
-<!-- QUIZ -->
-<div id="scr-quiz" class="scr">
-  <div class="qwrap">
-    <div class="q-hd">
-      <h2>Verificação de Acesso</h2>
-      <p>Responda as perguntas abaixo para entrar — são simples, calma aí!</p>
+    <div class="sp-divider">
+      <div class="sp-div-line"></div>
+      <div class="sp-div-ico"></div>
+      <div class="sp-div-line c"></div>
     </div>
-    <div class="q-body">
-      <div class="q-prog-row">
-        <span id="q-num">1 / 4</span>
-        <span id="q-pts">0 corretas</span>
+
+    <div class="sp-stats">
+      <div class="sp-stat">
+        <div class="sp-stat-n" id="sp-members">—</div>
+        <div class="sp-stat-l">MEMBROS</div>
       </div>
-      <div class="q-pb"><div class="q-pbf" id="q-bar" style="width:0%"></div></div>
-      <div class="qqst" id="q-qst"></div>
-      <div class="q-opts" id="q-opts"></div>
+      <div class="sp-stat">
+        <div class="sp-stat-n" id="sp-online">—</div>
+        <div class="sp-stat-l">ONLINE</div>
+      </div>
+      <div class="sp-stat">
+        <div class="sp-stat-n">v9.0</div>
+        <div class="sp-stat-l">VERSÃO</div>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- BLOQUEIO -->
-<div id="scr-block" class="scr">
-  <div class="blk-box">
-    <div class="blk-ico">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#cc0000" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    <div class="sp-btn-wrap">
+      <div class="sp-btn-glow"></div>
+      <button class="sp-btn" onclick="Go.boot()"><span>▶ Acessar Sistema</span></button>
     </div>
-    <div class="blk-title">Acesso Negado</div>
-    <div class="blk-tm" id="blk-timer">5:00</div>
-    <div class="blk-sub">IP bloqueado temporariamente<br>Aguarde e tente novamente</div>
+
+    <p class="sp-ver">Sistema de Recrutamento v9.0 — Acesso Restrito</p>
+    <p class="sp-ts" id="sp-ts">REC ● 00:00:00</p>
   </div>
 </div>
 
-<!-- INTRO A -->
-<div id="scr-ia" class="scr">
-  <div class="ibox">
-    <span class="i-tag">Inicializando Módulos</span>
-    <div class="ia-rows" id="ia-rows"></div>
-    <div class="i-pbwrap"><div class="i-pbfill" id="ia-bar"></div></div>
-    <span class="i-sub" id="ia-sts">Aguardando...</span>
-  </div>
-</div>
-
-<!-- INTRO B -->
-<div id="scr-ib" class="scr">
-  <div class="ibox">
-    <span class="i-tag">Verificando Rede</span>
-    <div class="ib-terminal" id="ib-terminal"></div>
-    <div class="i-pbwrap"><div class="i-pbfill" id="ib-bar"></div></div>
-  </div>
-</div>
-
-<!-- INTRO C -->
-<div id="scr-ic" class="scr">
-  <div class="ibox">
-    <span class="i-tag">Verificando Identidade</span>
-    <div class="ic-eye-wrap">
-      <div class="ic-eye-bg"></div>
-      <div class="ic-pupil"></div>
-      <div class="ic-scan-line"></div>
+<!-- ════════ BOOT A — MÓDULOS ════════ -->
+<div id="scr-ba" class="scr">
+  <div class="boot-wrap">
+    <div class="boot-hd">
+      <span class="boot-hd-l">Inicializando Módulos</span>
+      <span class="boot-hd-r" id="ba-step">0 / 6</span>
     </div>
-    <div class="i-title" id="ic-tit">Analisando...</div>
-    <div class="i-pbwrap"><div class="i-pbfill" id="ic-bar"></div></div>
-    <div class="ic-grid" id="ic-data"></div>
-    <span class="i-sub" id="ic-msg">Iniciando varredura...</span>
+    <div class="boot-mods" id="ba-mods"></div>
+    <div class="boot-bar-wrap"><div class="boot-bar" id="ba-bar"></div></div>
+    <div class="boot-status" id="ba-sts">Aguardando...</div>
   </div>
 </div>
 
-<!-- INTRO D -->
-<div id="scr-id" class="scr">
-  <div class="id-wrap">
-    <div class="id-hdr">
-      <span>CsL — Boot Sequence v9.0</span>
-      <span id="id-clk">--:--:--</span>
+<!-- ════════ BOOT B — TERMINAL ════════ -->
+<div id="scr-bb" class="scr">
+  <div class="boot-wrap">
+    <div class="boot-hd">
+      <span class="boot-hd-l">Verificando Rede</span>
+      <span class="boot-hd-r c" id="bb-pct">0%</span>
     </div>
-    <div class="id-logs" id="id-logs"></div>
-    <div style="width:100%;height:2px;background:var(--gray);margin-top:16px;overflow:hidden;">
-      <div id="id-bar" style="height:100%;width:0;background:var(--red);transition:width .3s;box-shadow:0 0 6px var(--red);"></div>
-    </div>
-    <div class="id-csl" id="id-csl">CsL</div>
-    <button class="cbtn" id="id-btn" onclick="Go.ie()"><span>▶ Inicializar Sistema</span></button>
+    <div class="boot-terminal" id="bb-term"></div>
+    <div class="boot-bar-wrap"><div class="boot-bar" id="bb-bar"></div></div>
   </div>
 </div>
 
-<!-- INTRO E -->
-<div id="scr-ie" class="scr">
-  <div class="ibox">
-    <span class="i-tag">Localizando Nós</span>
-    <div class="ie-radar">
-      <div class="ie-rline"></div>
-      <div class="ie-blip" style="top:27%;left:62%;animation-delay:0s;"></div>
-      <div class="ie-blip" style="top:61%;left:33%;animation-delay:.9s;"></div>
-      <div class="ie-blip" style="top:39%;left:18%;animation-delay:1.6s;"></div>
-      <div class="ie-blip" style="top:71%;left:67%;animation-delay:2.2s;"></div>
+<!-- ════════ BOOT C — IDENTIDADE ════════ -->
+<div id="scr-bc" class="scr">
+  <div class="boot-wrap">
+    <div class="boot-hd">
+      <span class="boot-hd-l">Verificando Identidade</span>
+      <span class="boot-hd-r" id="bc-pct">0%</span>
     </div>
-    <div class="ie-info" id="ie-info">Escaneando frequência...</div>
-    <div class="i-pbwrap"><div class="i-pbfill" id="ie-bar"></div></div>
+    <!-- Eye scanner -->
+    <div style="display:flex;align-items:center;justify-content:center;padding:10px 0;gap:20px;">
+      <div style="position:relative;width:110px;height:62px;overflow:hidden;">
+        <div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(204,0,0,.3);animation:cyanpulse 2s ease-in-out infinite;"></div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,var(--red) 40%,transparent 70%);box-shadow:0 0 16px var(--red);animation:pulse 1.8s ease-in-out infinite;"></div>
+        <div style="position:absolute;top:calc(50% - 0.5px);height:1px;width:0;background:linear-gradient(90deg,transparent,var(--red),transparent);left:5px;animation:scanh 1.6s ease-in-out infinite;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;" id="bc-data"></div>
+    </div>
+    <div style="font-family:var(--f1);font-size:18px;color:var(--white);letter-spacing:3px;text-align:center;" id="bc-tit">Analisando...</div>
+    <div class="boot-bar-wrap"><div class="boot-bar" id="bc-bar"></div></div>
+    <div class="boot-status" id="bc-msg">Iniciando varredura...</div>
   </div>
 </div>
 
-<!-- AVISO -->
+<!-- ════════ BOOT D — BOOT FINAL ════════ -->
+<div id="scr-bd" class="scr">
+  <div class="boot-wrap">
+    <div class="boot-hd">
+      <span class="boot-hd-l">CsL — Boot Sequence v9.0</span>
+      <span class="boot-hd-r" id="bd-clk">--:--:--</span>
+    </div>
+    <div class="boot-terminal" id="bd-term"></div>
+    <div class="boot-bar-wrap"><div class="boot-bar" id="bd-bar"></div></div>
+    <div style="font-family:var(--f1);font-size:72px;color:var(--red);text-align:center;margin-top:18px;opacity:0;letter-spacing:16px;text-shadow:0 0 40px rgba(204,0,0,.5),0 0 80px rgba(204,0,0,.15);" id="bd-csl">CsL</div>
+    <button class="cbtn" id="bd-btn" style="display:none;margin-top:12px;" onclick="Go.warn()"><span>▶ Inicializar Sistema</span></button>
+  </div>
+</div>
+
+<!-- ════════ AVISO ════════ -->
 <div id="scr-warn" class="scr">
   <div id="warn-scroll">
     <div class="warn-box">
-      <div class="warn-ico">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#cc0000" stroke-width="1.5">
-          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
+      <div class="warn-top-bar"></div>
+      <div class="warn-hd">
+        <div class="warn-hd-ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cc0000" stroke-width="1.5">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div class="warn-hd-txt">
+          <h2>Protocolo de Acesso</h2>
+          <p>LEIA COM ATENÇÃO ANTES DE PROSSEGUIR</p>
+        </div>
       </div>
-      <div class="warn-tit">Protocolo de Acesso</div>
       <div class="warn-body">
         <div id="warn-txt" class="warn-txt"></div>
         <span id="warn-cursor" class="warn-cursor" style="display:none;"></span>
@@ -642,7 +606,7 @@ textarea.inp:focus{border-color:rgba(204,0,0,.35);}
   </div>
 </div>
 
-<!-- FORMULÁRIO -->
+<!-- ════════ FORMULÁRIO ════════ -->
 <div id="scr-form" class="scr scroll-scr">
   <div id="form-sc">
     <div class="fwrap">
@@ -670,8 +634,8 @@ textarea.inp:focus{border-color:rgba(204,0,0,.35);}
         <div class="fi"><label>Por que quer entrar na família?</label><textarea id="f-motivo" class="inp" placeholder="Seja sincero e direto..."></textarea></div>
         <div class="fi"><label>Já foi banido de algum lugar?</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'f-ban')">Sim</div>
-            <div class="ro" onclick="F.radio(this,'f-ban')">Não</div>
+            <div class="ro" onclick="F.radio(this,'f-ban')"><span>Sim</span></div>
+            <div class="ro" onclick="F.radio(this,'f-ban')"><span>Não</span></div>
           </div>
           <input type="hidden" id="f-ban">
         </div>
@@ -682,55 +646,39 @@ textarea.inp:focus{border-color:rgba(204,0,0,.35);}
       <div class="fsec">
         <div class="sec-lbl">Escolha sua Divisão</div>
 
-        <div style="font-family:var(--f3);font-size:9px;color:var(--gold);letter-spacing:3px;margin-bottom:8px;text-align:center;">★ CARGOS DE DESTAQUE ★</div>
-        <div class="divs-grid" style="margin-bottom:12px;">
+        <div class="divs-gold-label">★ CARGOS DE DESTAQUE ★</div>
+        <div class="divs-grid" style="margin-bottom:14px;">
           <div class="dc gold-card" id="c-vigilante" onclick="F.div('vigilante')">
             <div class="dc-badge top">TOP</div>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <circle cx="12" cy="11" r="2"/>
-              <path d="M12 13v3"/>
-            </svg>
-            <span>Vigilante</span>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="2"/><path d="M12 13v3"/></svg>
+            <span class="dc-name">Vigilante</span>
           </div>
           <div class="dc gold-card" id="c-recrutador" onclick="F.div('recrutador')">
             <div class="dc-badge top">TOP</div>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-              <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <line x1="19" y1="8" x2="19" y2="14"/>
-              <line x1="22" y1="11" x2="16" y2="11"/>
-            </svg>
-            <span>Recrutador</span>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            <span class="dc-name">Recrutador</span>
           </div>
           <div class="dc gold-card" id="c-organizador" onclick="F.div('organizador')">
             <div class="dc-badge top">TOP</div>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-              <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-            </svg>
-            <span>Organizador</span>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span class="dc-name">Organizador</span>
           </div>
         </div>
 
-        <div style="font-family:var(--f3);font-size:9px;color:var(--dim2);letter-spacing:3px;margin-bottom:8px;text-align:center;">DIVISÕES</div>
+        <div class="divs-gold-label" style="color:var(--dim2);">DIVISÕES</div>
         <div class="divs-grid">
           <div class="dc" id="c-tatico" onclick="F.div('tatico')">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
-            <span>Tático</span>
+            <span class="dc-name">Tático</span>
           </div>
           <div class="dc" id="c-cyber" onclick="F.div('cyber')">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            <span>Cyber</span>
+            <span class="dc-name">Cyber</span>
           </div>
           <div class="dc" id="c-anonimo" onclick="F.div('anonimo')">
             <div class="dc-badge new">NOVO</div>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-              <circle cx="12" cy="8" r="4"/>
-              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-              <line x1="3" y1="3" x2="21" y2="21" stroke-dasharray="2 2"/>
-            </svg>
-            <span>Anônimo</span>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><line x1="3" y1="3" x2="21" y2="21" stroke-dasharray="2 2"/></svg>
+            <span class="dc-name">Anônimo</span>
           </div>
         </div>
         <input type="hidden" id="f-div">
@@ -738,48 +686,48 @@ textarea.inp:focus{border-color:rgba(204,0,0,.35);}
 
       <!-- ─── VIGILANTE ─── -->
       <div id="df-vigilante" class="dform">
-        <div class="dform-hd" style="color:var(--gold);">▸ Vigilante — Olhos da Família</div>
+        <div class="dform-hd" style="color:var(--gold);">Vigilante — Olhos da Família</div>
         <div class="div-info-box">
-          <div class="dib-title">▸ SOBRE ESTA DIVISÃO</div>
-          <p>O Vigilante é o olho invisível da CsL. Ele monitora membros, identifica conflitos internos e reporta à liderança antes que problemas virem crises. <strong style="color:var(--gold);">Nunca é exposto. Nunca aparece. Sempre observa.</strong></p>
+          <div class="dib-title">SOBRE ESTA DIVISÃO</div>
+          <p>O Vigilante é o olho invisível da CsL. Monitora membros, identifica conflitos e reporta à liderança antes que problemas virem crises. <strong style="color:var(--gold);">Nunca é exposto. Nunca aparece. Sempre observa.</strong></p>
         </div>
-        <div class="fi"><label>Com que frequência você consegue monitorar servidores/grupos?</label>
+        <div class="fi"><label>Frequência de monitoramento</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'v-freq')">Sempre online</div>
-            <div class="ro" onclick="F.radio(this,'v-freq')">Várias vezes ao dia</div>
-            <div class="ro" onclick="F.radio(this,'v-freq')">1x por dia</div>
-            <div class="ro" onclick="F.radio(this,'v-freq')">Quando posso</div>
+            <div class="ro" onclick="F.radio(this,'v-freq')"><span>Sempre online</span></div>
+            <div class="ro" onclick="F.radio(this,'v-freq')"><span>Várias vezes ao dia</span></div>
+            <div class="ro" onclick="F.radio(this,'v-freq')"><span>1x por dia</span></div>
+            <div class="ro" onclick="F.radio(this,'v-freq')"><span>Quando posso</span></div>
           </div>
           <input type="hidden" id="v-freq">
         </div>
         <div class="g2">
-          <div class="fi"><label>Sabe usar contas secundárias / alternativas?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'v-alt')">Sim</div><div class="ro" onclick="F.radio(this,'v-alt')">Não</div></div>
+          <div class="fi"><label>Usa contas alternativas?</label>
+            <div class="rrow"><div class="ro" onclick="F.radio(this,'v-alt')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'v-alt')"><span>Não</span></div></div>
             <input type="hidden" id="v-alt">
           </div>
-          <div class="fi"><label>Consegue parecer neutro / invisível em grupos?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'v-inv')">Sim</div><div class="ro" onclick="F.radio(this,'v-inv')">Parcialmente</div></div>
+          <div class="fi"><label>Consegue ser invisível em grupos?</label>
+            <div class="rrow"><div class="ro" onclick="F.radio(this,'v-inv')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'v-inv')"><span>Parcialmente</span></div></div>
             <input type="hidden" id="v-inv">
           </div>
         </div>
-        <div class="fi"><label>Como você identificaria que um membro está prestes a sair ou trair a família?</label>
-          <textarea id="v-metodo" class="inp" placeholder="Descreva sua forma de identificar sinais de traição ou conflito..."></textarea>
+        <div class="fi"><label>Como identificaria um membro prestes a trair?</label>
+          <textarea id="v-metodo" class="inp" placeholder="Descreva sua forma de identificar sinais de traição..."></textarea>
         </div>
-        <div class="fi"><label>Você consegue reportar sem chamar atenção sobre si mesmo?</label>
+        <div class="fi"><label>Consegue reportar sem se expor?</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'v-rep')">Sim, sei me esconder bem</div>
-            <div class="ro" onclick="F.radio(this,'v-rep')">Acho que sim</div>
-            <div class="ro" onclick="F.radio(this,'v-rep')">Ainda aprendendo</div>
+            <div class="ro" onclick="F.radio(this,'v-rep')"><span>Sim, sei me esconder</span></div>
+            <div class="ro" onclick="F.radio(this,'v-rep')"><span>Acho que sim</span></div>
+            <div class="ro" onclick="F.radio(this,'v-rep')"><span>Ainda aprendendo</span></div>
           </div>
           <input type="hidden" id="v-rep">
         </div>
-        <div class="fi"><label>Descreva uma situação onde você poderia usar o Vigilante para salvar a família</label>
-          <textarea id="v-situa" class="inp" placeholder="Ex: um casal que está discutindo dentro do servidor e um quer sair — como agiria?"></textarea>
+        <div class="fi"><label>Situação onde você usaria o cargo para salvar a família</label>
+          <textarea id="v-situa" class="inp" placeholder="Descreva um cenário e como agiria..."></textarea>
         </div>
-        <div class="fi"><label>Você entende que NUNCA deve se revelar sem autorização da liderança?</label>
+        <div class="fi"><label>Entende que NUNCA deve se revelar sem autorização?</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'v-sig')">Sim, entendo e aceito</div>
-            <div class="ro" onclick="F.radio(this,'v-sig')">Tenho dúvidas</div>
+            <div class="ro" onclick="F.radio(this,'v-sig')"><span>Sim, entendo e aceito</span></div>
+            <div class="ro" onclick="F.radio(this,'v-sig')"><span>Tenho dúvidas</span></div>
           </div>
           <input type="hidden" id="v-sig">
         </div>
@@ -787,184 +735,182 @@ textarea.inp:focus{border-color:rgba(204,0,0,.35);}
 
       <!-- ─── RECRUTADOR ─── -->
       <div id="df-recrutador" class="dform">
-        <div class="dform-hd" style="color:var(--gold);">▸ Recrutador — Porta de Entrada da Família</div>
+        <div class="dform-hd" style="color:var(--gold);">Recrutador — Porta de Entrada</div>
         <div class="div-info-box">
-          <div class="dib-title">▸ GUIA DO RECRUTADOR</div>
-          <p style="margin-bottom:8px;"><span style="color:var(--gold);">01.</span> Sempre aborde com respeito — nunca force ninguém.</p>
-          <p style="margin-bottom:8px;"><span style="color:var(--gold);">02.</span> Apresente a CsL com orgulho, mas sem revelar o que é interno.</p>
-          <p style="margin-bottom:8px;"><span style="color:var(--gold);">03.</span> Verifique o histórico do candidato antes de indicar.</p>
-          <p style="margin-bottom:8px;"><span style="color:var(--gold);">04.</span> Nunca recrute quem foi expulso ou banido da família.</p>
-          <p style="margin-bottom:8px;"><span style="color:var(--gold);">05.</span> Você é responsável por quem traz — a culpa é sua se der errado.</p>
-          <p style="margin-bottom:8px;"><span style="color:var(--gold);">06.</span> Não prometa cargos — recrutas passam por avaliação da liderança.</p>
-          <p style="margin-bottom:8px;"><span style="color:var(--gold);">07.</span> Reporte candidatos suspeitos à liderança imediatamente.</p>
-          <p><span style="color:var(--gold);">08.</span> Qualidade sempre acima de quantidade.</p>
+          <div class="dib-title">GUIA DO RECRUTADOR</div>
+          <p style="margin-bottom:6px;"><span style="color:var(--gold);">01.</span> Aborde com respeito — nunca force ninguém.</p>
+          <p style="margin-bottom:6px;"><span style="color:var(--gold);">02.</span> Apresente a CsL com orgulho, sem revelar o interno.</p>
+          <p style="margin-bottom:6px;"><span style="color:var(--gold);">03.</span> Verifique o histórico antes de indicar.</p>
+          <p style="margin-bottom:6px;"><span style="color:var(--gold);">04.</span> Nunca recrute quem foi expulso da família.</p>
+          <p style="margin-bottom:6px;"><span style="color:var(--gold);">05.</span> Você é responsável por quem traz.</p>
+          <p style="margin-bottom:6px;"><span style="color:var(--gold);">06.</span> Não prometa cargos — recrutas passam por avaliação.</p>
+          <p><span style="color:var(--gold);">07.</span> Qualidade sempre acima de quantidade.</p>
         </div>
-        <div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--red);padding:16px 15px;margin-bottom:18px;">
-          <div style="font-family:var(--f1);font-size:12px;color:var(--red);letter-spacing:3px;margin-bottom:12px;">▸ TESTE DE CAPACITAÇÃO</div>
+        <div class="rec-quiz-box">
+          <div class="rq-hd">▸ TESTE DE CAPACITAÇÃO</div>
           <div id="rec-quiz-wrap" style="font-family:var(--f2);font-size:14px;color:var(--dim2);"></div>
         </div>
-        <div class="fi"><label>Já recrutou alguém para algum grupo antes?</label>
-          <div class="rrow"><div class="ro" onclick="F.radio(this,'r-prev')">Sim</div><div class="ro" onclick="F.radio(this,'r-prev')">Não</div></div>
+        <div class="fi"><label>Já recrutou alguém antes?</label>
+          <div class="rrow"><div class="ro" onclick="F.radio(this,'r-prev')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'r-prev')"><span>Não</span></div></div>
           <input type="hidden" id="r-prev">
         </div>
-        <div class="fi"><label>Quantas pessoas consegue trazer por semana?</label>
+        <div class="fi"><label>Quantas pessoas por semana?</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'r-num')">1-2</div>
-            <div class="ro" onclick="F.radio(this,'r-num')">3-5</div>
-            <div class="ro" onclick="F.radio(this,'r-num')">5+</div>
-            <div class="ro" onclick="F.radio(this,'r-num')">Depende</div>
+            <div class="ro" onclick="F.radio(this,'r-num')"><span>1-2</span></div>
+            <div class="ro" onclick="F.radio(this,'r-num')"><span>3-5</span></div>
+            <div class="ro" onclick="F.radio(this,'r-num')"><span>5+</span></div>
+            <div class="ro" onclick="F.radio(this,'r-num')"><span>Depende</span></div>
           </div>
           <input type="hidden" id="r-num">
         </div>
         <div class="fi"><label>Onde atuaria no recrutamento?</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'r-plat')">Discord</div>
-            <div class="ro" onclick="F.radio(this,'r-plat')">WhatsApp</div>
-            <div class="ro" onclick="F.radio(this,'r-plat')">Telegram</div>
-            <div class="ro" onclick="F.radio(this,'r-plat')">Roblox</div>
-            <div class="ro" onclick="F.radio(this,'r-plat')">Vários</div>
+            <div class="ro" onclick="F.radio(this,'r-plat')"><span>Discord</span></div>
+            <div class="ro" onclick="F.radio(this,'r-plat')"><span>WhatsApp</span></div>
+            <div class="ro" onclick="F.radio(this,'r-plat')"><span>Telegram</span></div>
+            <div class="ro" onclick="F.radio(this,'r-plat')"><span>Roblox</span></div>
+            <div class="ro" onclick="F.radio(this,'r-plat')"><span>Vários</span></div>
           </div>
           <input type="hidden" id="r-plat">
         </div>
-        <div class="fi"><label>Como abordaria um candidato em potencial?</label><textarea id="r-abord" class="inp" placeholder="Descreva sua abordagem..."></textarea></div>
-        <div class="fi"><label>O que faz um bom recruta para a CsL?</label><textarea id="r-bom" class="inp" placeholder="Critérios que você usa para avaliar alguém..."></textarea></div>
+        <div class="fi"><label>Como abordaria um candidato?</label><textarea id="r-abord" class="inp" placeholder="Descreva sua abordagem..."></textarea></div>
+        <div class="fi"><label>O que faz um bom recruta para a CsL?</label><textarea id="r-bom" class="inp" placeholder="Seus critérios de avaliação..."></textarea></div>
         <div class="fi"><label>O que você NUNCA faria ao recrutar?</label><textarea id="r-nao" class="inp" placeholder="Seus limites e princípios..."></textarea></div>
       </div>
 
       <!-- ─── ORGANIZADOR ─── -->
       <div id="df-organizador" class="dform">
-        <div class="dform-hd" style="color:var(--gold);">▸ Organizador — Estrutura da Família</div>
+        <div class="dform-hd" style="color:var(--gold);">Organizador — Estrutura da Família</div>
         <div class="div-info-box">
-          <div class="dib-title">▸ SOBRE ESTA DIVISÃO</div>
+          <div class="dib-title">SOBRE ESTA DIVISÃO</div>
           <p>O Organizador mantém a ordem interna. Coordena eventos, organiza hierarquias, resolve conflitos e garante que a família funcione como uma máquina. Sem organização, não existe poder.</p>
         </div>
         <div class="fi"><label>Nível de atividade diária</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'o-atv')">Muito Alto</div>
-            <div class="ro" onclick="F.radio(this,'o-atv')">Alto</div>
-            <div class="ro" onclick="F.radio(this,'o-atv')">Médio</div>
-            <div class="ro" onclick="F.radio(this,'o-atv')">Baixo</div>
+            <div class="ro" onclick="F.radio(this,'o-atv')"><span>Muito Alto</span></div>
+            <div class="ro" onclick="F.radio(this,'o-atv')"><span>Alto</span></div>
+            <div class="ro" onclick="F.radio(this,'o-atv')"><span>Médio</span></div>
+            <div class="ro" onclick="F.radio(this,'o-atv')"><span>Baixo</span></div>
           </div>
           <input type="hidden" id="o-atv">
         </div>
         <div class="g2">
           <div class="fi"><label>Já administrou grupos/servidores?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'o-adm')">Sim</div><div class="ro" onclick="F.radio(this,'o-adm')">Não</div></div>
+            <div class="rrow"><div class="ro" onclick="F.radio(this,'o-adm')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'o-adm')"><span>Não</span></div></div>
             <input type="hidden" id="o-adm">
           </div>
-          <div class="fi"><label>Resolve conflitos internos bem?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'o-conf')">Sim</div><div class="ro" onclick="F.radio(this,'o-conf')">Parcialmente</div></div>
+          <div class="fi"><label>Resolve conflitos internos?</label>
+            <div class="rrow"><div class="ro" onclick="F.radio(this,'o-conf')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'o-conf')"><span>Parcialmente</span></div></div>
             <input type="hidden" id="o-conf">
           </div>
         </div>
         <div class="fi"><label>Estilo de liderança</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'o-ldr')">Firme</div>
-            <div class="ro" onclick="F.radio(this,'o-ldr')">Flexível</div>
-            <div class="ro" onclick="F.radio(this,'o-ldr')">Democrático</div>
-            <div class="ro" onclick="F.radio(this,'o-ldr')">Aprendendo</div>
+            <div class="ro" onclick="F.radio(this,'o-ldr')"><span>Firme</span></div>
+            <div class="ro" onclick="F.radio(this,'o-ldr')"><span>Flexível</span></div>
+            <div class="ro" onclick="F.radio(this,'o-ldr')"><span>Democrático</span></div>
+            <div class="ro" onclick="F.radio(this,'o-ldr')"><span>Aprendendo</span></div>
           </div>
           <input type="hidden" id="o-ldr">
         </div>
         <div class="fi"><label>Horas disponíveis por dia</label><input type="text" id="o-hrs" class="inp" placeholder="Ex: 5h por dia"></div>
-        <div class="fi"><label>Como organizaria um evento interno da família?</label><textarea id="o-evento" class="inp" placeholder="Descreva como planejaria e executaria..."></textarea></div>
-        <div class="fi"><label>Qual seu maior ponto forte para essa função?</label><textarea id="o-forte" class="inp" placeholder="O que te destaca como organizador..."></textarea></div>
-        <div class="fi"><label>Objetivo geral na CsL</label><textarea id="o-obj" class="inp" placeholder="O que você quer alcançar dentro da família..."></textarea></div>
+        <div class="fi"><label>Como organizaria um evento interno?</label><textarea id="o-evento" class="inp" placeholder="Planejamento e execução..."></textarea></div>
+        <div class="fi"><label>Maior ponto forte para essa função</label><textarea id="o-forte" class="inp" placeholder="O que te destaca como organizador..."></textarea></div>
+        <div class="fi"><label>Objetivo dentro da CsL</label><textarea id="o-obj" class="inp" placeholder="O que quer alcançar na família..."></textarea></div>
       </div>
 
       <!-- ─── TÁTICO ─── -->
       <div id="df-tatico" class="dform">
-        <div class="dform-hd" style="color:var(--red);">▸ Tático — Conflito & Operações</div>
-        <div class="fi"><label>Grupos / Famílias que já participou</label><input type="text" id="t-orgs" class="inp" placeholder="Quais grupos você já fez parte..."></div>
+        <div class="dform-hd" style="color:var(--red);">Tático — Conflito & Operações</div>
+        <div class="fi"><label>Grupos / Famílias anteriores</label><input type="text" id="t-orgs" class="inp" placeholder="Quais grupos você já fez parte..."></div>
         <div class="g2">
-          <div class="fi"><label>Experiência em tretas?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-exp')">Sim</div><div class="ro" onclick="F.radio(this,'t-exp')">Não</div></div><input type="hidden" id="t-exp"></div>
-          <div class="fi"><label>Sabe gastar / travar?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-gast')">Sim</div><div class="ro" onclick="F.radio(this,'t-gast')">Não</div></div><input type="hidden" id="t-gast"></div>
+          <div class="fi"><label>Experiência em tretas?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-exp')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'t-exp')"><span>Não</span></div></div><input type="hidden" id="t-exp"></div>
+          <div class="fi"><label>Sabe gastar / travar?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-gast')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'t-gast')"><span>Não</span></div></div><input type="hidden" id="t-gast"></div>
         </div>
         <div class="fi"><label>Estilo de atuação</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'t-est')">Agressivo</div>
-            <div class="ro" onclick="F.radio(this,'t-est')">Controlado</div>
-            <div class="ro" onclick="F.radio(this,'t-est')">Argumentativo</div>
-            <div class="ro" onclick="F.radio(this,'t-est')">Defensivo</div>
+            <div class="ro" onclick="F.radio(this,'t-est')"><span>Agressivo</span></div>
+            <div class="ro" onclick="F.radio(this,'t-est')"><span>Controlado</span></div>
+            <div class="ro" onclick="F.radio(this,'t-est')"><span>Argumentativo</span></div>
+            <div class="ro" onclick="F.radio(this,'t-est')"><span>Defensivo</span></div>
           </div>
           <input type="hidden" id="t-est">
         </div>
         <div class="g2">
-          <div class="fi"><label>Já entregou alguém?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-x9')">Sim</div><div class="ro" onclick="F.radio(this,'t-x9')">Não</div></div><input type="hidden" id="t-x9"></div>
-          <div class="fi"><label>Segue ordens?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-ord')">Sim</div><div class="ro" onclick="F.radio(this,'t-ord')">Depende</div></div><input type="hidden" id="t-ord"></div>
+          <div class="fi"><label>Já entregou alguém?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-x9')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'t-x9')"><span>Não</span></div></div><input type="hidden" id="t-x9"></div>
+          <div class="fi"><label>Segue ordens?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-ord')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'t-ord')"><span>Depende</span></div></div><input type="hidden" id="t-ord"></div>
         </div>
         <div class="fi"><label>Disponibilidade diária</label><input type="text" id="t-hrs" class="inp" placeholder="Ex: 4h por dia"></div>
-        <div class="fi"><label>Ponto forte em conflito</label><input type="text" id="t-forte" class="inp" placeholder="O que você faz melhor em uma treta..."></div>
-        <div class="fi"><label>Papel e objetivo na família</label><textarea id="t-obj" class="inp" placeholder="O que você quer fazer e oferecer..."></textarea></div>
+        <div class="fi"><label>Ponto forte em conflito</label><input type="text" id="t-forte" class="inp" placeholder="O que você faz melhor..."></div>
+        <div class="fi"><label>Papel e objetivo na família</label><textarea id="t-obj" class="inp" placeholder="O que quer fazer e oferecer..."></textarea></div>
       </div>
 
       <!-- ─── CYBER ─── -->
       <div id="df-cyber" class="dform">
-        <div class="dform-hd" style="color:var(--text2);">▸ Cyber — Tecnologia & Operações Digitais</div>
-        <div class="fi"><label>Linguagens que você conhece</label><input type="text" id="c-ling" class="inp" placeholder="Ex: JS, Python, Bash..."></div>
+        <div class="dform-hd" style="color:var(--cyan);">Cyber — Tecnologia & Operações Digitais</div>
+        <div class="fi"><label>Linguagens que conhece</label><input type="text" id="c-ling" class="inp" placeholder="Ex: JS, Python, Bash..."></div>
         <div class="g2">
-          <div class="fi"><label>Usa Linux / Termux?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'c-lnx')">Sim</div><div class="ro" onclick="F.radio(this,'c-lnx')">Não</div></div><input type="hidden" id="c-lnx"></div>
-          <div class="fi"><label>Cria bots / scripts?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'c-bot')">Sim</div><div class="ro" onclick="F.radio(this,'c-bot')">Não</div></div><input type="hidden" id="c-bot"></div>
+          <div class="fi"><label>Usa Linux / Termux?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'c-lnx')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'c-lnx')"><span>Não</span></div></div><input type="hidden" id="c-lnx"></div>
+          <div class="fi"><label>Cria bots / scripts?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'c-bot')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'c-bot')"><span>Não</span></div></div><input type="hidden" id="c-bot"></div>
         </div>
         <div class="fi"><label>Nível técnico</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'c-nv')">Iniciante</div>
-            <div class="ro" onclick="F.radio(this,'c-nv')">Intermediário</div>
-            <div class="ro" onclick="F.radio(this,'c-nv')">Avançado</div>
+            <div class="ro" onclick="F.radio(this,'c-nv')"><span>Iniciante</span></div>
+            <div class="ro" onclick="F.radio(this,'c-nv')"><span>Intermediário</span></div>
+            <div class="ro" onclick="F.radio(this,'c-nv')"><span>Avançado</span></div>
           </div>
           <input type="hidden" id="c-nv">
         </div>
         <div class="fi"><label>Área de interesse</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'c-area')">Bots</div>
-            <div class="ro" onclick="F.radio(this,'c-area')">Design</div>
-            <div class="ro" onclick="F.radio(this,'c-area')">Automação</div>
-            <div class="ro" onclick="F.radio(this,'c-area')">Segurança</div>
-            <div class="ro" onclick="F.radio(this,'c-area')">Sistemas</div>
+            <div class="ro" onclick="F.radio(this,'c-area')"><span>Bots</span></div>
+            <div class="ro" onclick="F.radio(this,'c-area')"><span>Design</span></div>
+            <div class="ro" onclick="F.radio(this,'c-area')"><span>Automação</span></div>
+            <div class="ro" onclick="F.radio(this,'c-area')"><span>Segurança</span></div>
+            <div class="ro" onclick="F.radio(this,'c-area')"><span>Sistemas</span></div>
           </div>
           <input type="hidden" id="c-area">
         </div>
-        <div class="fi"><label>Ferramentas que usa no dia a dia</label><input type="text" id="c-tools" class="inp" placeholder="Ex: VS Code, Kali, Termux..."></div>
+        <div class="fi"><label>Ferramentas do dia a dia</label><input type="text" id="c-tools" class="inp" placeholder="Ex: VS Code, Kali, Termux..."></div>
         <div class="fi"><label>O que pode oferecer à família?</label><textarea id="c-ofer" class="inp" placeholder="Suas habilidades e contribuições..."></textarea></div>
       </div>
 
       <!-- ─── ANÔNIMO ─── -->
       <div id="df-anonimo" class="dform">
-        <div class="dform-hd" style="color:var(--dim3);">▸ Membro Anônimo — Sombra da Família</div>
-        <div class="div-info-box" style="border-left-color:var(--dim2);border-color:rgba(120,120,120,.2);">
-          <div class="dib-title" style="color:var(--dim3);">▸ SOBRE ESTA DIVISÃO</div>
-          <p>O Anônimo é o membro que ninguém sabe que existe dentro da CsL. Está na família, participa, mas não aparece. Sem tag visível, sem exposição pública. É presença silenciosa que só a liderança conhece. Útil para situações que exigem neutralidade absoluta.</p>
+        <div class="dform-hd" style="color:var(--dim3);">Membro Anônimo — Sombra da Família</div>
+        <div class="div-info-box" style="border-left-color:var(--dim2);border-color:rgba(120,120,120,.15);background:rgba(100,100,120,.03);">
+          <div class="dib-title" style="color:var(--dim3);">SOBRE ESTA DIVISÃO</div>
+          <p>O Anônimo existe dentro da CsL sem que ninguém saiba. Sem tag visível, sem exposição. É presença silenciosa que só a liderança conhece. Útil para situações que exigem neutralidade absoluta.</p>
         </div>
-        <div class="fi"><label>Por que prefere o anonimato dentro da família?</label>
-          <textarea id="an-motivo" class="inp" placeholder="Explique sua razão para não querer exposição..."></textarea>
+        <div class="fi"><label>Por que prefere o anonimato?</label>
+          <textarea id="an-motivo" class="inp" placeholder="Explique sua razão..."></textarea>
         </div>
-        <div class="fi"><label>Você tem histórico complicado que justifica o anonimato?</label>
+        <div class="fi"><label>Tem histórico que justifica o anonimato?</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'an-hist')">Sim, prefiro não explicar</div>
-            <div class="ro" onclick="F.radio(this,'an-hist')">Sim, posso explicar à liderança</div>
-            <div class="ro" onclick="F.radio(this,'an-hist')">Não, só prefiro assim</div>
+            <div class="ro" onclick="F.radio(this,'an-hist')"><span>Sim, prefiro não explicar</span></div>
+            <div class="ro" onclick="F.radio(this,'an-hist')"><span>Sim, posso explicar à liderança</span></div>
+            <div class="ro" onclick="F.radio(this,'an-hist')"><span>Não, só prefiro assim</span></div>
           </div>
           <input type="hidden" id="an-hist">
         </div>
         <div class="g2">
-          <div class="fi"><label>Consegue ajudar a família sem aparecer?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'an-ajud')">Sim</div><div class="ro" onclick="F.radio(this,'an-ajud')">Depende</div></div>
+          <div class="fi"><label>Ajuda sem aparecer?</label>
+            <div class="rrow"><div class="ro" onclick="F.radio(this,'an-ajud')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'an-ajud')"><span>Depende</span></div></div>
             <input type="hidden" id="an-ajud">
           </div>
-          <div class="fi"><label>Aceita que só a liderança saberá quem você é?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'an-acei')">Sim</div><div class="ro" onclick="F.radio(this,'an-acei')">Não</div></div>
+          <div class="fi"><label>Só a liderança saberá quem você é?</label>
+            <div class="rrow"><div class="ro" onclick="F.radio(this,'an-acei')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'an-acei')"><span>Não</span></div></div>
             <input type="hidden" id="an-acei">
           </div>
         </div>
-        <div class="fi"><label>O que você pode oferecer mesmo estando nas sombras?</label>
-          <textarea id="an-ofer" class="inp" placeholder="Informações, apoio, observação, recursos..."></textarea>
+        <div class="fi"><label>O que oferece estando nas sombras?</label>
+          <textarea id="an-ofer" class="inp" placeholder="Informações, apoio, observação..."></textarea>
         </div>
-        <div class="fi"><label>Como a liderança pode entrar em contato com você de forma segura?</label>
-          <input type="text" id="an-contato" class="inp" placeholder="Canal de contato privado...">
+        <div class="fi"><label>Canal de contato privado com a liderança</label>
+          <input type="text" id="an-contato" class="inp" placeholder="Canal seguro de comunicação...">
         </div>
       </div>
 
-      <!-- ENVIAR -->
       <div id="sec-sub" style="display:none;" class="sbtn-area">
         <button class="cbtn" onclick="Mod.open()"><span>▶ Transmitir ao Mainframe</span></button>
       </div>
@@ -973,14 +919,16 @@ textarea.inp:focus{border-color:rgba(204,0,0,.35);}
   </div>
 </div>
 
-<!-- TRANSMISSÃO -->
+<!-- ════════ TRANSMISSÃO ════════ -->
 <div id="scr-tx" class="scr">
   <div class="tx-wrap">
     <div class="tx-radar">
       <div class="tx-rline"></div>
+      <div class="tx-rline2"></div>
       <div class="tx-blip" style="top:25%;left:62%;"></div>
-      <div class="tx-blip" style="top:62%;left:31%;animation-delay:.8s;"></div>
+      <div class="tx-blip c" style="top:62%;left:31%;animation-delay:.8s;"></div>
       <div class="tx-blip" style="top:40%;left:72%;animation-delay:1.8s;"></div>
+      <div class="tx-blip c" style="top:70%;left:50%;animation-delay:2.5s;"></div>
     </div>
     <div class="tx-title" id="tx-tit">Estabelecendo Conexão</div>
     <div class="tx-pbwrap"><div class="tx-pbfill" id="tx-fill"></div></div>
@@ -989,606 +937,439 @@ textarea.inp:focus{border-color:rgba(204,0,0,.35);}
   </div>
 </div>
 
-<!-- FINAL -->
+<!-- ════════ FINAL ════════ -->
 <div id="scr-final" class="scr">
   <div class="fn-box">
     <div class="fn-chk">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#22cc55" stroke-width="2.5">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="2.5">
         <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
       </svg>
     </div>
     <div class="fn-tit">Transmitido</div>
     <p class="fn-txt">Seu protocolo foi criptografado e enviado aos servidores da família CsL.</p>
-    <p class="fn-txt">Aguarde o contato da liderança. Nós vamos te encontrar.</p>
+    <p class="fn-txt">Aguarde o contato da liderança. <strong style="color:var(--green);">Nós vamos te encontrar.</strong></p>
+    <div class="fn-id" id="fn-id">PROTOCOLO #——</div>
     <div class="fn-tag">[ Sessão Encerrada — CsL v9.0 — Constelação Sangrenta ]</div>
   </div>
 </div>
 
 </div><!-- /app -->
 
-<!-- ALERTA DE COMPATIBILIDADE -->
-<div id="compat-alert">
-  <button class="ca-close" onclick="Compat.hide()">✕ FECHAR</button>
-  <div class="ca-tag">⚠ ANÁLISE DE PERFIL — SISTEMA CsL</div>
-  <div class="ca-msg" id="ca-msg"></div>
-  <div class="ca-sug" id="ca-sug"></div>
-  <button class="ca-switch" id="ca-switch-btn"></button>
-</div>
-
 <script>
 'use strict';
 
-/* ── VOLUME — só aumentar, máx 0.45 ── */
+/* ══ VOLUME ══ */
 const Vol = {
-  // Passos: 0.05 → 0.10 → 0.18 → 0.28 → 0.38 → 0.45 (teto)
-  steps: [0.35, 0.50, 0.65, 0.80, 0.92, 1.0],
-  cur: 0,
-  btn: null,
-  init() {
-    this.btn = document.getElementById('vol-btn');
-    const mus = document.getElementById('bg-music');
-    if (mus) mus.volume = this.steps[0];
+  steps:[.15,.28,.42,.58,.75,.92,1.0],cur:0,btn:null,
+  init(){
+    this.btn=document.getElementById('vol-btn');
+    const m=document.getElementById('bg-music');
+    if(m)m.volume=this.steps[0];
   },
-  up() {
-    const mus = document.getElementById('bg-music');
-    if (!mus) return;
-    if (this.cur < this.steps.length - 1) {
-      this.cur++;
-      mus.volume = this.steps[this.cur];
-      A.play('click');
-      // Mostra level no botão temporariamente
-      const lv = this.cur + 1;
-      this.btn.textContent = lv;
-      setTimeout(() => { this.btn.textContent = '▲'; }, 800);
-      if (this.cur === this.steps.length - 1) {
-        this.btn.classList.add('maxed');
-        this.btn.title = 'Volume máximo';
-      }
+  up(){
+    const m=document.getElementById('bg-music');if(!m)return;
+    if(this.cur<this.steps.length-1){
+      this.cur++;m.volume=this.steps[this.cur];A.play('click');
+      this.btn.textContent=this.cur+1;
+      setTimeout(()=>{this.btn.textContent='▲';},800);
+      if(this.cur===this.steps.length-1){this.btn.classList.add('maxed');this.btn.title='Volume máximo';}
     }
   }
 };
 
-const Go = {
-  cur: 'scr-splash',
-  to(id) {
-    const prev = document.getElementById(Go.cur);
-    const next = document.getElementById(id);
-    if (!next || next === prev) return;
-    prev.classList.remove('on'); prev.classList.add('out');
-    setTimeout(() => prev.classList.remove('out'), 600);
-    setTimeout(() => { next.classList.add('on'); }, 120);
-    Go.cur = id;
+/* ══ GO ══ */
+const Go={
+  cur:'scr-splash',
+  to(id){
+    const prev=document.getElementById(Go.cur),next=document.getElementById(id);
+    if(!next||next===prev)return;
+    prev.classList.remove('on');prev.classList.add('out');
+    setTimeout(()=>prev.classList.remove('out'),600);
+    setTimeout(()=>{next.classList.add('on');},130);
+    Go.cur=id;
   },
-  quiz()  { A.init(); Go.to('scr-quiz'); Quiz.start(); },
-  ia()    { Go.to('scr-ia');   setTimeout(() => IA.run(), 300); },
-  ib()    { Go.to('scr-ib');   setTimeout(() => IB.run(), 300); },
-  ic()    { Go.to('scr-ic');   setTimeout(() => IC.run(), 300); },
-  id()    { Go.to('scr-id');   setTimeout(() => ID.run(), 300); },
-  ie()    { Go.to('scr-ie');   setTimeout(() => IE.run(), 300); },
-  warn()  { Go.to('scr-warn'); setTimeout(() => Warn.run(), 500); },
-  form()  { Go.to('scr-form'); F.initRecruiterQuiz(); },
-  tx()    { Go.to('scr-tx'); },
-  fin()   { Go.to('scr-final'); },
+  boot(){ A.init(); Go.to('scr-ba'); setTimeout(()=>BA.run(),300); },
+  bb(){ Go.to('scr-bb'); setTimeout(()=>BB.run(),300); },
+  bc(){ Go.to('scr-bc'); setTimeout(()=>BC.run(),300); },
+  bd(){ Go.to('scr-bd'); setTimeout(()=>BD.run(),300); },
+  warn(){ Go.to('scr-warn'); setTimeout(()=>Warn.run(),400); },
+  form(){ Go.to('scr-form'); F.initRecruiterQuiz(); },
+  tx(){ Go.to('scr-tx'); },
+  fin(){ Go.to('scr-final'); },
 };
 
-const Pref = {
-  theme: 'dark', font: 'condensed', speed: '6s',
-  open() { document.getElementById('modal-pref').classList.remove('hide'); A.play('click'); },
-  close() { document.getElementById('modal-pref').classList.add('hide'); },
-  setTheme(el, t) {
-    document.querySelectorAll('[data-theme]').forEach(e => e.classList.remove('sel'));
-    el.classList.add('sel'); this.theme = t;
-    document.documentElement.classList.toggle('light', t === 'light');
-    A.play('click');
-  },
-  setFont(el, f) {
-    document.querySelectorAll('[data-font]').forEach(e => e.classList.remove('sel'));
-    el.classList.add('sel'); this.font = f;
-    document.documentElement.setAttribute('data-font', f);
-    A.play('click');
-  },
-  setSpeed(el, s) {
-    document.querySelectorAll('[data-speed]').forEach(e => e.classList.remove('sel'));
-    el.classList.add('sel'); this.speed = s;
-    document.documentElement.style.setProperty('--scan-speed', s === '0s' ? '99999s' : s);
-    A.play('click');
-  },
-  confirm() { A.play('impact'); this.close(); }
-};
-
-const BG = {
-  c: document.getElementById('bg'), ctx: null, w: 0, h: 0, pts: [],
-  init() {
-    this.ctx = this.c.getContext('2d');
+/* ══ CANVAS BG ══ */
+const BG={
+  c:document.getElementById('bg'),ctx:null,w:0,h:0,pts:[],time:0,
+  init(){
+    this.ctx=this.c.getContext('2d');
     this.resize();
-    window.addEventListener('resize', () => this.resize());
-    const n = Math.min(30, Math.floor(window.innerWidth / 26));
-    for (let i = 0; i < n; i++) this.pts.push({
-      x: Math.random() * this.w, y: Math.random() * this.h,
-      vx: (Math.random() - .5) * .18, vy: (Math.random() - .5) * .18,
-      r: Math.random() * 1.1 + .3
+    window.addEventListener('resize',()=>this.resize());
+    const n=Math.min(40,Math.floor(window.innerWidth/22));
+    for(let i=0;i<n;i++)this.pts.push({
+      x:Math.random()*this.w,y:Math.random()*this.h,
+      vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,
+      r:Math.random()*1.2+.3,
+      hue:Math.random()>.7?180:0
     });
     this.loop();
   },
-  resize() { this.w = this.c.width = window.innerWidth; this.h = this.c.height = window.innerHeight; },
-  loop() {
-    const ctx = this.ctx;
-    ctx.fillStyle = 'rgba(8,8,8,.1)'; ctx.fillRect(0, 0, this.w, this.h);
-    this.pts.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > this.w) p.vx *= -1;
-      if (p.y < 0 || p.y > this.h) p.vy *= -1;
+  resize(){this.w=this.c.width=window.innerWidth;this.h=this.c.height=window.innerHeight;},
+  loop(){
+    this.time++;
+    const ctx=this.ctx;
+    ctx.fillStyle='rgba(5,5,8,.12)';ctx.fillRect(0,0,this.w,this.h);
+    this.pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>this.w)p.vx*=-1;
+      if(p.y<0||p.y>this.h)p.vy*=-1;
     });
-    this.pts.forEach((a, i) => {
-      this.pts.slice(i + 1).forEach(b => {
-        const d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (d < 110) {
-          ctx.strokeStyle = `rgba(204,0,0,${.035 * (1 - d / 110)})`;
-          ctx.lineWidth = .5; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    this.pts.forEach((a,i)=>{
+      this.pts.slice(i+1).forEach(b=>{
+        const d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<120){
+          const alpha=.04*(1-d/120);
+          const hue=a.hue===0?'204,0,0':'0,200,255';
+          ctx.strokeStyle=`rgba(${hue},${alpha})`;
+          ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
         }
       });
-      ctx.fillStyle = 'rgba(180,0,0,.15)';
-      ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2); ctx.fill();
+      const col=a.hue===0?'rgba(180,0,0,.12)':'rgba(0,180,220,.08)';
+      ctx.fillStyle=col;ctx.beginPath();ctx.arc(a.x,a.y,a.r,0,Math.PI*2);ctx.fill();
     });
-    requestAnimationFrame(() => this.loop());
+    requestAnimationFrame(()=>this.loop());
   }
 };
 
-const Cur = {
-  el: document.getElementById('cur'), r: document.getElementById('cur2'),
-  mx: 0, my: 0, cx: 0, cy: 0,
-  init() {
-    if (matchMedia('(pointer:coarse)').matches) {
-      this.el.style.display = 'none'; this.r.style.display = 'none'; return;
-    }
-    document.addEventListener('mousemove', e => { this.mx = e.clientX; this.my = e.clientY; });
-    document.addEventListener('mousedown', () => { this.el.style.transform = 'translate(-50%,-50%) scale(2.5)'; this.r.style.opacity = '.8'; });
-    document.addEventListener('mouseup', () => { this.el.style.transform = 'translate(-50%,-50%) scale(1)'; this.r.style.opacity = '.4'; });
+/* ══ CURSOR ══ */
+const Cur={
+  el:document.getElementById('cur'),r:document.getElementById('cur2'),
+  mx:0,my:0,cx:0,cy:0,
+  init(){
+    if(matchMedia('(pointer:coarse)').matches){this.el.style.display='none';this.r.style.display='none';return;}
+    document.addEventListener('mousemove',e=>{this.mx=e.clientX;this.my=e.clientY;});
+    document.addEventListener('mousedown',()=>{this.el.style.transform='translate(-50%,-50%) scale(2.8)';this.r.style.opacity='.9';this.r.style.borderColor='rgba(204,0,0,.8)';});
+    document.addEventListener('mouseup',()=>{this.el.style.transform='translate(-50%,-50%) scale(1)';this.r.style.opacity='.35';this.r.style.borderColor='';});
     this.loop();
   },
-  loop() {
-    this.cx += (this.mx - this.cx) * .22; this.cy += (this.my - this.cy) * .22;
-    this.el.style.left = this.cx + 'px'; this.el.style.top = this.cy + 'px';
-    this.r.style.left = this.mx + 'px'; this.r.style.top = this.my + 'px';
-    requestAnimationFrame(() => this.loop());
+  loop(){
+    this.cx+=(this.mx-this.cx)*.2;this.cy+=(this.my-this.cy)*.2;
+    this.el.style.left=this.cx+'px';this.el.style.top=this.cy+'px';
+    this.r.style.left=this.mx+'px';this.r.style.top=this.my+'px';
+    requestAnimationFrame(()=>this.loop());
   }
 };
 
-const A = {
-  ctx: null, g: null, ok: false,
-  init() {
-    if (this.ctx) return;
-    const AC = window.AudioContext || window.webkitAudioContext;
-    this.ctx = new AC(); this.g = this.ctx.createGain();
-    this.g.gain.value = .12; this.g.connect(this.ctx.destination);
-    this.ok = true;
-    // Inicia música de fundo ao desbloquear áudio
-    const mus = document.getElementById('bg-music');
-    if (mus) {
-      mus.play().catch(() => {});
-    }
+/* ══ AUDIO ══ */
+const A={
+  ctx:null,g:null,ok:false,
+  init(){
+    if(this.ctx)return;
+    const AC=window.AudioContext||window.webkitAudioContext;
+    this.ctx=new AC();this.g=this.ctx.createGain();
+    this.g.gain.value=.1;this.g.connect(this.ctx.destination);
+    this.ok=true;
+    const m=document.getElementById('bg-music');
+    if(m)m.play().catch(()=>{});
     Music.start();
   },
-  play(t) {
-    if (!this.ok || !this.ctx) return;
-    const c = this.ctx, now = c.currentTime;
-    const mk = () => { const o = c.createOscillator(), gn = c.createGain(); o.connect(gn); gn.connect(this.g); return { o, gn }; };
-    if (t === 'click') {
-      const { o, gn } = mk();
-      o.type = 'square'; o.frequency.setValueAtTime(380, now); o.frequency.exponentialRampToValueAtTime(40, now + .07);
-      gn.gain.setValueAtTime(.18, now); gn.gain.exponentialRampToValueAtTime(.001, now + .07);
-      o.start(now); o.stop(now + .07);
-    } else if (t === 'type') {
-      const { o, gn } = mk();
-      o.type = 'triangle'; o.frequency.value = 600 + Math.random() * 600;
-      gn.gain.setValueAtTime(.03, now); gn.gain.exponentialRampToValueAtTime(.001, now + .05);
-      o.start(now); o.stop(now + .05);
-    } else if (t === 'err') {
-      const { o, gn } = mk();
-      o.type = 'sawtooth'; o.frequency.setValueAtTime(90, now); o.frequency.linearRampToValueAtTime(18, now + .45);
-      gn.gain.setValueAtTime(.3, now); gn.gain.linearRampToValueAtTime(.001, now + .45);
-      o.start(now); o.stop(now + .45);
-      if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
-    } else if (t === 'impact') {
-      [60, 45, 30].forEach((f, i) => {
-        const { o, gn } = mk();
-        const fl = c.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = 200;
-        o.disconnect(); o.connect(fl); fl.connect(gn);
-        o.type = 'sine'; o.frequency.setValueAtTime(f, now + i * .05); o.frequency.exponentialRampToValueAtTime(1, now + .6 + i * .05);
-        gn.gain.setValueAtTime(.35, now + i * .05); gn.gain.exponentialRampToValueAtTime(.001, now + .6 + i * .05);
-        o.start(now + i * .05); o.stop(now + .7 + i * .05);
+  play(t){
+    if(!this.ok||!this.ctx)return;
+    const c=this.ctx,now=c.currentTime;
+    const mk=()=>{const o=c.createOscillator(),gn=c.createGain();o.connect(gn);gn.connect(this.g);return{o,gn};};
+    if(t==='click'){
+      const{o,gn}=mk();o.type='square';o.frequency.setValueAtTime(420,now);o.frequency.exponentialRampToValueAtTime(50,now+.08);
+      gn.gain.setValueAtTime(.15,now);gn.gain.exponentialRampToValueAtTime(.001,now+.08);o.start(now);o.stop(now+.08);
+    }else if(t==='type'){
+      const{o,gn}=mk();o.type='triangle';o.frequency.value=500+Math.random()*800;
+      gn.gain.setValueAtTime(.025,now);gn.gain.exponentialRampToValueAtTime(.001,now+.06);o.start(now);o.stop(now+.06);
+    }else if(t==='err'){
+      const{o,gn}=mk();o.type='sawtooth';o.frequency.setValueAtTime(100,now);o.frequency.linearRampToValueAtTime(20,now+.5);
+      gn.gain.setValueAtTime(.28,now);gn.gain.linearRampToValueAtTime(.001,now+.5);o.start(now);o.stop(now+.5);
+      if(navigator.vibrate)navigator.vibrate([80,40,80]);
+    }else if(t==='impact'){
+      [60,45,30].forEach((f,i)=>{
+        const{o,gn}=mk();const fl=c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=200;
+        o.disconnect();o.connect(fl);fl.connect(gn);
+        o.type='sine';o.frequency.setValueAtTime(f,now+i*.06);o.frequency.exponentialRampToValueAtTime(1,now+.7+i*.06);
+        gn.gain.setValueAtTime(.32,now+i*.06);gn.gain.exponentialRampToValueAtTime(.001,now+.7+i*.06);
+        o.start(now+i*.06);o.stop(now+.8+i*.06);
       });
-      if (navigator.vibrate) navigator.vibrate(60);
-    } else if (t === 'ok') {
-      [300, 380, 480, 600].forEach((f, i) => {
-        const { o, gn } = mk();
-        o.type = 'sine'; o.frequency.value = f;
-        const s = now + i * .1;
-        gn.gain.setValueAtTime(0, s); gn.gain.linearRampToValueAtTime(.1, s + .04); gn.gain.exponentialRampToValueAtTime(.001, s + .35);
-        o.start(s); o.stop(s + .35);
+      if(navigator.vibrate)navigator.vibrate(70);
+    }else if(t==='ok'){
+      [300,380,500,640].forEach((f,i)=>{
+        const{o,gn}=mk();o.type='sine';o.frequency.value=f;
+        const s=now+i*.1;
+        gn.gain.setValueAtTime(0,s);gn.gain.linearRampToValueAtTime(.09,s+.05);gn.gain.exponentialRampToValueAtTime(.001,s+.4);
+        o.start(s);o.stop(s+.4);
       });
-    } else if (t === 'boot') {
-      const { o, gn } = mk();
-      const fl = c.createBiquadFilter(); fl.type = 'bandpass'; fl.frequency.value = 80; fl.Q.value = 2;
-      o.disconnect(); o.connect(fl); fl.connect(gn);
-      o.type = 'sawtooth'; o.frequency.setValueAtTime(25, now); o.frequency.linearRampToValueAtTime(80, now + 1.5);
-      gn.gain.setValueAtTime(.2, now); gn.gain.linearRampToValueAtTime(.4, now + .8); gn.gain.linearRampToValueAtTime(.001, now + 1.5);
-      o.start(now); o.stop(now + 1.5);
+    }else if(t==='boot'){
+      const{o,gn}=mk();const fl=c.createBiquadFilter();fl.type='bandpass';fl.frequency.value=80;fl.Q.value=2;
+      o.disconnect();o.connect(fl);fl.connect(gn);
+      o.type='sawtooth';o.frequency.setValueAtTime(22,now);o.frequency.linearRampToValueAtTime(80,now+1.8);
+      gn.gain.setValueAtTime(.18,now);gn.gain.linearRampToValueAtTime(.38,now+.9);gn.gain.linearRampToValueAtTime(.001,now+1.8);
+      o.start(now);o.stop(now+1.8);
     }
   }
 };
 
-const Music = {
-  on: false, nodes: [], btn: document.getElementById('mbtn'),
-  start() {
-    if (this.on || !A.ctx) return;
-    this.on = true; this.btn.textContent = '♫'; this.btn.classList.add('pl');
-    this._pad(); this._beat(); this._arp(); this._drone();
+/* ══ MUSIC ══ */
+const Music={
+  on:false,nodes:[],btn:document.getElementById('mbtn'),
+  start(){
+    if(this.on||!A.ctx)return;
+    this.on=true;this.btn.textContent='♫';this.btn.classList.add('pl');
+    this._pad();this._beat();this._arp();this._drone();
   },
-  stop() {
-    this.on = false; this.btn.textContent = '♪'; this.btn.classList.remove('pl');
-    this.nodes.forEach(n => { try { n.stop(); } catch (e) { } }); this.nodes = [];
-    // Pausa a música de fundo também
-    const mus = document.getElementById('bg-music');
-    if (mus) mus.pause();
+  stop(){
+    this.on=false;this.btn.textContent='♪';this.btn.classList.remove('pl');
+    this.nodes.forEach(n=>{try{n.stop();}catch(e){}});this.nodes=[];
+    const m=document.getElementById('bg-music');if(m)m.pause();
   },
-  toggle() {
-    if (A.ok) {
-      if (this.on) {
-        this.stop();
-      } else {
-        const mus = document.getElementById('bg-music');
-        if (mus) mus.play().catch(() => {});
-        this.start();
-      }
-    } else {
-      A.init();
-    }
+  toggle(){
+    if(A.ok){if(this.on)this.stop();else{const m=document.getElementById('bg-music');if(m)m.play().catch(()=>{});this.start();}}
+    else A.init();
   },
-  _osc(type, freq, gain) {
-    const c = A.ctx, o = c.createOscillator(), g = c.createGain();
-    o.type = type; o.frequency.value = freq; g.gain.value = gain;
-    o.connect(g); g.connect(A.g); o.start(); this.nodes.push(o); return { o, g };
+  _osc(type,freq,gain){
+    const c=A.ctx,o=c.createOscillator(),g=c.createGain();
+    o.type=type;o.frequency.value=freq;g.gain.value=gain;
+    o.connect(g);g.connect(A.g);o.start();this.nodes.push(o);return{o,g};
   },
-  _pad() {
-    if (!this.on) return;
-    const freqs = [36.7, 55, 73.4, 110];
-    freqs.forEach((f, i) => {
-      const { o } = this._osc('sine', f + (i % 2 === 0 ? -0.3 : 0.3), .018);
-      const lfo = A.ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = .12 + i * .04;
-      const lfog = A.ctx.createGain(); lfog.gain.value = .8;
-      lfo.connect(lfog); lfog.connect(o.frequency); lfo.start(); this.nodes.push(lfo);
+  _pad(){
+    if(!this.on)return;
+    [36.7,55,73.4,110].forEach((f,i)=>{
+      const{o}=this._osc('sine',f+(i%2===0?-.3:.3),.016);
+      const lfo=A.ctx.createOscillator();lfo.type='sine';lfo.frequency.value=.1+i*.05;
+      const lfog=A.ctx.createGain();lfog.gain.value=.7;
+      lfo.connect(lfog);lfog.connect(o.frequency);lfo.start();this.nodes.push(lfo);
     });
   },
-  _drone() {
-    if (!this.on) return;
-    const c = A.ctx;
-    const buf = c.createBuffer(1, c.sampleRate * 4, c.sampleRate);
-    const d = buf.getChannelData(0);
-    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * .5;
-    const src = c.createBufferSource(); src.buffer = buf; src.loop = true;
-    const fl = c.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = 120;
-    const g = c.createGain(); g.gain.value = .025;
-    src.connect(fl); fl.connect(g); g.connect(A.g); src.start(); this.nodes.push(src);
-    const lfo = c.createOscillator(); lfo.frequency.value = .05; lfo.type = 'sine';
-    const lfog = c.createGain(); lfog.gain.value = 60;
-    lfo.connect(lfog); lfog.connect(fl.frequency); lfo.start(); this.nodes.push(lfo);
+  _drone(){
+    if(!this.on)return;
+    const c=A.ctx;
+    const buf=c.createBuffer(1,c.sampleRate*4,c.sampleRate);
+    const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*.5;
+    const src=c.createBufferSource();src.buffer=buf;src.loop=true;
+    const fl=c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=110;
+    const g=c.createGain();g.gain.value=.022;
+    src.connect(fl);fl.connect(g);g.connect(A.g);src.start();this.nodes.push(src);
+    const lfo=c.createOscillator();lfo.frequency.value=.06;lfo.type='sine';
+    const lfog=c.createGain();lfog.gain.value=55;
+    lfo.connect(lfog);lfog.connect(fl.frequency);lfo.start();this.nodes.push(lfo);
   },
-  _beat() {
-    if (!this.on) return;
-    let s = 0;
-    const BPM = 78, step = 60 / BPM / 2;
-    const pat = [1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0];
-    const hat = [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0];
-    const iv = setInterval(() => {
-      if (!this.on) { clearInterval(iv); return; }
-      const c = A.ctx, now = c.currentTime;
-      if (pat[s % 16]) {
-        const o = c.createOscillator(), g = c.createGain();
-        o.type = 'sine'; o.frequency.setValueAtTime(100, now); o.frequency.exponentialRampToValueAtTime(.5, now + .4);
-        g.gain.setValueAtTime(.5, now); g.gain.exponentialRampToValueAtTime(.001, now + .4);
-        o.connect(g); g.connect(A.g); o.start(now); o.stop(now + .4);
-      }
-      if (hat[s % 16]) {
-        const buf = A.ctx.createBuffer(1, 2048, A.ctx.sampleRate);
-        const d = buf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-        const src = A.ctx.createBufferSource(); src.buffer = buf;
-        const fl = A.ctx.createBiquadFilter(); fl.type = 'highpass'; fl.frequency.value = 8000;
-        const g = A.ctx.createGain(); g.gain.setValueAtTime(.04, now); g.gain.exponentialRampToValueAtTime(.001, now + .08);
-        src.connect(fl); fl.connect(g); g.connect(A.g); src.start(now); src.stop(now + .1);
-      }
+  _beat(){
+    if(!this.on)return;
+    let s=0;const BPM=80,step=60/BPM/2;
+    const pat=[1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0];
+    const hat=[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0];
+    const iv=setInterval(()=>{
+      if(!this.on){clearInterval(iv);return;}
+      const c=A.ctx,now=c.currentTime;
+      if(pat[s%16]){const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(95,now);o.frequency.exponentialRampToValueAtTime(.5,now+.4);g.gain.setValueAtTime(.45,now);g.gain.exponentialRampToValueAtTime(.001,now+.4);o.connect(g);g.connect(A.g);o.start(now);o.stop(now+.4);}
+      if(hat[s%16]){const buf=A.ctx.createBuffer(1,2048,A.ctx.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const src=A.ctx.createBufferSource();src.buffer=buf;const fl=A.ctx.createBiquadFilter();fl.type='highpass';fl.frequency.value=8000;const g=A.ctx.createGain();g.gain.setValueAtTime(.035,now);g.gain.exponentialRampToValueAtTime(.001,now+.08);src.connect(fl);fl.connect(g);g.connect(A.g);src.start(now);src.stop(now+.1);}
       s++;
-    }, step * 1000);
+    },step*1000);
   },
-  _arp() {
-    if (!this.on) return;
-    const scale = [55,65.4,73.4,82.4,98,110,130.8];
-    let i = 0;
-    const play = () => {
-      if (!this.on) return;
-      const c = A.ctx, now = c.currentTime;
-      const freq = scale[i % scale.length] * (Math.random() > .85 ? 2 : 1);
-      const o = c.createOscillator(), g = c.createGain(), fl = c.createBiquadFilter();
-      o.type = 'sine'; o.frequency.value = freq;
-      fl.type = 'bandpass'; fl.frequency.value = freq; fl.Q.value = 8;
-      g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(.045, now + .05);
-      g.gain.exponentialRampToValueAtTime(.001, now + .7);
-      o.connect(fl); fl.connect(g); g.connect(A.g); o.start(now); o.stop(now + .7);
-      i++;
-      if (this.on) setTimeout(play, 700 + Math.random() * 900);
+  _arp(){
+    if(!this.on)return;
+    const scale=[55,65.4,73.4,82.4,98,110,130.8];let i=0;
+    const play=()=>{
+      if(!this.on)return;
+      const c=A.ctx,now=c.currentTime;
+      const freq=scale[i%scale.length]*(Math.random()>.85?2:1);
+      const o=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();
+      o.type='sine';o.frequency.value=freq;fl.type='bandpass';fl.frequency.value=freq;fl.Q.value=9;
+      g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(.04,now+.06);g.gain.exponentialRampToValueAtTime(.001,now+.8);
+      o.connect(fl);fl.connect(g);g.connect(A.g);o.start(now);o.stop(now+.8);
+      i++;if(this.on)setTimeout(play,750+Math.random()*1000);
     };
-    setTimeout(play, 1200);
+    setTimeout(play,1400);
   }
 };
 
-const N = {
-  show(msg, type = '') {
-    const area = document.getElementById('notifs');
-    const el = document.createElement('div');
-    el.className = 'nf' + (type ? ' ' + type : '');
-    el.innerHTML = `<span>${type === 'ok' ? '✓' : type === 'w' ? '⚠' : '◆'}</span><span>${msg}</span>`;
+/* ══ NOTIFS ══ */
+const N={
+  show(msg,type=''){
+    const area=document.getElementById('notifs');
+    const el=document.createElement('div');
+    el.className='nf'+(type?' '+type:'');
+    el.innerHTML=`<span>${type==='ok'?'✓':type==='w'?'⚠':'◆'}</span><span>${msg}</span>`;
     area.appendChild(el);
-    A.play(type === 'w' ? 'err' : 'type');
-    setTimeout(() => { el.style.animation = 'nfout .25s ease forwards'; setTimeout(() => el.remove(), 260); }, 4000);
+    A.play(type==='w'?'err':'type');
+    setTimeout(()=>{el.style.animation='nfout .25s ease forwards';setTimeout(()=>el.remove(),260);},4000);
   }
 };
 
-const HUD = {
-  msgs: ['Bypass de firewall...','Injetando payload...','Mascarando IP...','Túnel seguro ativo...','Criptografando sessão...','Evasão de rastreamento...','Roteando via onion...','Verificando identidade...'],
-  init() {
-    const r = () => Math.floor(Math.random() * 255);
-    document.getElementById('h-ip').textContent = `IP: 10.${r()}.${r()}.XXX`;
-    let ping = 12;
-    setInterval(() => {
-      const now = new Date().toTimeString().split(' ')[0];
-      document.getElementById('h-clk').textContent = now;
-      ping += Math.floor(Math.random() * 5) - 2;
-      ping = Math.max(5, Math.min(30, ping));
-      document.getElementById('h-ping').textContent = ping;
-      const ts = document.getElementById('sp-ts');
-      if (ts) ts.textContent = `REC ● ${now}`;
-    }, 1000);
-    const tl = document.getElementById('term-log');
-    setInterval(() => {
-      if (Math.random() > .45) {
-        const p = document.createElement('p'); p.className = 'tl';
-        p.textContent = '> ' + this.msgs[Math.floor(Math.random() * this.msgs.length)];
-        tl.appendChild(p); if (tl.children.length > 6) tl.firstChild.remove();
+/* ══ HUD ══ */
+const HUD={
+  msgs:['Bypass de firewall...','Injetando payload...','Mascarando rota...','Túnel seguro ativo...','Criptografando sessão...','Evasão de rastreamento...','Verificando identidade...','Roteando via onion...'],
+  init(){
+    const r=()=>Math.floor(Math.random()*255);
+    const ip=`10.${r()}.${r()}.XXX`;
+    document.getElementById('h-ip').textContent=`IP: ${ip}`;
+    const sess='SESS#'+Math.random().toString(36).substring(2,8).toUpperCase();
+    document.getElementById('h-sess').textContent=sess;
+    let ping=14;
+    setInterval(()=>{
+      const now=new Date().toTimeString().split(' ')[0];
+      document.getElementById('h-clk').textContent=now;
+      ping+=Math.floor(Math.random()*6)-3;ping=Math.max(6,Math.min(35,ping));
+      document.getElementById('h-ping').textContent=ping;
+      const ts=document.getElementById('sp-ts');
+      if(ts)ts.textContent=`REC ● ${now}`;
+    },1000);
+    const tl=document.getElementById('term-log');
+    setInterval(()=>{
+      if(Math.random()>.42){
+        const p=document.createElement('p');p.className='tl';
+        p.textContent='> '+this.msgs[Math.floor(Math.random()*this.msgs.length)];
+        tl.appendChild(p);if(tl.children.length>6)tl.firstChild.remove();
       }
-    }, 2200);
+    },2400);
+    // Counter animado
+    this.animStat('sp-members',247,1800);
+    this.animStat('sp-online',89,1400);
+  },
+  animStat(id,target,dur){
+    const el=document.getElementById(id);if(!el)return;
+    let cur=0,steps=40,inc=target/steps,interval=dur/steps;
+    const iv=setInterval(()=>{
+      cur=Math.min(cur+inc,target);el.textContent=Math.floor(cur);
+      if(cur>=target){clearInterval(iv);el.textContent=target+'+';}
+    },interval);
   }
 };
 
-const Quiz = {
-  questions: [
-    {
-      q: 'O que significa CsL?',
-      opts: ['Conexão sem Limites', 'Constelação Sangrenta', 'Clã sem Lei', 'Código sem Limites'],
-      r: 1
-    },
-    {
-      q: 'Qual é a base mais importante dentro de uma família?',
-      opts: ['Ter o maior servidor', 'Ser o mais forte em tretas', 'Lealdade à família', 'Ter mais membros que os outros'],
-      r: 2
-    },
-    {
-      q: 'O que é "dar x9" no contexto de famílias?',
-      opts: ['Subir de cargo rapidinho', 'Trair ou entregar alguém', 'Ajudar um membro novo', 'Ganhar uma treta'],
-      r: 1
-    },
-    {
-      q: 'O que acontece com quem vaza informações internas?',
-      opts: ['Recebe advertência', 'É promovido com restrições', 'Banimento e retaliação', 'Nada, é normal'],
-      r: 2
-    }
+/* ══ BOOT A — MÓDULOS ══ */
+const BA={
+  mods:[
+    {l:'KERNEL',v:'OK',cls:'ok'},{l:'CRIPTOGRAFIA AES-256',v:'ATIVO',cls:'ok'},
+    {l:'REDE OCULTA',v:'ATIVA',cls:'ok'},{l:'FIREWALL',v:'BYPASS',cls:'e'},
+    {l:'MAINFRAME',v:'CONECTADO',cls:'ok'},{l:'SESSÃO',v:'SEGURA',cls:'ok'},
   ],
-  cur: 0, ok: 0, done: false, total: 4,
-  start() { this.cur = 0; this.ok = 0; this.done = false; this.render(); },
-  render() {
-    if (this.cur >= this.total) { this.finish(); return; }
-    const q = this.questions[this.cur];
-    document.getElementById('q-num').textContent = `${this.cur + 1} / ${this.total}`;
-    document.getElementById('q-pts').textContent = `${this.ok} corretas`;
-    document.getElementById('q-bar').style.width = (this.cur / this.total * 100) + '%';
-    document.getElementById('q-qst').textContent = q.q;
-    const opts = document.getElementById('q-opts'); opts.innerHTML = '';
-    const shuffled = q.opts.map((t, i) => ({ t, i })).sort(() => Math.random() - .5);
-    shuffled.forEach(({ t, i }) => {
-      const b = document.createElement('button'); b.className = 'qopt'; b.textContent = t;
-      b.onclick = () => this.answer(b, i === q.r); opts.appendChild(b);
-    });
-    this.done = false;
-  },
-  answer(btn, correct) {
-    if (this.done) return; this.done = true;
-    document.querySelectorAll('.qopt').forEach(b => b.disabled = true);
-    A.play(correct ? 'ok' : 'err');
-    btn.classList.add(correct ? 'right' : 'wrong');
-    if (correct) this.ok++;
-    setTimeout(() => { this.cur++; this.render(); }, 950);
-  },
-  finish() {
-    if (this.ok >= 2) { A.play('ok'); Go.ia(); }
-    else { A.play('err'); Block.start(); }
-  }
-};
-
-const Block = {
-  iv: null, s: 0,
-  start() {
-    Go.to('scr-block');
-    this.s = Math.random() > .5 ? 300 : 180;
-    this.tick(); this.iv = setInterval(() => this.tick(), 1000);
-  },
-  tick() {
-    if (this.s <= 0) {
-      clearInterval(this.iv);
-      document.getElementById('blk-timer').textContent = '0:00';
-      setTimeout(() => { Quiz.start(); Go.to('scr-quiz'); }, 1200); return;
-    }
-    const m = Math.floor(this.s / 60), ss = this.s % 60;
-    document.getElementById('blk-timer').textContent = `${m}:${ss.toString().padStart(2, '0')}`;
-    this.s--;
-  }
-};
-
-const IA = {
-  mods: [
-    { l: 'KERNEL', v: 'OK', c: 'var(--red)' },
-    { l: 'CRIPTOGRAFIA', v: 'AES-256', c: 'var(--text)' },
-    { l: 'REDE OCULTA', v: 'ATIVA', c: 'var(--text)' },
-    { l: 'FIREWALL', v: 'BYPASS', c: 'var(--red)' },
-    { l: 'MAINFRAME', v: 'CONECTADO', c: 'var(--red)' },
-    { l: 'SESSÃO', v: 'SEGURA', c: 'var(--text)' },
-  ],
-  run() {
-    const rows = document.getElementById('ia-rows');
-    const sts = document.getElementById('ia-sts');
-    const bar = document.getElementById('ia-bar');
-    rows.innerHTML = ''; let i = 0;
-    const nxt = () => {
-      if (i >= this.mods.length) {
-        sts.style.color = 'var(--red)'; sts.textContent = 'Todos os módulos prontos';
-        A.play('ok'); setTimeout(() => Go.ib(), 900); return;
-      }
-      const m = this.mods[i];
-      sts.textContent = 'Inicializando ' + m.l.toLowerCase() + '...';
-      const div = document.createElement('div'); div.className = 'ia-row';
-      div.innerHTML = `<span class="ia-row-l">${m.l}</span><span class="ia-row-r" style="color:${m.c}">${m.v}</span>`;
-      rows.appendChild(div);
-      bar.style.width = ((i + 1) / this.mods.length * 100) + '%';
-      A.play('type'); i++;
-      setTimeout(nxt, 620);
+  run(){
+    const cont=document.getElementById('ba-mods');
+    const sts=document.getElementById('ba-sts');
+    const bar=document.getElementById('ba-bar');
+    const step=document.getElementById('ba-step');
+    cont.innerHTML='';let i=0;
+    const nxt=()=>{
+      if(i>=this.mods.length){sts.textContent='Todos os módulos prontos';sts.style.color='var(--green)';A.play('ok');setTimeout(()=>Go.bb(),900);return;}
+      const m=this.mods[i];
+      sts.textContent='Inicializando '+m.l.toLowerCase()+'...';
+      step.textContent=(i+1)+' / '+this.mods.length;
+      const div=document.createElement('div');div.className='bmod '+m.cls;
+      div.innerHTML=`<span class="bmod-l">${m.l}</span><span class="bmod-r">${m.v}</span>`;
+      cont.appendChild(div);
+      bar.style.width=((i+1)/this.mods.length*100)+'%';
+      A.play('type');i++;setTimeout(nxt,580);
     };
     nxt();
   }
 };
 
-const IB = {
-  run() {
-    const term = document.getElementById('ib-terminal');
-    const bar = document.getElementById('ib-bar');
-    term.innerHTML = '';
-    const entries = [
-      { t: 'd', m: '> Iniciando protocolo de rede...' },
-      { t: 'd', m: '> Escaneando portas abertas...' },
-      { t: 'w', m: '> AVISO: Atividade suspeita detectada na porta 443' },
-      { t: 'd', m: '> Redirecionando via proxy chain...' },
-      { t: 'd', m: '> Roteando por 7 nós onion...' },
-      { t: 'w', m: '> AVISO: 3 rastreadores bloqueados' },
-      { t: 'd', m: '> Estabelecendo canal seguro...' },
-      { t: 'ok', m: '> Conexão segura estabelecida ✓' },
+/* ══ BOOT B — TERMINAL ══ */
+const BB={
+  run(){
+    const term=document.getElementById('bb-term');
+    const bar=document.getElementById('bb-bar');
+    const pct=document.getElementById('bb-pct');
+    term.innerHTML='';
+    const entries=[
+      {cls:'d',m:'> Iniciando protocolo de rede segura...'},
+      {cls:'d',m:'> Escaneando portas abertas...'},
+      {cls:'w',m:'> AVISO: Atividade suspeita na porta 443'},
+      {cls:'d',m:'> Redirecionando via proxy chain [7 nós]...'},
+      {cls:'c',m:'> Canal cifrado estabelecido via TOR'},
+      {cls:'w',m:'> AVISO: 3 rastreadores bloqueados'},
+      {cls:'d',m:'> Verificando integridade do canal...'},
+      {cls:'ok',m:'> Conexão segura estabelecida ✓'},
     ];
-    let i = 0;
-    const add = () => {
-      if (i >= entries.length) { setTimeout(() => Go.ic(), 700); return; }
-      const div = document.createElement('div');
-      div.className = 'ib-line ' + entries[i].t;
-      div.textContent = entries[i].m;
-      term.appendChild(div); term.scrollTop = term.scrollHeight;
-      bar.style.width = ((i + 1) / entries.length * 100) + '%';
-      A.play('type'); i++;
-      setTimeout(add, 520 + Math.random() * 200);
+    let i=0;
+    const add=()=>{
+      if(i>=entries.length){setTimeout(()=>Go.bc(),700);return;}
+      const div=document.createElement('div');div.className='bt-line '+entries[i].cls;
+      div.textContent=entries[i].m;term.appendChild(div);term.scrollTop=term.scrollHeight;
+      const p=Math.round((i+1)/entries.length*100);
+      bar.style.width=p+'%';pct.textContent=p+'%';
+      A.play('type');i++;setTimeout(add,480+Math.random()*180);
     };
-    setTimeout(add, 300);
+    setTimeout(add,300);
   }
 };
 
-const IC = {
-  run() {
-    const bar = document.getElementById('ic-bar');
-    const tit = document.getElementById('ic-tit');
-    const msg = document.getElementById('ic-msg');
-    const data = document.getElementById('ic-data');
-    const steps = [
-      { p: 20, m: 'Lendo assinatura digital...' },
-      { p: 40, m: 'Cruzando banco de dados...' },
-      { p: 60, m: 'Verificando credenciais...' },
-      { p: 80, m: 'Analisando histórico...' },
-      { p: 100, m: 'Acesso autorizado ✓' },
+/* ══ BOOT C — IDENTIDADE ══ */
+const BC={
+  run(){
+    const bar=document.getElementById('bc-bar');
+    const tit=document.getElementById('bc-tit');
+    const msg=document.getElementById('bc-msg');
+    const data=document.getElementById('bc-data');
+    const steps=[
+      {p:20,m:'Lendo assinatura digital...'},
+      {p:40,m:'Cruzando banco de dados...'},
+      {p:60,m:'Verificando credenciais...'},
+      {p:80,m:'Analisando histórico de acesso...'},
+      {p:100,m:'Identidade autorizada ✓'},
     ];
-    let i = 0;
-    const step = () => {
-      if (i >= steps.length) {
-        tit.textContent = 'Identidade Verificada';
+    let i=0;
+    const step=()=>{
+      if(i>=steps.length){
+        tit.textContent='Identidade Verificada';tit.style.color='var(--green)';
         A.play('ok');
-        data.innerHTML = [['Protocolo','AES-256'],['Status','Ativo'],['Nível','Restrito'],['Sessão','Segura']].map(([k,v]) =>
-          `<div class="ic-cell"><div class="ic-cell-l">${k}</div><div class="ic-cell-v">${v}</div></div>`
+        data.innerHTML=[['Protocolo','AES-256'],['Status','ATIVO'],['Nível','RESTRITO'],['Sessão','SEGURA']].map(([k,v])=>
+          `<div style="font-family:var(--f3);font-size:11px;"><span style="color:var(--dim2);letter-spacing:1px;">${k}: </span><span style="color:var(--red);">${v}</span></div>`
         ).join('');
-        setTimeout(() => Go.id(), 1100); return;
+        setTimeout(()=>Go.bd(),1100);return;
       }
-      bar.style.width = steps[i].p + '%'; msg.textContent = steps[i].m; A.play('type');
-      i++; setTimeout(step, 750);
+      bar.style.width=steps[i].p+'%';msg.textContent=steps[i].m;A.play('type');
+      i++;setTimeout(step,700);
     };
-    setTimeout(step, 300);
+    setTimeout(step,300);
   }
 };
 
-const ID = {
-  logs: [
-    { t: 'ok', m: 'Inicializando kernel do sistema...' },
-    { t: 'ok', m: 'Montando volumes seguros...' },
-    { t: 'w',  m: 'AVISO: Investigação federal detectada na subnet' },
-    { t: 'ok', m: 'Redirecionando via 12 nós ocultos...' },
-    { t: 'w',  m: 'AVISO: 5 IPs suspeitos bloqueados no firewall' },
-    { t: 'ok', m: 'Criptografia de ponta a ponta ativada...' },
-    { t: 'ok', m: 'Canal de comunicação seguro estabelecido...' },
-    { t: 'ok', m: 'Sistema CsL pronto. Acesso liberado.' },
+/* ══ BOOT D — FINAL ══ */
+const BD={
+  logs:[
+    {t:'ok',m:'Inicializando kernel do sistema...'},
+    {t:'ok',m:'Montando volumes seguros...'},
+    {t:'w', m:'AVISO: Investigação detectada na subnet local'},
+    {t:'ok',m:'Redirecionando via 12 nós ocultos...'},
+    {t:'w', m:'AVISO: 5 IPs suspeitos bloqueados'},
+    {t:'ok',m:'Criptografia ponta a ponta ativada...'},
+    {t:'ok',m:'Canal de comunicação seguro ativo...'},
+    {t:'ok',m:'Sistema CsL pronto. Acesso liberado.'},
   ],
-  run() {
-    const cont = document.getElementById('id-logs');
-    const bar = document.getElementById('id-bar');
-    const csl = document.getElementById('id-csl');
-    const btn = document.getElementById('id-btn');
-    cont.innerHTML = '';
-    let i = 0;
-    const bclk = setInterval(() => {
-      document.getElementById('id-clk').textContent = new Date().toTimeString().split(' ')[0];
-    }, 1000);
+  run(){
+    const term=document.getElementById('bd-term');
+    const bar=document.getElementById('bd-bar');
+    const csl=document.getElementById('bd-csl');
+    const btn=document.getElementById('bd-btn');
+    const clk=document.getElementById('bd-clk');
+    term.innerHTML='';let i=0;
+    const biv=setInterval(()=>{clk.textContent=new Date().toTimeString().split(' ')[0];},1000);
     A.play('boot');
-    const iv = setInterval(() => {
-      if (i < this.logs.length) {
-        const l = this.logs[i];
-        const div = document.createElement('div'); div.className = 'id-log ' + l.t;
-        div.innerHTML = `<span class="pfx">${l.t === 'ok' ? '[OK   ]' : '[AVISO]'}</span><span class="msg">${l.m}</span>`;
-        cont.appendChild(div);
-        bar.style.width = ((i + 1) / this.logs.length * 100) + '%';
-        A.play('type'); i++;
-      } else {
-        clearInterval(iv); clearInterval(bclk);
-        csl.classList.add('show'); A.play('impact');
-        setTimeout(() => { btn.style.display = 'block'; }, 900);
+    const iv=setInterval(()=>{
+      if(i<this.logs.length){
+        const l=this.logs[i];
+        const div=document.createElement('div');div.className='bt-line '+(l.t==='ok'?'ok':'w');
+        div.innerHTML=`<span style="color:${l.t==='ok'?'var(--green)':'var(--gold)'};">[${l.t==='ok'?'OK   ':'AVISO'}]</span> <span style="color:var(--dim2);">${l.m}</span>`;
+        term.appendChild(div);term.scrollTop=term.scrollHeight;
+        bar.style.width=((i+1)/this.logs.length*100)+'%';
+        A.play('type');i++;
+      }else{
+        clearInterval(iv);clearInterval(biv);
+        csl.style.opacity='1';csl.style.animation='scalein .5s ease';
+        A.play('impact');setTimeout(()=>{btn.style.display='block';},1000);
       }
-    }, 360);
+    },340);
   }
 };
 
-const IE = {
-  run() {
-    const info = document.getElementById('ie-info');
-    const bar = document.getElementById('ie-bar');
-    const msgs = [
-      'Escaneando frequência...',
-      'Localizando nós ativos...',
-      'Calculando distâncias...',
-      'Sincronizando posições...',
-      'Verificando membros online...',
-      '18 conexões estabelecidas ✓'
-    ];
-    let i = 0;
-    const step = () => {
-      if (i >= msgs.length) { setTimeout(() => Go.warn(), 900); return; }
-      info.textContent = msgs[i];
-      bar.style.width = ((i + 1) / msgs.length * 100) + '%';
-      A.play('type'); i++;
-      setTimeout(step, 640);
-    };
-    setTimeout(step, 400);
-  }
-};
-
-const Warn = {
-  txt: `PROTOCOLO DE SEGURANÇA ATIVO — CsL v9.0
+/* ══ WARN ══ */
+const Warn={
+  txt:`PROTOCOLO DE SEGURANÇA ATIVO — CsL v9.0
 
 Você está conectado a um nó de contingência da organização CsL — Constelação Sangrenta. Toda atividade aqui é registrada e monitorada pela liderança.
 
@@ -1601,248 +1382,158 @@ Ao preencher o formulário de recrutamento, você declara estar ciente das regra
 Envios incompletos, falsos ou com informações inválidas serão descartados automaticamente e o acesso será bloqueado.
 
 Só avance se estiver verdadeiramente comprometido com a família CsL.`,
-  run() {
-    const el = document.getElementById('warn-txt');
-    const cur = document.getElementById('warn-cursor');
-    const btn = document.getElementById('warn-btn');
-    const load = document.getElementById('warn-load');
-    const sc = document.getElementById('warn-scroll');
-    el.textContent = ''; let i = 0;
-    const iv = setInterval(() => {
-      if (i < this.txt.length) {
-        el.textContent += this.txt.charAt(i);
-        if (i % 3 === 0) A.play('type');
-        sc.scrollTop = sc.scrollHeight; i++;
-      } else {
-        clearInterval(iv); cur.style.display = 'inline-block';
-        load.style.display = 'none'; btn.style.display = 'block';
-        A.play('impact');
+  run(){
+    const el=document.getElementById('warn-txt');
+    const cur=document.getElementById('warn-cursor');
+    const btn=document.getElementById('warn-btn');
+    const load=document.getElementById('warn-load');
+    const sc=document.getElementById('warn-scroll');
+    el.textContent='';let i=0;
+    const iv=setInterval(()=>{
+      if(i<this.txt.length){
+        el.textContent+=this.txt.charAt(i);
+        if(i%4===0)A.play('type');
+        sc.scrollTop=sc.scrollHeight;i++;
+      }else{
+        clearInterval(iv);cur.style.display='inline-block';
+        load.style.display='none';btn.style.display='block';A.play('impact');
       }
-    }, 14);
+    },13);
   }
 };
 
-/* ── SISTEMA DE COMPATIBILIDADE ── */
-const Compat = {
-  nomes: {
-    vigilante:'Vigilante', recrutador:'Recrutador',
-    organizador:'Organizador', tatico:'Tático',
-    cyber:'Cyber', anonimo:'Anônimo'
-  },
-  // Retorna o cargo mais compatível com base nas respostas atuais
-  calcular() {
-    const v = id => (document.getElementById(id)?.value?.trim() || '').toLowerCase();
-    const scores = { vigilante:0, recrutador:0, organizador:0, tatico:0, cyber:0, anonimo:0 };
-
-    // ── Vigilante ──
-    const freq = v('v-freq');
-    if (freq === 'sempre online' || freq === 'várias vezes ao dia') scores.vigilante += 2;
-    if (freq === '1x por dia') scores.vigilante += 1;
-    if (v('v-alt') === 'sim') scores.vigilante += 2;
-    if (v('v-inv') === 'sim') scores.vigilante += 2;
-    if (v('v-rep').includes('esconder') || v('v-rep').includes('sei')) scores.vigilante += 2;
-    if (v('v-sig').includes('entendo') || v('v-sig').includes('aceito')) scores.vigilante += 2;
-
-    // ── Recrutador ──
-    if (v('r-prev') === 'sim') scores.recrutador += 3;
-    const num = v('r-num');
-    if (num === '5+') scores.recrutador += 3;
-    else if (num === '3-5') scores.recrutador += 2;
-    else if (num === '1-2') scores.recrutador += 1;
-    if (v('r-plat')) scores.recrutador += 1;
-    if (v('r-abord').length > 20) scores.recrutador += 2;
-    if (v('r-quiz-score') && v('r-quiz-score').startsWith('3')) scores.recrutador += 3;
-    else if (v('r-quiz-score') && v('r-quiz-score').startsWith('2')) scores.recrutador += 2;
-
-    // ── Organizador ──
-    const atv = v('o-atv');
-    if (atv === 'muito alto') scores.organizador += 3;
-    else if (atv === 'alto') scores.organizador += 2;
-    else if (atv === 'médio') scores.organizador += 1;
-    if (v('o-adm') === 'sim') scores.organizador += 3;
-    if (v('o-conf') === 'sim') scores.organizador += 2;
-    const ldr = v('o-ldr');
-    if (ldr === 'firme' || ldr === 'democrático') scores.organizador += 2;
-    if (v('o-hrs').length > 0) scores.organizador += 1;
-
-    // ── Tático ──
-    if (v('t-exp') === 'sim') scores.tatico += 3;
-    if (v('t-gast') === 'sim') scores.tatico += 2;
-    const est = v('t-est');
-    if (est === 'agressivo' || est === 'argumentativo') scores.tatico += 2;
-    if (v('t-x9') === 'não') scores.tatico += 1; // leal
-    if (v('t-ord') === 'sim') scores.tatico += 1;
-
-    // ── Cyber ──
-    if (v('c-ling').length > 2) scores.cyber += 3;
-    if (v('c-lnx') === 'sim') scores.cyber += 2;
-    if (v('c-bot') === 'sim') scores.cyber += 3;
-    const nv = v('c-nv');
-    if (nv === 'avançado') scores.cyber += 3;
-    else if (nv === 'intermediário') scores.cyber += 2;
-    else if (nv === 'iniciante') scores.cyber += 1;
-
-    // ── Anônimo ──
-    if (v('an-motivo').length > 10) scores.anonimo += 2;
-    if (v('an-ajud') === 'sim') scores.anonimo += 2;
-    if (v('an-acei') === 'sim') scores.anonimo += 3;
-
+/* ══ COMPAT ══ */
+const Compat={
+  nomes:{vigilante:'Vigilante',recrutador:'Recrutador',organizador:'Organizador',tatico:'Tático',cyber:'Cyber',anonimo:'Anônimo'},
+  calcular(){
+    const v=id=>(document.getElementById(id)?.value?.trim()||'').toLowerCase();
+    const scores={vigilante:0,recrutador:0,organizador:0,tatico:0,cyber:0,anonimo:0};
+    const freq=v('v-freq');
+    if(freq==='sempre online'||freq==='várias vezes ao dia')scores.vigilante+=2;
+    if(freq==='1x por dia')scores.vigilante+=1;
+    if(v('v-alt')==='sim')scores.vigilante+=2;if(v('v-inv')==='sim')scores.vigilante+=2;
+    if(v('v-rep').includes('esconder')||v('v-rep').includes('sei'))scores.vigilante+=2;
+    if(v('v-sig').includes('entendo')||v('v-sig').includes('aceito'))scores.vigilante+=2;
+    if(v('r-prev')==='sim')scores.recrutador+=3;
+    const num=v('r-num');
+    if(num==='5+')scores.recrutador+=3;else if(num==='3-5')scores.recrutador+=2;else if(num==='1-2')scores.recrutador+=1;
+    if(v('r-plat'))scores.recrutador+=1;if(v('r-abord').length>20)scores.recrutador+=2;
+    const atv=v('o-atv');
+    if(atv==='muito alto')scores.organizador+=3;else if(atv==='alto')scores.organizador+=2;else if(atv==='médio')scores.organizador+=1;
+    if(v('o-adm')==='sim')scores.organizador+=3;if(v('o-conf')==='sim')scores.organizador+=2;
+    const ldr=v('o-ldr');if(ldr==='firme'||ldr==='democrático')scores.organizador+=2;
+    if(v('t-exp')==='sim')scores.tatico+=3;if(v('t-gast')==='sim')scores.tatico+=2;
+    const est=v('t-est');if(est==='agressivo'||est==='argumentativo')scores.tatico+=2;
+    if(v('t-x9')==='não')scores.tatico+=1;if(v('t-ord')==='sim')scores.tatico+=1;
+    if(v('c-ling').length>2)scores.cyber+=3;if(v('c-lnx')==='sim')scores.cyber+=2;
+    if(v('c-bot')==='sim')scores.cyber+=3;
+    const nv=v('c-nv');if(nv==='avançado')scores.cyber+=3;else if(nv==='intermediário')scores.cyber+=2;else if(nv==='iniciante')scores.cyber+=1;
+    if(v('an-motivo').length>10)scores.anonimo+=2;if(v('an-ajud')==='sim')scores.anonimo+=2;if(v('an-acei')==='sim')scores.anonimo+=3;
     return scores;
   },
-
-  // Verifica compatibilidade com o cargo escolhido e exibe alerta se necessário
-  verificar() {
-    const escolhido = document.getElementById('f-div').value;
-    if (!escolhido) return;
-
-    const scores = this.calcular();
-    const scoreEscolhido = scores[escolhido] || 0;
-
-    // Acha o melhor cargo
-    let melhor = escolhido, melhorScore = -1;
-    Object.entries(scores).forEach(([cargo, sc]) => {
-      if (cargo !== escolhido && sc > melhorScore) { melhor = cargo; melhorScore = sc; }
-    });
-
-    // Só alerta se o cargo escolhido tem score baixo E outro tem score notavelmente maior
-    const diferenca = melhorScore - scoreEscolhido;
-    if (diferenca >= 3 && melhorScore >= 3 && melhor !== escolhido) {
-      this.show(escolhido, melhor);
-    } else {
-      this.hide();
-    }
+  verificar(){
+    const escolhido=document.getElementById('f-div').value;if(!escolhido)return;
+    const scores=this.calcular();const scoreEscolhido=scores[escolhido]||0;
+    let melhor=escolhido,melhorScore=-1;
+    Object.entries(scores).forEach(([cargo,sc])=>{if(cargo!==escolhido&&sc>melhorScore){melhor=cargo;melhorScore=sc;}});
+    if((melhorScore-scoreEscolhido)>=3&&melhorScore>=3&&melhor!==escolhido)this.show(escolhido,melhor);
+    else this.hide();
   },
-
-  show(escolhido, sugerido) {
-    const box = document.getElementById('compat-alert');
-    const msg = document.getElementById('ca-msg');
-    const sug = document.getElementById('ca-sug');
-    const btn = document.getElementById('ca-switch-btn');
-
-    const msgs = {
-      vigilante: 'Pelo que você respondeu, parece que o perfil de Vigilante exige um nível de discrição e presença constante que pode não combinar tanto com você agora.',
-      recrutador: 'Pelas suas respostas, você ainda tem pouca experiência com recrutamento ativo para assumir esse cargo com segurança.',
-      organizador: 'O cargo de Organizador exige alta disponibilidade e experiência em administração — seu perfil atual ainda não bate totalmente com isso.',
-      tatico: 'O Tático precisa de experiência em conflito e presença constante. Pelas suas respostas, você ainda está desenvolvendo isso.',
-      cyber: 'A divisão Cyber exige conhecimento técnico mais sólido. Seu perfil atual indica que você ainda está crescendo nessa área.',
-      anonimo: 'O Anônimo é para quem tem razões sólidas para o sigilo total. Seu perfil pode se encaixar melhor em algo mais ativo.'
+  show(escolhido,sugerido){
+    const msgs={
+      vigilante:'Pelas suas respostas, o Vigilante exige discrição e presença constante que pode não combinar com seu perfil atual.',
+      recrutador:'Você ainda tem pouca experiência com recrutamento ativo para assumir esse cargo com segurança.',
+      organizador:'Organizador exige alta disponibilidade e experiência em administração — seu perfil ainda está crescendo nisso.',
+      tatico:'O Tático precisa de experiência em conflito e presença constante. Você ainda está desenvolvendo isso.',
+      cyber:'A divisão Cyber exige conhecimento técnico mais sólido do que seu perfil atual indica.',
+      anonimo:'O Anônimo é para quem tem razões sólidas para o sigilo total. Você pode se encaixar melhor em algo mais ativo.'
     };
-
-    msg.textContent = msgs[escolhido] || 'Suas respostas indicam que você pode se encaixar melhor em outra divisão.';
-    sug.textContent = `→ Cargo sugerido para você: ${this.nomes[sugerido]}`;
-    btn.textContent = `Mudar para ${this.nomes[sugerido]}`;
-    btn.onclick = () => { F.div(sugerido); this.hide(); A.play('ok'); };
-
-    box.style.display = 'block';
-    A.play('err');
+    document.getElementById('ca-msg').textContent=msgs[escolhido]||'Suas respostas indicam que você pode se encaixar melhor em outra divisão.';
+    document.getElementById('ca-sug').textContent=`→ Cargo sugerido: ${this.nomes[sugerido]}`;
+    const btn=document.getElementById('ca-switch-btn');
+    btn.textContent=`Mudar para ${this.nomes[sugerido]}`;
+    btn.onclick=()=>{F.div(sugerido);this.hide();A.play('ok');};
+    document.getElementById('compat-alert').style.display='block';A.play('err');
   },
-
-  hide() {
-    document.getElementById('compat-alert').style.display = 'none';
-  }
+  hide(){document.getElementById('compat-alert').style.display='none';}
 };
 
-const F = {
-  allDivs: ['vigilante','recrutador','organizador','tatico','cyber','anonimo'],
-  radio(el, id) {
+/* ══ FORM ══ */
+const F={
+  allDivs:['vigilante','recrutador','organizador','tatico','cyber','anonimo'],
+  radio(el,id){
     A.play('click');
-    el.parentElement.querySelectorAll('.ro').forEach(e => e.classList.remove('on'));
+    el.parentElement.querySelectorAll('.ro').forEach(e=>e.classList.remove('on'));
     el.classList.add('on');
-    document.getElementById(id).value = el.textContent;
+    document.getElementById(id).value=el.querySelector('span')?el.querySelector('span').textContent:el.textContent;
     this.prog();
-    // Verifica compatibilidade após cada resposta (com delay para não spammar)
-    clearTimeout(this._compatTimer);
-    this._compatTimer = setTimeout(() => Compat.verificar(), 800);
+    clearTimeout(this._ct);
+    this._ct=setTimeout(()=>Compat.verificar(),800);
   },
-  _compatTimer: null,
-  div(d) {
+  _ct:null,
+  div(d){
     A.play('impact');
-    this.allDivs.forEach(x => {
-      const dc = document.getElementById('c-' + x);
-      if (dc) { dc.className = dc.classList.contains('gold-card') ? 'dc gold-card' : 'dc'; }
-      const df = document.getElementById('df-' + x);
-      if (df) df.style.display = 'none';
+    this.allDivs.forEach(x=>{
+      const dc=document.getElementById('c-'+x);
+      if(dc){const isGold=dc.classList.contains('gold-card');dc.className='dc'+(isGold?' gold-card':'');}
+      const df=document.getElementById('df-'+x);if(df)df.style.display='none';
     });
-    const selCard = document.getElementById('c-' + d);
-    if (selCard) selCard.classList.add('sel');
-    const selForm = document.getElementById('df-' + d);
-    if (selForm) selForm.style.display = 'flex';
-    document.getElementById('f-div').value = d;
-    document.getElementById('sec-sub').style.display = 'block';
-    this.prog();
-    Compat.hide(); // Esconde aviso ao trocar de cargo
+    const selCard=document.getElementById('c-'+d);if(selCard)selCard.classList.add('sel');
+    const selForm=document.getElementById('df-'+d);if(selForm)selForm.style.display='flex';
+    document.getElementById('f-div').value=d;
+    document.getElementById('sec-sub').style.display='block';
+    this.prog();Compat.hide();
+    selForm?.scrollIntoView({behavior:'smooth',block:'start'});
   },
-  prog() {
-    const d = document.getElementById('f-div').value;
-    let filled = 0, total = 4;
-    ['f-vulgo','f-id','f-tempo','f-motivo'].forEach(id => {
-      if (document.getElementById(id)?.value?.trim()) filled++;
-    });
-    if (d) {
-      document.getElementById('df-' + d)?.querySelectorAll('input[type="hidden"],textarea').forEach(el => {
-        total++; if (el.value.trim()) filled++;
-      });
+  prog(){
+    const d=document.getElementById('f-div').value;
+    let filled=0,total=4;
+    ['f-vulgo','f-id','f-tempo','f-motivo'].forEach(id=>{if(document.getElementById(id)?.value?.trim())filled++;});
+    if(d){
+      document.getElementById('df-'+d)?.querySelectorAll('input[type="hidden"],textarea').forEach(el=>{total++;if(el.value.trim())filled++;});
     }
-    const pct = Math.min(Math.floor(filled / total * 100), 100);
-    document.getElementById('f-bar').style.width = pct + '%';
-    document.getElementById('f-pct').textContent = pct + '%';
+    const pct=Math.min(Math.floor(filled/total*100),100);
+    document.getElementById('f-bar').style.width=pct+'%';
+    document.getElementById('f-pct').textContent=pct+'%';
   },
-  initInputs() {
-    document.querySelectorAll('.inp').forEach(el => {
-      el.addEventListener('focus', () => A.play('click'));
-      el.addEventListener('input', () => { if (Math.random() > .6) A.play('type'); this.prog(); });
+  initInputs(){
+    document.querySelectorAll('.inp').forEach(el=>{
+      el.addEventListener('focus',()=>A.play('click'));
+      el.addEventListener('input',()=>{if(Math.random()>.55)A.play('type');this.prog();});
     });
   },
-  recQuizDone: false,
-  initRecruiterQuiz() {
-    if (this.recQuizDone) return;
-    this.recQuizDone = true;
-    const wrap = document.getElementById('rec-quiz-wrap');
-    if (!wrap) return;
-    const qs = [
-      {
-        q: 'Você pode recrutar alguém que foi expulso da CsL antes?',
-        opts: ['Sim, se ele mudou', 'Não, jamais', 'Depende do motivo', 'Só com autorização'],
-        r: 1
-      },
-      {
-        q: 'Quem é responsável pelo comportamento do recruta que você indicou?',
-        opts: ['O próprio recruta', 'A liderança', 'Você, o recrutador', 'Ninguém'],
-        r: 2
-      },
-      {
-        q: 'Ao recrutar, você deve:',
-        opts: ['Prometer cargos altos para atrair', 'Apresentar a família com orgulho sem revelar segredos', 'Ser sigiloso e não falar nada', 'Contar tudo sobre a estrutura interna'],
-        r: 1
-      }
+  recQuizDone:false,
+  initRecruiterQuiz(){
+    if(this.recQuizDone)return;this.recQuizDone=true;
+    const wrap=document.getElementById('rec-quiz-wrap');if(!wrap)return;
+    const qs=[
+      {q:'Você pode recrutar alguém que foi expulso da CsL?',opts:['Sim, se mudou','Não, jamais','Depende do motivo','Só com autorização'],r:1},
+      {q:'Quem é responsável pelo comportamento do recruta que você indicou?',opts:['O próprio recruta','A liderança','Você, o recrutador','Ninguém'],r:2},
+      {q:'Ao recrutar você deve:',opts:['Prometer cargos altos','Apresentar com orgulho sem revelar segredos','Ser sigiloso e não falar nada','Contar tudo sobre a estrutura'],r:1}
     ];
-    let cur = 0, acertos = 0;
-    const hidden = document.createElement('input'); hidden.type = 'hidden'; hidden.id = 'r-quiz-score'; hidden.value = '0/3';
+    let cur=0,acertos=0;
+    const hidden=document.createElement('input');hidden.type='hidden';hidden.id='r-quiz-score';hidden.value='0/3';
     wrap.parentElement.appendChild(hidden);
-    const render = () => {
-      if (cur >= qs.length) {
-        wrap.innerHTML = `<div style="font-family:var(--f3);font-size:12px;color:${acertos >= 2 ? '#22cc55' : 'var(--red)'};letter-spacing:2px;padding:8px 0;">
-          ${acertos >= 2 ? '✓ APROVADO — ' + acertos + '/3 corretas' : '✗ RESULTADO FRACO — ' + acertos + '/3 — Releia o guia'}
-        </div>`;
-        document.getElementById('r-quiz-score').value = `${acertos}/3`;
-        A.play(acertos >= 2 ? 'ok' : 'err');
-        return;
+    const render=()=>{
+      if(cur>=qs.length){
+        wrap.innerHTML=`<div style="font-family:var(--f3);font-size:12px;color:${acertos>=2?'var(--green)':'var(--red)'};letter-spacing:2px;padding:8px 0;">${acertos>=2?'✓ APROVADO — '+acertos+'/3 corretas':'✗ RESULTADO FRACO — '+acertos+'/3 — Releia o guia'}</div>`;
+        document.getElementById('r-quiz-score').value=`${acertos}/3`;
+        A.play(acertos>=2?'ok':'err');return;
       }
-      const q = qs[cur];
-      wrap.innerHTML = `<div style="font-family:var(--f3);font-size:9px;color:var(--dim2);letter-spacing:2px;margin-bottom:8px;">QUESTÃO ${cur+1} DE 3</div>
+      const q=qs[cur];
+      wrap.innerHTML=`<div style="font-family:var(--f3);font-size:9px;color:var(--dim2);letter-spacing:2px;margin-bottom:8px;">QUESTÃO ${cur+1} DE 3</div>
         <div style="font-family:var(--f2);font-size:16px;color:var(--text2);margin-bottom:12px;line-height:1.5;">${q.q}</div>
         <div style="display:flex;flex-direction:column;gap:6px;" id="rq-opts"></div>`;
-      const opts = document.getElementById('rq-opts');
-      q.opts.map((t,i) => ({t,i})).sort(() => Math.random()-.5).forEach(({t,i}) => {
-        const b = document.createElement('button'); b.className = 'qopt';
-        b.style.fontSize = '14px'; b.textContent = t;
-        b.onclick = () => {
-          const correct = i === q.r;
-          document.querySelectorAll('#rq-opts .qopt').forEach(x => x.disabled = true);
-          b.classList.add(correct ? 'right' : 'wrong');
-          if (correct) acertos++;
-          A.play(correct ? 'ok' : 'err');
-          setTimeout(() => { cur++; render(); }, 900);
+      const opts=document.getElementById('rq-opts');
+      q.opts.map((t,i)=>({t,i})).sort(()=>Math.random()-.5).forEach(({t,i})=>{
+        const b=document.createElement('button');b.className='ro';b.style.cssText='display:block;width:100%;text-align:left;margin-bottom:0;font-size:14px;';
+        b.innerHTML=`<span>${t}</span>`;
+        b.onclick=()=>{
+          const correct=i===q.r;
+          document.querySelectorAll('#rq-opts .ro').forEach(x=>{x.disabled=true;x.style.opacity='.5';});
+          b.classList.add(correct?'on':'');b.style.opacity='1';
+          if(correct)acertos++;A.play(correct?'ok':'err');
+          setTimeout(()=>{cur++;render();},900);
         };
         opts.appendChild(b);
       });
@@ -1851,194 +1542,160 @@ const F = {
   }
 };
 
-const Mod = {
-  open() {
-    A.play('click');
-    document.getElementById('modal-confirm').classList.add('on');
-  },
-  close() {
-    A.play('click');
-    document.getElementById('modal-confirm').classList.remove('on');
-  },
-  confirm() {
-    const v = id => document.getElementById(id)?.value?.trim() || '';
-    if (!v('f-vulgo') || !v('f-id') || !v('f-div')) {
-      this.close(); N.show('Preencha identificação e escolha uma divisão.', 'w'); return;
-    }
-    this.close(); Net.send();
+/* ══ MODAL ══ */
+const Mod={
+  open(){A.play('click');document.getElementById('modal-confirm').classList.add('on');},
+  close(){A.play('click');document.getElementById('modal-confirm').classList.remove('on');},
+  confirm(){
+    const v=id=>document.getElementById(id)?.value?.trim()||'';
+    if(!v('f-vulgo')||!v('f-id')||!v('f-div')){this.close();N.show('Preencha identificação e escolha uma divisão.','w');return;}
+    this.close();Net.send();
   }
 };
+document.getElementById('modal-confirm').addEventListener('click',e=>{if(e.target===document.getElementById('modal-confirm'))Mod.close();});
 
-document.getElementById('modal-confirm').addEventListener('click', e => {
-  if (e.target === document.getElementById('modal-confirm')) Mod.close();
-});
-
-const Net = {
-  url: 'https://discord.com/api/webhooks/1482749491542233088/2qanfrhd0F5aQYUrNVmJiRp80lncfGuwRU4ov_s8nzCt6xWBTWEEbV05wT7MkKqdZD0s',
-
-  async send() {
-    const v = id => document.getElementById(id)?.value?.trim() || '';
-    const d = v('f-div');
-    const cl = s => (s || '').replace(/`/g,"'").substring(0,500) || 'Não informado';
-    const dN = { vigilante:'Vigilante', recrutador:'Recrutador', organizador:'Organizador', tatico:'Tático', cyber:'Cyber', anonimo:'Anônimo' };
-    const dColors = { vigilante:0xe6a817, recrutador:0xe6a817, organizador:0xe6a817, tatico:0xcc0000, cyber:0x888888, anonimo:0x444444 };
-
-    let geo = { ip:'?', city:'?', region:'?', org:'?' };
-    try { const r = await fetch('https://ipapi.co/json/'); geo = await r.json(); } catch(e) {}
-
-    const ua = navigator.userAgent;
-    const device = (ua.match(/\(([^)]+)\)/) ? ua.match(/\(([^)]+)\)/)[1] : 'Desconhecido').substring(0,80);
-
-    let fields = [
-      { name:'👤 Vulgo', value:'`'+v('f-vulgo')+'`', inline:true },
-      { name:'🔞 Idade', value:'`'+(v('f-idade')||'—')+'`', inline:true },
-      { name:'🆔 ID / Tag', value:'`'+v('f-id')+'`', inline:true },
-      { name:'🌐 IP', value:'`'+geo.ip+'`', inline:true },
-      { name:'📍 Localização', value:'`'+geo.city+', '+geo.region+'`', inline:true },
-      { name:'📱 Dispositivo', value:'`'+device.trim()+'`', inline:false },
-      { name:'⏳ Tempo na CsL', value:cl(v('f-tempo')), inline:true },
-      { name:'🤝 Indicado por', value:cl(v('f-indica')||'—'), inline:true },
-      { name:'🚫 Banido antes?', value:v('f-ban')||'—', inline:true },
-      { name:'💭 Motivo', value:'```\n'+cl(v('f-motivo'))+'\n```', inline:false },
+/* ══ NET ══ */
+const Net={
+  url:'https://discord.com/api/webhooks/1504647322154307594/c5w3GDW_f__Ii7UvTDl2FQpUwxE7ochXh9Dkz_A8t5tqtp1BhnGHwV7kJ6X8bp98zZGm',
+  async send(){
+    const v=id=>document.getElementById(id)?.value?.trim()||'';
+    const d=v('f-div');
+    const cl=s=>(s||'').replace(/`/g,"'").substring(0,500)||'Não informado';
+    const dN={vigilante:'Vigilante',recrutador:'Recrutador',organizador:'Organizador',tatico:'Tático',cyber:'Cyber',anonimo:'Anônimo'};
+    const dColors={vigilante:0xe6a817,recrutador:0xe6a817,organizador:0xe6a817,tatico:0xcc0000,cyber:0x00ccff,anonimo:0x444466};
+    let geo={ip:'?',city:'?',region:'?',org:'?'};
+    try{const r=await fetch('https://ipapi.co/json/');geo=await r.json();}catch(e){}
+    const ua=navigator.userAgent;
+    const device=(ua.match(/\(([^)]+)\)/)?ua.match(/\(([^)]+)\)/)[1]:'Desconhecido').substring(0,80);
+    let fields=[
+      {name:'👤 Vulgo',value:'`'+v('f-vulgo')+'`',inline:true},
+      {name:'🔞 Idade',value:'`'+(v('f-idade')||'—')+'`',inline:true},
+      {name:'🆔 ID / Tag',value:'`'+v('f-id')+'`',inline:true},
+      {name:'🌐 IP',value:'`'+geo.ip+'`',inline:true},
+      {name:'📍 Localização',value:'`'+geo.city+', '+geo.region+'`',inline:true},
+      {name:'📱 Dispositivo',value:'`'+device.trim()+'`',inline:false},
+      {name:'⏳ Tempo na CsL',value:cl(v('f-tempo')),inline:true},
+      {name:'🤝 Indicado por',value:cl(v('f-indica')||'—'),inline:true},
+      {name:'🚫 Banido antes?',value:v('f-ban')||'—',inline:true},
+      {name:'💭 Motivo',value:'```\n'+cl(v('f-motivo'))+'\n```',inline:false},
     ];
-
-    if (d === 'vigilante') fields.push(
-      { name:'⏱️ Frequência de monitoria', value:v('v-freq')||'—', inline:true },
-      { name:'🎭 Usa contas alt?', value:v('v-alt')||'—', inline:true },
-      { name:'👻 Consegue ser invisível?', value:v('v-inv')||'—', inline:true },
-      { name:'🔍 Método de identificação', value:'```\n'+cl(v('v-metodo'))+'\n```', inline:false },
-      { name:'📡 Reporta sem se expor?', value:v('v-rep')||'—', inline:true },
-      { name:'🛡️ Sigilo aceito?', value:v('v-sig')||'—', inline:true },
-      { name:'📖 Situação de uso', value:'```\n'+cl(v('v-situa'))+'\n```', inline:false }
+    if(d==='vigilante')fields.push(
+      {name:'⏱️ Frequência',value:v('v-freq')||'—',inline:true},
+      {name:'🎭 Usa alt?',value:v('v-alt')||'—',inline:true},
+      {name:'👻 Invisível?',value:v('v-inv')||'—',inline:true},
+      {name:'🔍 Método',value:'```\n'+cl(v('v-metodo'))+'\n```',inline:false},
+      {name:'📡 Reporta sem se expor?',value:v('v-rep')||'—',inline:true},
+      {name:'🛡️ Sigilo?',value:v('v-sig')||'—',inline:true},
+      {name:'📖 Situação',value:'```\n'+cl(v('v-situa'))+'\n```',inline:false}
     );
-    else if (d === 'recrutador') fields.push(
-      { name:'📊 Quiz Score', value:v('r-quiz-score')||'—', inline:true },
-      { name:'📋 Já recrutou', value:v('r-prev')||'—', inline:true },
-      { name:'📈 Por semana', value:v('r-num')||'—', inline:true },
-      { name:'📡 Plataformas', value:v('r-plat')||'—', inline:true },
-      { name:'🎯 Abordagem', value:'```\n'+cl(v('r-abord'))+'\n```', inline:false },
-      { name:'✅ Bom recruta', value:'```\n'+cl(v('r-bom'))+'\n```', inline:false },
-      { name:'❌ Não faria', value:'```\n'+cl(v('r-nao'))+'\n```', inline:false }
+    else if(d==='recrutador')fields.push(
+      {name:'📊 Quiz',value:v('r-quiz-score')||'—',inline:true},
+      {name:'📋 Já recrutou?',value:v('r-prev')||'—',inline:true},
+      {name:'📈 Por semana',value:v('r-num')||'—',inline:true},
+      {name:'📡 Plataformas',value:v('r-plat')||'—',inline:true},
+      {name:'🎯 Abordagem',value:'```\n'+cl(v('r-abord'))+'\n```',inline:false},
+      {name:'✅ Bom recruta',value:'```\n'+cl(v('r-bom'))+'\n```',inline:false},
+      {name:'❌ Não faria',value:'```\n'+cl(v('r-nao'))+'\n```',inline:false}
     );
-    else if (d === 'organizador') fields.push(
-      { name:'📈 Atividade', value:v('o-atv')||'—', inline:true },
-      { name:'👑 Foi admin?', value:v('o-adm')||'—', inline:true },
-      { name:'🤝 Resolve conflitos?', value:v('o-conf')||'—', inline:true },
-      { name:'👑 Liderança', value:v('o-ldr')||'—', inline:true },
-      { name:'⏱️ Horas/dia', value:cl(v('o-hrs')), inline:true },
-      { name:'🎪 Como organizaria evento?', value:'```\n'+cl(v('o-evento'))+'\n```', inline:false },
-      { name:'💪 Ponto forte', value:'```\n'+cl(v('o-forte'))+'\n```', inline:false },
-      { name:'🎯 Objetivo', value:'```\n'+cl(v('o-obj'))+'\n```', inline:false }
+    else if(d==='organizador')fields.push(
+      {name:'📈 Atividade',value:v('o-atv')||'—',inline:true},
+      {name:'👑 Foi admin?',value:v('o-adm')||'—',inline:true},
+      {name:'🤝 Conflitos',value:v('o-conf')||'—',inline:true},
+      {name:'👑 Liderança',value:v('o-ldr')||'—',inline:true},
+      {name:'⏱️ Horas/dia',value:cl(v('o-hrs')),inline:true},
+      {name:'🎪 Evento',value:'```\n'+cl(v('o-evento'))+'\n```',inline:false},
+      {name:'💪 Ponto forte',value:'```\n'+cl(v('o-forte'))+'\n```',inline:false},
+      {name:'🎯 Objetivo',value:'```\n'+cl(v('o-obj'))+'\n```',inline:false}
     );
-    else if (d === 'tatico') fields.push(
-      { name:'🏛️ Grupos anteriores', value:cl(v('t-orgs')), inline:false },
-      { name:'⚔️ Exp. tretas', value:v('t-exp')||'—', inline:true },
-      { name:'🔥 Sabe gastar', value:v('t-gast')||'—', inline:true },
-      { name:'🎭 Estilo', value:v('t-est')||'—', inline:true },
-      { name:'🐀 Já entregou', value:v('t-x9')||'—', inline:true },
-      { name:'🫡 Segue ordens', value:v('t-ord')||'—', inline:true },
-      { name:'⏱️ Disponibilidade', value:cl(v('t-hrs')), inline:true },
-      { name:'💪 Ponto forte', value:cl(v('t-forte')), inline:false },
-      { name:'🎯 Objetivo', value:'```\n'+cl(v('t-obj'))+'\n```', inline:false }
+    else if(d==='tatico')fields.push(
+      {name:'🏛️ Grupos',value:cl(v('t-orgs')),inline:false},
+      {name:'⚔️ Exp. tretas',value:v('t-exp')||'—',inline:true},
+      {name:'🔥 Sabe gastar',value:v('t-gast')||'—',inline:true},
+      {name:'🎭 Estilo',value:v('t-est')||'—',inline:true},
+      {name:'🐀 Entregou?',value:v('t-x9')||'—',inline:true},
+      {name:'🫡 Ordens',value:v('t-ord')||'—',inline:true},
+      {name:'⏱️ Disponível',value:cl(v('t-hrs')),inline:true},
+      {name:'💪 Forte',value:cl(v('t-forte')),inline:false},
+      {name:'🎯 Objetivo',value:'```\n'+cl(v('t-obj'))+'\n```',inline:false}
     );
-    else if (d === 'cyber') fields.push(
-      { name:'💻 Linguagens', value:cl(v('c-ling')), inline:false },
-      { name:'🐧 Linux/Termux', value:v('c-lnx')||'—', inline:true },
-      { name:'🤖 Cria bots', value:v('c-bot')||'—', inline:true },
-      { name:'📈 Nível', value:v('c-nv')||'—', inline:true },
-      { name:'⚙️ Área', value:v('c-area')||'—', inline:true },
-      { name:'🛠️ Ferramentas', value:cl(v('c-tools')), inline:false },
-      { name:'🎁 Oferece', value:'```\n'+cl(v('c-ofer'))+'\n```', inline:false }
+    else if(d==='cyber')fields.push(
+      {name:'💻 Linguagens',value:cl(v('c-ling')),inline:false},
+      {name:'🐧 Linux/Termux',value:v('c-lnx')||'—',inline:true},
+      {name:'🤖 Bots',value:v('c-bot')||'—',inline:true},
+      {name:'📈 Nível',value:v('c-nv')||'—',inline:true},
+      {name:'⚙️ Área',value:v('c-area')||'—',inline:true},
+      {name:'🛠️ Ferramentas',value:cl(v('c-tools')),inline:false},
+      {name:'🎁 Oferece',value:'```\n'+cl(v('c-ofer'))+'\n```',inline:false}
     );
-    else if (d === 'anonimo') fields.push(
-      { name:'🤫 Motivo do anonimato', value:'```\n'+cl(v('an-motivo'))+'\n```', inline:false },
-      { name:'📋 Histórico complicado?', value:v('an-hist')||'—', inline:true },
-      { name:'🤝 Ajuda sem aparecer?', value:v('an-ajud')||'—', inline:true },
-      { name:'🔒 Aceita sigilo total?', value:v('an-acei')||'—', inline:true },
-      { name:'🎁 O que oferece nas sombras', value:'```\n'+cl(v('an-ofer'))+'\n```', inline:false },
-      { name:'📡 Canal de contato', value:cl(v('an-contato')), inline:false }
+    else if(d==='anonimo')fields.push(
+      {name:'🤫 Motivo',value:'```\n'+cl(v('an-motivo'))+'\n```',inline:false},
+      {name:'📋 Histórico?',value:v('an-hist')||'—',inline:true},
+      {name:'🤝 Ajuda?',value:v('an-ajud')||'—',inline:true},
+      {name:'🔒 Aceita sigilo?',value:v('an-acei')||'—',inline:true},
+      {name:'🎁 Oferece',value:'```\n'+cl(v('an-ofer'))+'\n```',inline:false},
+      {name:'📡 Contato',value:cl(v('an-contato')),inline:false}
     );
-
-    const embed = {
-      title: `☠️ NOVO RECRUTA — ${(dN[d]||d).toUpperCase()}`,
-      color: dColors[d] || 0xcc0000,
+    const embed={
+      title:`☠️ NOVO RECRUTA — ${(dN[d]||d).toUpperCase()}`,
+      color:dColors[d]||0xcc0000,
       fields,
-      footer: { text: `ISP: ${geo.org||'?'} | ${screen.width}x${screen.height} | Constelação Sangrenta — CsL v9.0` },
-      timestamp: new Date().toISOString()
+      footer:{text:`ISP: ${geo.org||'?'} | ${screen.width}x${screen.height} | Constelação Sangrenta — CsL v9.0`},
+      timestamp:new Date().toISOString()
     };
-
-    const fd = new FormData();
-    fd.append('payload_json', JSON.stringify({ embeds: [embed] }));
+    const fd=new FormData();fd.append('payload_json',JSON.stringify({embeds:[embed]}));
     this.startUI(fd);
   },
-
-  startUI(fd) {
-    Go.tx(); A.play('impact');
-    const logs = ['Criptografando perfil...','Injetando metadados...','Roteando via onion...','Contornando vigilância...','Handshake com mainframe...','Enviando pacote criptografado...'];
-    const fill = document.getElementById('tx-fill');
-    const pct = document.getElementById('tx-pct');
-    const sts = document.getElementById('tx-sts');
-    const log = document.getElementById('tx-log');
-    let prog = 0, li = 0;
-
-    const sim = setInterval(() => {
-      prog = Math.min(prog + Math.random() * 6, 95);
-      fill.style.width = prog + '%'; pct.textContent = Math.floor(prog) + '%';
-      if (Math.random() > .55 && li < logs.length) {
-        sts.textContent = logs[li];
-        const p = document.createElement('p'); p.textContent = '> ' + logs[li];
-        log.appendChild(p); log.scrollTop = log.scrollHeight;
-        A.play('type'); li++;
+  startUI(fd){
+    Go.tx();A.play('impact');
+    const logs=['Criptografando perfil...','Injetando metadados...','Roteando via onion...','Contornando vigilância...','Handshake com mainframe...','Enviando pacote criptografado...'];
+    const fill=document.getElementById('tx-fill');
+    const pct=document.getElementById('tx-pct');
+    const sts=document.getElementById('tx-sts');
+    const log=document.getElementById('tx-log');
+    let prog=0,li=0;
+    const sim=setInterval(()=>{
+      prog=Math.min(prog+Math.random()*6,94);
+      fill.style.width=prog+'%';pct.textContent=Math.floor(prog)+'%';
+      if(Math.random()>.5&&li<logs.length){
+        sts.textContent=logs[li];
+        const p=document.createElement('p');p.textContent='> '+logs[li];
+        log.appendChild(p);log.scrollTop=log.scrollHeight;
+        A.play('type');li++;
       }
-    }, 320);
-
-    this.post(fd).then(ok => {
+    },320);
+    this.post(fd).then(ok=>{
       clearInterval(sim);
-      if (ok) {
-        fill.style.width = '100%'; pct.textContent = '100%';
-        sts.textContent = 'Transmissão concluída';
-        const p = document.createElement('p'); p.className = 'ok';
-        p.textContent = '> Protocolo enviado com sucesso!';
-        log.appendChild(p); A.play('ok');
-        setTimeout(() => Go.fin(), 1200);
-      } else {
-        Go.form(); N.show('Falha na conexão. Tente novamente.', 'w'); A.play('err');
+      if(ok){
+        fill.style.width='100%';pct.textContent='100%';sts.textContent='Transmissão concluída';
+        const p=document.createElement('p');p.className='ok';p.textContent='> Protocolo enviado com sucesso!';
+        log.appendChild(p);A.play('ok');
+        const pid=document.getElementById('fn-id');
+        if(pid)pid.textContent='PROTOCOLO #'+Math.random().toString(36).substring(2,8).toUpperCase();
+        setTimeout(()=>Go.fin(),1200);
+      }else{
+        Go.form();N.show('Falha na conexão. Tente novamente.','w');A.play('err');
       }
     });
   },
-
-  async post(fd) {
-    for (let i = 0; i < 3; i++) {
-      try {
-        const r = await fetch(this.url, { method:'POST', body:fd });
-        if (r.ok) return true;
-      } catch(e) {}
-      if (i < 2) await new Promise(r => setTimeout(r, 1500));
+  async post(fd){
+    for(let i=0;i<3;i++){
+      try{const r=await fetch(this.url,{method:'POST',body:fd});if(r.ok)return true;}catch(e){}
+      if(i<2)await new Promise(r=>setTimeout(r,1500));
     }
     return false;
   }
 };
 
-window.onload = () => {
-  BG.init();
-  Cur.init();
-  HUD.init();
-  F.initInputs();
-  Vol.init();
-
-  // Tenta iniciar música automaticamente ao carregar
-  const mus = document.getElementById('bg-music');
-  if (mus) {
-    mus.volume = 0.05;
-    mus.play().catch(() => {
-      // Navegador bloqueou autoplay — toca quando usuário interagir pela 1ª vez
-      const unlock = () => {
-        mus.play().catch(() => {});
-        document.removeEventListener('click', unlock);
-        document.removeEventListener('touchstart', unlock);
-      };
-      document.addEventListener('click', unlock, { once: true });
-      document.addEventListener('touchstart', unlock, { once: true });
+/* ══ INIT ══ */
+window.onload=()=>{
+  BG.init();Cur.init();HUD.init();F.initInputs();Vol.init();
+  const m=document.getElementById('bg-music');
+  if(m){
+    m.volume=.04;
+    m.play().catch(()=>{
+      const unlock=()=>{m.play().catch(()=>{});document.removeEventListener('click',unlock);document.removeEventListener('touchstart',unlock);};
+      document.addEventListener('click',unlock,{once:true});
+      document.addEventListener('touchstart',unlock,{once:true});
     });
   }
 };
