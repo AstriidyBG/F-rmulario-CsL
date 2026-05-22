@@ -3,273 +3,271 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>CsL — Sistema de Recrutamento v10</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=Black+Ops+One&family=Permanent+Marker&display=swap" rel="stylesheet">
+<title>CsL — Constelação Sangrenta</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#030305;--bg2:#080810;--bg3:#0d0d16;--bg4:#12121e;
-  --red:#cc0000;--red2:#ff1a1a;--red3:#ff4444;--red-glow:rgba(204,0,0,.5);
-  --orange:#ff6600;--orange-glow:rgba(255,102,0,.3);
-  --gold:#e6a817;--gold2:#f5c842;--gold-glow:rgba(230,168,23,.4);
-  --cyan:#00ccff;--cyan2:#33ddff;--cyan-glow:rgba(0,204,255,.3);
-  --green:#00ff88;--green-glow:rgba(0,255,136,.25);
-  --purple:#9b00ff;--purple-glow:rgba(155,0,255,.3);
-  --gray:#1a1a24;--gray2:#22222e;--gray3:#2c2c3a;
-  --dim:#3a3a50;--dim2:#5a5a7a;--dim3:#8a8aaa;
-  --text:#c0c0d8;--text2:#e0e0f0;--white:#f0f0ff;
-  --border:rgba(255,255,255,.06);--border-r:rgba(204,0,0,.3);--border-c:rgba(0,204,255,.2);
-  --grunge1:#1a0a00;--grunge2:#0a0a05;
-  --f1:'Orbitron',sans-serif;--f2:'Rajdhani',sans-serif;--f3:'Share Tech Mono',monospace;
-  --f4:'Barlow Condensed',sans-serif;--f5:'Black Ops One',cursive;--f6:'Permanent Marker',cursive;
+  --bg:#06030a;--bg2:#0c0510;--bg3:#110818;--bg4:#180d22;
+  --red:#7a0000;--red2:#a00000;--red3:#c00000;--red-glow:rgba(120,0,0,.6);
+  --crimson:#8b1a1a;--blood:#5c0000;
+  --gold:#c9a84c;--gold2:#e8c96d;--gold3:#f0d88a;--gold-glow:rgba(201,168,76,.35);
+  --silver:#8a8a9a;--silver2:#b0b0c0;
+  --dim:#1e1428;--dim2:#3a2d4a;--dim3:#5a4a6a;--dim4:#8a7a9a;
+  --text:#c0b8cc;--text2:#ddd8e8;--white:#f0ecf8;
+  --border:rgba(201,168,76,.12);--border-r:rgba(139,26,26,.3);
+  --f1:'Cinzel',serif;--f2:'Rajdhani',sans-serif;--f3:'Share Tech Mono',monospace;
+  --f4:'Cormorant Garamond',serif;--f5:'Cinzel Decorative',serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-family:var(--f2);overflow:hidden;font-size:16px;}
-::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--red);}
+::-webkit-scrollbar{width:2px;}::-webkit-scrollbar-thumb{background:var(--gold);}
 *{cursor:none!important;}
 
-/* ── CURSOR ── */
-#cur{position:fixed;pointer-events:none;z-index:99999;width:10px;height:10px;border-radius:0;background:var(--red);transform:translate(-50%,-50%) rotate(45deg);mix-blend-mode:screen;box-shadow:0 0 16px var(--red2),0 0 32px var(--red);}
-#cur2{position:fixed;pointer-events:none;z-index:99998;width:30px;height:30px;border:1px solid var(--orange);border-radius:0;transform:translate(-50%,-50%) rotate(45deg);transition:left .08s,top .08s;opacity:.4;}
+/* CURSOR */
+#cur{position:fixed;pointer-events:none;z-index:99999;width:6px;height:6px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);mix-blend-mode:screen;box-shadow:0 0 10px var(--gold),0 0 20px rgba(201,168,76,.4);}
+#cur2{position:fixed;pointer-events:none;z-index:99998;width:24px;height:24px;border:1px solid rgba(201,168,76,.4);border-radius:50%;transform:translate(-50%,-50%);transition:left .1s,top .1s;}
 
 canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
-/* ── OVERLAYS ── */
-.grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.09;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:160px 160px;}
+/* OVERLAYS */
+.grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.06;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:160px;}
 .scanlines{position:fixed;inset:0;z-index:9996;pointer-events:none;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0,rgba(0,0,0,.07) 1px,transparent 1px,transparent 3px);}
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.04) 0,rgba(0,0,0,.04) 1px,transparent 1px,transparent 4px);}
 .vig{position:fixed;inset:0;z-index:9995;pointer-events:none;
-  background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,.92) 100%);}
-.vhs-glitch{position:fixed;inset:0;z-index:9994;pointer-events:none;}
-.vhs-glitch::before{content:'';position:absolute;left:0;right:0;height:2px;background:rgba(255,102,0,.2);animation:vhsscan 7s linear infinite;box-shadow:0 0 8px var(--orange);}
-.vhs-glitch::after{content:'';position:absolute;left:0;right:0;height:1px;background:rgba(204,0,0,.15);animation:vhsscan2 11s linear infinite;animation-delay:3s;}
-@keyframes vhsscan{0%{top:-2%}100%{top:102%}}
-@keyframes vhsscan2{0%{top:102%}100%{top:-2%}}
+  background:radial-gradient(ellipse at center,transparent 20%,rgba(0,0,0,.85) 100%);}
 
-/* Grunge texture overlay */
-.grunge-overlay{position:fixed;inset:0;z-index:9993;pointer-events:none;opacity:.04;
-  background:repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(255,80,0,.03) 2px,rgba(255,80,0,.03) 4px);}
+/* CORNERS */
+.corner{position:fixed;z-index:9990;pointer-events:none;width:24px;height:24px;}
+.corner-tl{top:14px;left:14px;border-top:1px solid rgba(201,168,76,.35);border-left:1px solid rgba(201,168,76,.35);}
+.corner-tr{top:14px;right:14px;border-top:1px solid rgba(201,168,76,.2);border-right:1px solid rgba(201,168,76,.2);}
+.corner-bl{bottom:14px;left:14px;border-bottom:1px solid rgba(201,168,76,.2);border-left:1px solid rgba(201,168,76,.2);}
+.corner-br{bottom:14px;right:14px;border-bottom:1px solid rgba(201,168,76,.35);border-right:1px solid rgba(201,168,76,.35);}
 
-/* ── CORNERS ── */
-.corner{position:fixed;z-index:9990;pointer-events:none;width:32px;height:32px;}
-.corner-tl{top:10px;left:10px;border-top:2px solid rgba(255,102,0,.6);border-left:2px solid rgba(255,102,0,.6);}
-.corner-tr{top:10px;right:10px;border-top:1px solid rgba(0,204,255,.4);border-right:1px solid rgba(0,204,255,.4);}
-.corner-bl{bottom:10px;left:10px;border-bottom:1px solid rgba(0,204,255,.4);border-left:1px solid rgba(0,204,255,.4);}
-.corner-br{bottom:10px;right:10px;border-bottom:2px solid rgba(204,0,0,.6);border-right:2px solid rgba(204,0,0,.6);}
-
-/* ── HUD ── */
+/* HUD */
 #hud{position:fixed;inset:0;z-index:500;pointer-events:none;}
-.hud-tl,.hud-tr,.hud-bl,.hud-br{position:absolute;display:flex;flex-direction:column;gap:4px;}
-.hud-tl{top:16px;left:18px;}
-.hud-tr{top:16px;right:18px;align-items:flex-end;}
-.hud-bl{bottom:16px;left:18px;}
-.ht{font-family:var(--f3);font-size:9px;color:var(--dim2);letter-spacing:1.5px;text-transform:uppercase;line-height:1.6;}
-.ht b{color:rgba(255,102,0,.9);}
-.ht.c{color:rgba(0,204,255,.5);}
-.hud-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--red);margin-right:5px;animation:blink 1.4s ease-in-out infinite;box-shadow:0 0 6px var(--red);}
-.hud-dot.g{background:var(--green);box-shadow:0 0 6px var(--green);}
-.hud-dot.o{background:var(--orange);box-shadow:0 0 6px var(--orange);}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+.hud-tl,.hud-tr,.hud-bl{position:absolute;display:flex;flex-direction:column;gap:3px;}
+.hud-tl{top:18px;left:20px;}
+.hud-tr{top:18px;right:20px;align-items:flex-end;}
+.hud-bl{bottom:18px;left:20px;}
+.ht{font-family:var(--f3);font-size:9px;color:rgba(201,168,76,.3);letter-spacing:1.5px;text-transform:uppercase;line-height:1.6;}
+.ht b{color:rgba(201,168,76,.7);}
+.hud-dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--gold);margin-right:5px;animation:blink 2s ease-in-out infinite;box-shadow:0 0 4px var(--gold);}
 
-/* ── NOTIFS ── */
-#notifs{position:fixed;top:16px;right:18px;z-index:9000;display:flex;flex-direction:column;gap:6px;pointer-events:none;width:290px;align-items:flex-end;}
-.nf{background:rgba(10,10,16,.97);border-left:2px solid var(--red);padding:12px 15px;font-family:var(--f3);font-size:11px;color:var(--text);display:flex;gap:9px;align-items:center;width:100%;animation:nfin .2s ease;backdrop-filter:blur(10px);}
-.nf.ok{border-left-color:var(--green);}
-.nf.w{border-left-color:var(--orange);}
-@keyframes nfin{from{transform:translateX(20px);opacity:0}}
-@keyframes nfout{to{transform:translateX(20px);opacity:0}}
+/* NOTIFS */
+#notifs{position:fixed;top:18px;right:20px;z-index:9000;display:flex;flex-direction:column;gap:6px;pointer-events:none;width:260px;align-items:flex-end;}
+.nf{background:rgba(6,3,10,.97);border-left:1px solid var(--gold);padding:10px 14px;font-family:var(--f3);font-size:10px;color:var(--text);display:flex;gap:8px;align-items:center;animation:nfin .2s ease;backdrop-filter:blur(12px);}
+.nf.ok{border-left-color:#3a7a3a;}
+.nf.w{border-left-color:var(--red2);}
+@keyframes nfin{from{transform:translateX(16px);opacity:0}}
+@keyframes nfout{to{transform:translateX(16px);opacity:0}}
 
-/* ── KEYFRAMES ── */
-@keyframes fadeup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+/* KEYFRAMES */
+@keyframes fadeup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-@keyframes scalein{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes scalein{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 @keyframes rtt{to{transform:rotate(360deg)}}
 @keyframes rtt2{to{transform:rotate(-360deg)}}
-@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
-@keyframes pulse2{0%,100%{box-shadow:0 0 10px var(--red-glow)}50%{box-shadow:0 0 40px var(--red-glow),0 0 80px rgba(204,0,0,.15)}}
-@keyframes orangepulse{0%,100%{box-shadow:0 0 15px var(--orange-glow)}50%{box-shadow:0 0 50px var(--orange-glow),0 0 100px rgba(255,102,0,.1)}}
-@keyframes goldpulse{0%,100%{box-shadow:0 0 12px var(--gold-glow)}50%{box-shadow:0 0 32px var(--gold-glow)}}
-@keyframes cyanpulse{0%,100%{box-shadow:0 0 10px var(--cyan-glow)}50%{box-shadow:0 0 30px var(--cyan-glow)}}
-@keyframes chk{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+@keyframes goldpulse{0%,100%{box-shadow:0 0 8px var(--gold-glow)}50%{box-shadow:0 0 28px var(--gold-glow),0 0 56px rgba(201,168,76,.1)}}
 @keyframes typeblnk{0%,100%{opacity:1}50%{opacity:0}}
 @keyframes scanh{0%{left:-100%}100%{left:150%}}
-@keyframes glitch{0%,88%,100%{clip-path:none;transform:none}89%{clip-path:polygon(0 0,100% 0,100% 30%,0 30%);transform:translateX(-6px)}91%{clip-path:polygon(0 35%,100% 35%,100% 70%,0 70%);transform:translateX(6px)}93%{clip-path:polygon(0 72%,100% 72%,100% 100%,0 100%);transform:translateX(-3px)}95%{clip-path:none;transform:skewX(-2deg)}}
-@keyframes glitch2{0%,86%,100%{clip-path:none;transform:none;opacity:0}87%{clip-path:polygon(0 0,100% 0,100% 40%,0 40%);transform:translateX(8px);opacity:.5}89%{clip-path:polygon(0 45%,100% 45%,100% 100%,0 100%);transform:translateX(-8px);opacity:.5}91%{clip-path:none;opacity:0}}
-@keyframes borderflow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-@keyframes floatin{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@keyframes zoomin{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:scale(1)}}
-@keyframes slideright{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}
-@keyframes slideleft{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
-@keyframes flicker{0%,100%{opacity:1}91%{opacity:1}92%{opacity:.3}93%{opacity:1}95%{opacity:.5}96%{opacity:1}}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
-@keyframes crackspin{0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
-@keyframes textglow{0%,100%{text-shadow:0 0 20px var(--orange),0 0 40px rgba(255,102,0,.3)}50%{text-shadow:0 0 40px var(--orange),0 0 80px rgba(255,102,0,.5),0 0 120px rgba(255,102,0,.2)}}
-@keyframes discordpulse{0%,100%{transform:scale(1);box-shadow:0 0 20px rgba(88,101,242,.4)}50%{transform:scale(1.02);box-shadow:0 0 50px rgba(88,101,242,.8),0 0 100px rgba(88,101,242,.3)}}
-@keyframes neonflicker{0%,19%,21%,23%,25%,54%,56%,100%{opacity:1}20%,24%,55%{opacity:.4}}
-@keyframes energybar{0%{width:0%}100%{width:100%}}
-@keyframes crtbuzz{0%,100%{transform:translate(0,0)}33%{transform:translate(-1px,0)}66%{transform:translate(1px,0)}}
+@keyframes chk{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes floatin{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes startwinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+@keyframes constellationDraw{0%{stroke-dashoffset:100}100%{stroke-dashoffset:0}}
+@keyframes glowpulse{0%,100%{text-shadow:0 0 20px rgba(201,168,76,.4),0 0 40px rgba(201,168,76,.15)}50%{text-shadow:0 0 40px rgba(201,168,76,.7),0 0 80px rgba(201,168,76,.3)}}
+@keyframes slideright{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideleft{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes lineexpand{from{width:0}to{width:100%}}
+@keyframes blooddrop{0%{transform:scaleY(0);transform-origin:top}100%{transform:scaleY(1);transform-origin:top}}
 
-/* ── APP ── */
+/* APP */
 #app{position:relative;z-index:10;width:100%;height:100%;}
-.scr{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;pointer-events:none;padding:20px;transition:opacity .5s cubic-bezier(.25,.46,.45,.94),transform .5s cubic-bezier(.25,.46,.45,.94);transform:translateY(14px);}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;pointer-events:none;padding:20px;transition:opacity .6s cubic-bezier(.25,.46,.45,.94),transform .6s cubic-bezier(.25,.46,.45,.94);transform:translateY(12px);}
 .scr.on{opacity:1;pointer-events:all;transform:translateY(0);}
-.scr.out{opacity:0;transform:translateY(-14px);pointer-events:none;}
+.scr.out{opacity:0;transform:translateY(-12px);pointer-events:none;}
 .scr.scroll-scr{justify-content:flex-start;overflow-y:auto;overflow-x:hidden;padding:0;-webkit-overflow-scrolling:touch;}
 
 /* ══════════════════════════════════════
-   TELA DE TEASER — INTERNET
+   INTRO ANIMATION SCREEN
 ══════════════════════════════════════ */
-#scr-teaser{background:transparent;z-index:50;}
-.teaser-wrap{display:flex;flex-direction:column;align-items:center;width:100%;max-width:700px;gap:0;position:relative;}
+#scr-intro{background:transparent;z-index:60;}
+.intro-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;position:relative;}
 
-/* Glitch top bar */
-.tsr-topbar{width:100%;background:rgba(255,102,0,.08);border:1px solid rgba(255,102,0,.3);border-bottom:3px solid var(--orange);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:0;}
-.tsr-topbar-l{font-family:var(--f3);font-size:10px;color:var(--orange);letter-spacing:3px;animation:neonflicker 4s ease-in-out infinite;}
-.tsr-topbar-r{font-family:var(--f3);font-size:9px;color:rgba(255,102,0,.5);letter-spacing:2px;}
+/* Stars canvas */
+#stars-canvas{position:absolute;inset:0;pointer-events:none;}
 
-/* Main teaser card */
-.tsr-card{width:100%;background:linear-gradient(135deg,rgba(8,5,0,.97) 0%,rgba(12,8,2,.97) 50%,rgba(5,5,10,.97) 100%);border:1px solid rgba(255,102,0,.25);border-top:none;padding:40px 36px 36px;position:relative;overflow:hidden;}
-.tsr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--orange),var(--red),transparent);animation:borderflow 3s linear infinite;}
-.tsr-card::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,102,0,.012) 40px,rgba(255,102,0,.012) 41px);pointer-events:none;}
+/* Central emblem */
+.intro-emblem{position:relative;width:200px;height:200px;margin-bottom:40px;opacity:0;animation:fadein 1.2s ease forwards 0.5s;}
+.ie-outer{position:absolute;inset:0;border:1px solid rgba(201,168,76,.15);border-radius:50%;animation:rtt 30s linear infinite;}
+.ie-mid{position:absolute;inset:20px;border:1px solid rgba(201,168,76,.25);border-radius:50%;animation:rtt2 20s linear infinite;}
+.ie-inner{position:absolute;inset:40px;border:1px solid rgba(201,168,76,.35);border-radius:50%;}
+.ie-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
 
-/* Crack decorative lines */
-.tsr-cracks{position:absolute;inset:0;pointer-events:none;overflow:hidden;opacity:.12;}
-.tsr-cracks::before{content:'';position:absolute;top:20%;left:0;width:180px;height:1px;background:var(--orange);transform:rotate(15deg);transform-origin:left;}
-.tsr-cracks::after{content:'';position:absolute;bottom:30%;right:0;width:140px;height:1px;background:var(--red);transform:rotate(-12deg);transform-origin:right;}
+/* Constellation SVG */
+.constellation-svg{position:absolute;inset:0;width:100%;height:100%;}
+.c-line{stroke:rgba(201,168,76,.25);stroke-width:.5;fill:none;stroke-dasharray:100;stroke-dashoffset:100;animation:constellationDraw 2s ease forwards;}
+.c-star{fill:rgba(201,168,76,.7);animation:startwinkle 3s ease-in-out infinite;}
 
-.tsr-signal{display:flex;align-items:center;gap:10px;margin-bottom:20px;opacity:0;animation:fadeup .4s ease forwards .1s;}
-.tsr-sig-dot{width:8px;height:8px;background:var(--orange);border-radius:50%;box-shadow:0 0 12px var(--orange);animation:blink .8s ease-in-out infinite;}
-.tsr-sig-txt{font-family:var(--f3);font-size:10px;color:rgba(255,102,0,.7);letter-spacing:3px;}
-.tsr-sig-bars{display:flex;gap:3px;align-items:flex-end;margin-left:auto;}
-.tsr-sig-bars span{display:block;width:4px;background:var(--orange);opacity:.5;}
-.tsr-sig-bars span:nth-child(1){height:6px;opacity:.3;}
-.tsr-sig-bars span:nth-child(2){height:10px;opacity:.5;}
-.tsr-sig-bars span:nth-child(3){height:14px;opacity:.7;}
-.tsr-sig-bars span:nth-child(4){height:18px;opacity:.9;animation:pulse .8s ease-in-out infinite;}
+/* CsL logo inside */
+.ie-csl{font-family:var(--f5);font-size:36px;color:var(--gold);letter-spacing:8px;animation:glowpulse 4s ease-in-out infinite;position:relative;z-index:2;}
 
-/* Main headline */
-.tsr-eyebrow{font-family:var(--f3);font-size:11px;color:rgba(255,102,0,.6);letter-spacing:6px;text-transform:uppercase;margin-bottom:16px;opacity:0;animation:fadeup .5s ease forwards .2s;}
-.tsr-headline{font-family:var(--f5);font-size:clamp(32px,7vw,68px);color:var(--white);line-height:.95;letter-spacing:2px;margin-bottom:8px;opacity:0;animation:fadeup .6s ease forwards .35s;position:relative;}
-.tsr-headline .hl-red{color:var(--red);text-shadow:0 0 30px rgba(204,0,0,.6),0 0 60px rgba(204,0,0,.2);animation:flicker 5s ease-in-out infinite;}
-.tsr-headline .hl-orange{color:var(--orange);text-shadow:0 0 20px rgba(255,102,0,.5);animation:textglow 3s ease-in-out infinite;}
-.tsr-headline-ghost{position:absolute;inset:0;font-family:var(--f5);font-size:clamp(32px,7vw,68px);color:var(--cyan);line-height:.95;letter-spacing:2px;animation:glitch2 5s ease-in-out infinite 1s;pointer-events:none;}
-.tsr-sub{font-family:var(--f2);font-size:clamp(15px,2.5vw,20px);color:var(--dim3);line-height:1.6;margin-bottom:28px;font-weight:400;opacity:0;animation:fadeup .5s ease forwards .55s;}
-.tsr-sub strong{color:var(--orange);font-weight:700;}
+/* Blood drip effect */
+.blood-drip{position:absolute;top:0;left:50%;transform:translateX(-50%);width:2px;height:0;background:linear-gradient(to bottom,var(--red3),var(--blood));animation:blooddrop 1.5s ease forwards 1.8s;box-shadow:0 0 8px rgba(192,0,0,.5);}
 
-/* Feature pills */
-.tsr-features{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;opacity:0;animation:fadeup .5s ease forwards .7s;}
-.tsr-feat{background:rgba(255,102,0,.06);border:1px solid rgba(255,102,0,.2);padding:6px 14px;font-family:var(--f3);font-size:10px;color:rgba(255,102,0,.8);letter-spacing:2px;display:flex;align-items:center;gap:6px;}
-.tsr-feat::before{content:'◆';font-size:7px;}
+/* Title block */
+.intro-title-block{text-align:center;opacity:0;animation:fadeup .8s ease forwards 1.4s;}
+.intro-eyebrow{font-family:var(--f3);font-size:10px;color:rgba(201,168,76,.45);letter-spacing:8px;margin-bottom:14px;}
+.intro-title{font-family:var(--f5);font-size:clamp(28px,7vw,58px);color:var(--white);letter-spacing:6px;line-height:1;margin-bottom:6px;animation:glowpulse 5s ease-in-out infinite 2s;}
+.intro-title .t-red{color:var(--red3);text-shadow:0 0 20px rgba(192,0,0,.5);}
+.intro-subtitle{font-family:var(--f4);font-style:italic;font-size:clamp(13px,2.5vw,18px);color:rgba(201,168,76,.5);letter-spacing:3px;margin-top:6px;}
 
-/* Discord CTA */
-.tsr-cta-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;opacity:0;animation:fadeup .6s ease forwards .9s;}
-.tsr-discord-btn{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(88,101,242,.15),rgba(88,101,242,.08));border:2px solid rgba(88,101,242,.5);padding:18px 32px;font-family:var(--f5);font-size:22px;color:#fff;letter-spacing:3px;text-decoration:none;position:relative;overflow:hidden;transition:all .3s;cursor:pointer!important;animation:discordpulse 2.5s ease-in-out infinite;width:100%;justify-content:center;}
-.tsr-discord-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(88,101,242,.3),rgba(88,101,242,.1));transform:translateX(-101%);transition:.3s;z-index:0;}
-.tsr-discord-btn:hover::before{transform:translateX(0);}
-.tsr-discord-btn:hover{border-color:rgba(88,101,242,.9);box-shadow:0 0 60px rgba(88,101,242,.5),0 0 120px rgba(88,101,242,.2);}
-.tsr-discord-btn span{position:relative;z-index:1;}
-.tsr-discord-ico{width:32px;height:32px;flex-shrink:0;position:relative;z-index:1;}
-.tsr-discord-sub{font-family:var(--f3);font-size:10px;color:rgba(88,101,242,.7);letter-spacing:3px;}
-.tsr-skip{font-family:var(--f3);font-size:10px;color:rgba(100,100,120,.35);letter-spacing:3px;background:none;border:none;cursor:pointer!important;transition:color .2s;padding:4px;}
-.tsr-skip:hover{color:var(--dim2);}
+/* Dividers */
+.intro-divider{display:flex;align-items:center;gap:16px;width:min(420px,90%);margin:28px 0;opacity:0;animation:fadein .6s ease forwards 2s;}
+.idiv-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.35),transparent);}
+.idiv-diamond{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 8px var(--gold-glow);}
 
-/* Stats bar */
-.tsr-stats-bar{width:100%;display:flex;background:rgba(5,5,8,.9);border:1px solid rgba(255,102,0,.15);border-top:none;}
-.tsr-stat-item{flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:4px;border-right:1px solid rgba(255,102,0,.1);}
-.tsr-stat-item:last-child{border-right:none;}
-.tsr-stat-n{font-family:var(--f5);font-size:24px;color:var(--orange);text-shadow:0 0 15px rgba(255,102,0,.4);}
-.tsr-stat-l{font-family:var(--f3);font-size:8px;color:var(--dim2);letter-spacing:2px;}
+/* Buttons */
+.intro-btns{display:flex;flex-direction:column;align-items:center;gap:14px;opacity:0;animation:fadeup .7s ease forwards 2.3s;}
+.btn-discord{display:flex;align-items:center;gap:14px;background:rgba(88,101,242,.08);border:1px solid rgba(88,101,242,.3);padding:16px 36px;font-family:var(--f1);font-size:14px;color:rgba(200,205,255,.9);letter-spacing:3px;text-decoration:none;transition:all .4s;cursor:pointer!important;width:100%;max-width:340px;justify-content:center;}
+.btn-discord:hover{background:rgba(88,101,242,.15);border-color:rgba(88,101,242,.6);box-shadow:0 0 30px rgba(88,101,242,.2);}
+.btn-continuar{display:flex;align-items:center;gap:10px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.25);padding:14px 36px;font-family:var(--f1);font-size:12px;color:rgba(201,168,76,.8);letter-spacing:4px;transition:all .4s;cursor:pointer!important;width:100%;max-width:340px;justify-content:center;}
+.btn-continuar:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.5);box-shadow:0 0 20px rgba(201,168,76,.12);}
+.btn-continuar .arrow{font-size:10px;opacity:.6;}
+
+/* Stats */
+.intro-stats{display:flex;gap:40px;margin-top:8px;opacity:0;animation:fadeup .5s ease forwards 2.7s;}
+.istat{text-align:center;}
+.istat-n{font-family:var(--f1);font-size:20px;color:var(--gold);letter-spacing:2px;}
+.istat-l{font-family:var(--f3);font-size:8px;color:var(--dim4);letter-spacing:3px;margin-top:3px;}
+
+/* ══════════════════════════════════════
+   FAMILIA SCREEN  
+══════════════════════════════════════ */
+#scr-familia{padding:0;justify-content:flex-start;}
+#familia-scroll{flex:1;overflow-y:auto;width:100%;-webkit-overflow-scrolling:touch;padding:0 16px;}
+.fam-wrap{width:100%;max-width:760px;margin:0 auto;padding-bottom:80px;}
+
+.fam-header{padding:32px 0 24px;text-align:center;border-bottom:1px solid rgba(201,168,76,.1);margin-bottom:32px;}
+.fam-h-back{font-family:var(--f3);font-size:9px;color:rgba(201,168,76,.3);letter-spacing:3px;margin-bottom:16px;display:flex;align-items:center;gap:6px;cursor:pointer!important;}
+.fam-h-back:hover{color:rgba(201,168,76,.6);}
+.fam-eyebrow{font-family:var(--f3);font-size:10px;color:rgba(201,168,76,.4);letter-spacing:6px;margin-bottom:12px;}
+.fam-title{font-family:var(--f5);font-size:clamp(22px,5vw,40px);color:var(--white);letter-spacing:4px;line-height:1.1;margin-bottom:8px;}
+.fam-title .t-red{color:var(--red3);}
+.fam-subtitle{font-family:var(--f4);font-style:italic;font-size:16px;color:rgba(201,168,76,.5);}
+
+.fam-intro{background:rgba(12,6,18,.8);border:1px solid rgba(201,168,76,.1);border-left:2px solid rgba(201,168,76,.4);padding:24px 26px;margin-bottom:32px;}
+.fam-intro p{font-family:var(--f4);font-size:clamp(14px,1.8vw,17px);color:var(--text);line-height:1.9;margin-bottom:10px;}
+.fam-intro p:last-child{margin-bottom:0;}
+.fam-intro .highlight{color:var(--gold);}
+.fam-bullet-list{list-style:none;margin-top:12px;}
+.fam-bullet-list li{font-family:var(--f4);font-size:15px;color:var(--dim4);line-height:1.9;display:flex;align-items:center;gap:10px;}
+.fam-bullet-list li::before{content:'◆';font-size:7px;color:var(--gold);flex-shrink:0;}
+
+.fam-divs-title{font-family:var(--f1);font-size:12px;color:rgba(201,168,76,.5);letter-spacing:6px;text-align:center;margin-bottom:24px;display:flex;align-items:center;gap:14px;}
+.fam-divs-title::before,.fam-divs-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.2),transparent);}
+
+.div-card{background:rgba(10,5,15,.9);border:1px solid rgba(201,168,76,.08);border-left:2px solid rgba(201,168,76,.2);padding:22px 24px;margin-bottom:14px;transition:all .4s;position:relative;overflow:hidden;}
+.div-card::before{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:linear-gradient(90deg,var(--gold),transparent);transition:width .4s;}
+.div-card:hover{border-left-color:rgba(201,168,76,.5);background:rgba(14,8,20,.95);}
+.div-card:hover::before{width:100%;}
+.div-card-top{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.div-card-ico{font-size:22px;flex-shrink:0;}
+.div-card-name{font-family:var(--f1);font-size:16px;color:var(--gold);letter-spacing:3px;}
+.div-card-tag{font-family:var(--f3);font-size:8px;color:var(--dim4);letter-spacing:2px;margin-left:auto;border:1px solid rgba(201,168,76,.15);padding:3px 8px;}
+.div-card-sep{height:1px;background:linear-gradient(90deg,rgba(201,168,76,.15),transparent);margin-bottom:12px;}
+.div-card-desc{font-family:var(--f4);font-size:clamp(13px,1.6vw,15px);color:var(--dim4);line-height:1.9;}
+.div-card.special{border-left-color:rgba(192,0,0,.4);}
+.div-card.special .div-card-name{color:var(--red3);}
+.div-card.special .div-card-tag{border-color:rgba(192,0,0,.25);color:rgba(192,0,0,.7);}
+
+.fam-cta{text-align:center;padding:28px 0;}
+.fam-cta-btn{display:inline-flex;align-items:center;gap:12px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.3);padding:18px 44px;font-family:var(--f1);font-size:13px;color:var(--gold);letter-spacing:4px;cursor:pointer!important;transition:all .4s;position:relative;overflow:hidden;}
+.fam-cta-btn::before{content:'';position:absolute;inset:0;background:rgba(201,168,76,.05);transform:translateX(-101%);transition:.4s;}
+.fam-cta-btn:hover::before{transform:translateX(0);}
+.fam-cta-btn:hover{box-shadow:0 0 30px rgba(201,168,76,.15);}
 
 /* ══════════════════════════════════════
    SPLASH
 ══════════════════════════════════════ */
 #scr-splash{background:transparent;}
-.splash-wrap{display:flex;flex-direction:column;align-items:center;width:100%;max-width:600px;position:relative;}
+.splash-wrap{display:flex;flex-direction:column;align-items:center;width:100%;max-width:580px;position:relative;}
 
-.sp-logo{position:relative;width:160px;height:160px;margin-bottom:28px;flex-shrink:0;animation:floatin 4s ease-in-out infinite;}
-.sp-hex{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
-.sp-hex svg{animation:crackspin 25s linear infinite;opacity:.12;}
-.sp-ring{position:absolute;border-radius:0;border:1px solid transparent;}
-.sp-ring-1{inset:0;border-color:rgba(255,102,0,.2);animation:rtt 20s linear infinite;border-radius:0;transform:rotate(0deg);}
-.sp-ring-2{inset:16px;border-color:rgba(0,204,255,.15);animation:rtt2 14s linear infinite;}
-.sp-ring-3{inset:32px;border-color:rgba(204,0,0,.35);animation:rtt 8s linear infinite;}
-.sp-ring-4{inset:48px;border-color:rgba(255,102,0,.25);animation:rtt2 5s linear infinite;}
-.sp-dot{position:absolute;width:8px;height:8px;background:var(--orange);box-shadow:0 0 16px var(--orange);top:-4px;left:50%;transform:translateX(-50%);}
-.sp-dot-c{position:absolute;width:6px;height:6px;background:var(--cyan);box-shadow:0 0 12px var(--cyan);top:50%;left:-3px;transform:translateY(-50%);}
-.sp-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;}
-.sp-csl{font-family:var(--f5);font-size:46px;color:var(--red);letter-spacing:6px;text-shadow:0 0 30px rgba(204,0,0,.7),0 0 60px rgba(204,0,0,.3);animation:flicker 5s ease-in-out infinite;}
+.sp-logo{position:relative;width:150px;height:150px;margin-bottom:24px;animation:floatin 5s ease-in-out infinite;}
+.sp-rings{position:absolute;inset:0;}
+.sp-ring{position:absolute;border-radius:50%;border:1px solid;}
+.sp-r1{inset:0;border-color:rgba(201,168,76,.12);animation:rtt 25s linear infinite;}
+.sp-r2{inset:18px;border-color:rgba(201,168,76,.2);animation:rtt2 18s linear infinite;}
+.sp-r3{inset:36px;border-color:rgba(120,0,0,.4);animation:rtt 12s linear infinite;}
+.sp-r4{inset:54px;border-color:rgba(201,168,76,.3);animation:rtt2 8s linear infinite;}
+.sp-rdot{position:absolute;width:5px;height:5px;background:var(--gold);border-radius:50%;box-shadow:0 0 10px var(--gold);top:-2.5px;left:50%;transform:translateX(-50%);}
+.sp-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.sp-csl{font-family:var(--f5);font-size:38px;color:var(--red3);letter-spacing:5px;animation:glowpulse 4s ease-in-out infinite;}
 
-.sp-by{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:6px;opacity:0;animation:fadeup .5s ease forwards .15s;}
-.sp-name{font-family:var(--f5);font-size:clamp(40px,10vw,58px);color:var(--white);letter-spacing:6px;line-height:1;margin:8px 0;position:relative;opacity:0;animation:fadeup .6s ease forwards .35s;}
-.sp-name-ghost{position:absolute;inset:0;font-family:var(--f5);font-size:clamp(40px,10vw,58px);color:var(--orange);letter-spacing:6px;animation:glitch2 6s ease-in-out infinite 1.5s;}
-.sp-role{font-family:var(--f3);font-size:11px;color:rgba(255,102,0,.5);letter-spacing:4px;opacity:0;animation:fadeup .5s ease forwards .55s;}
+.sp-by{font-family:var(--f3);font-size:9px;color:var(--dim4);letter-spacing:5px;opacity:0;animation:fadeup .5s ease forwards .1s;}
+.sp-name{font-family:var(--f5);font-size:clamp(34px,8vw,52px);color:var(--white);letter-spacing:5px;margin:8px 0;opacity:0;animation:fadeup .6s ease forwards .3s;}
+.sp-role{font-family:var(--f3);font-size:10px;color:rgba(201,168,76,.4);letter-spacing:3px;opacity:0;animation:fadeup .5s ease forwards .5s;}
 
-.sp-divider{display:flex;align-items:center;gap:14px;width:100%;max-width:360px;margin:24px 0;opacity:0;animation:fadeup .5s ease forwards .75s;}
-.sp-div-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,102,0,.5),transparent);}
-.sp-div-line.c{background:linear-gradient(90deg,transparent,rgba(0,204,255,.4),transparent);}
-.sp-div-ico{width:10px;height:10px;border:1px solid var(--orange);transform:rotate(45deg);box-shadow:0 0 10px var(--orange);}
+.sp-div{display:flex;align-items:center;gap:12px;width:min(320px,90%);margin:22px 0;opacity:0;animation:fadein .5s ease forwards .7s;}
+.sp-divline{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.3),transparent);}
+.sp-divromb{width:7px;height:7px;border:1px solid var(--gold);transform:rotate(45deg);}
 
-.sp-stats{display:flex;gap:28px;opacity:0;animation:fadeup .5s ease forwards .95s;}
-.sp-stat{text-align:center;}
-.sp-stat-n{font-family:var(--f5);font-size:24px;color:var(--orange);letter-spacing:2px;text-shadow:0 0 12px rgba(255,102,0,.5);}
-.sp-stat-l{font-family:var(--f3);font-size:9px;color:var(--dim2);letter-spacing:2px;margin-top:2px;}
+.sp-stats{display:flex;gap:26px;opacity:0;animation:fadeup .5s ease forwards .9s;}
+.sp-stat-n{font-family:var(--f1);font-size:22px;color:var(--gold);text-align:center;}
+.sp-stat-l{font-family:var(--f3);font-size:8px;color:var(--dim4);letter-spacing:2px;text-align:center;margin-top:3px;}
 
-.sp-btn-wrap{position:relative;opacity:0;animation:fadeup .6s ease forwards 1.2s;margin-top:28px;}
-.sp-btn{font-family:var(--f5);font-size:17px;color:var(--orange);background:transparent;border:2px solid rgba(255,102,0,.5);padding:16px 56px;letter-spacing:4px;position:relative;overflow:hidden;transition:all .3s;cursor:pointer!important;}
-.sp-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--red),var(--orange));transform:translateX(-101%);transition:.35s;z-index:0;}
-.sp-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);animation:scanh 2s linear infinite;}
-.sp-btn:hover{color:#fff;border-color:var(--orange);box-shadow:0 0 50px rgba(255,102,0,.4),0 0 100px rgba(255,102,0,.1);}
+.sp-btn-wrap{opacity:0;animation:fadeup .6s ease forwards 1.2s;margin-top:26px;position:relative;}
+.sp-btn{font-family:var(--f1);font-size:14px;color:rgba(201,168,76,.8);background:transparent;border:1px solid rgba(201,168,76,.3);padding:15px 50px;letter-spacing:4px;cursor:pointer!important;transition:all .4s;position:relative;overflow:hidden;}
+.sp-btn::before{content:'';position:absolute;inset:0;background:rgba(201,168,76,.06);transform:translateX(-101%);transition:.4s;}
 .sp-btn:hover::before{transform:translateX(0);}
-.sp-btn span{position:relative;z-index:1;}
-.sp-btn-glow{position:absolute;inset:-3px;background:transparent;border:1px solid transparent;animation:orangepulse 2s ease-in-out infinite;pointer-events:none;}
+.sp-btn:hover{border-color:rgba(201,168,76,.6);color:var(--gold);box-shadow:0 0 24px rgba(201,168,76,.12);}
 
-.sp-ver{font-family:var(--f3);font-size:9px;color:rgba(100,100,140,.2);letter-spacing:4px;margin-top:20px;opacity:0;animation:fadeup .4s ease forwards 1.5s;}
-.sp-ts{font-family:var(--f3);font-size:9px;color:rgba(255,102,0,.2);letter-spacing:2px;margin-top:5px;opacity:0;animation:fadeup .4s ease forwards 1.7s, typeblnk 1.1s step-end infinite 1.7s;}
+.sp-ver{font-family:var(--f3);font-size:8px;color:rgba(201,168,76,.12);letter-spacing:4px;margin-top:18px;opacity:0;animation:fadein .4s ease forwards 1.5s;}
 
 /* ══════════════════════════════════════
-   BOOT SEQUENCE
+   BOOT
 ══════════════════════════════════════ */
-.boot-wrap{width:100%;max-width:580px;display:flex;flex-direction:column;gap:16px;}
-.boot-hd{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,102,0,.2);padding-bottom:12px;}
-.boot-hd-l{font-family:var(--f5);font-size:14px;color:var(--orange);letter-spacing:3px;}
-.boot-hd-r{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:2px;}
-.boot-bar-wrap{width:100%;height:4px;background:var(--gray2);overflow:hidden;}
-.boot-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--red),var(--orange));transition:width .3s ease;box-shadow:0 0 10px var(--orange);}
-.boot-terminal{background:rgba(3,3,8,.95);border:1px solid rgba(255,102,0,.1);padding:16px;font-family:var(--f3);font-size:11px;min-height:140px;display:flex;flex-direction:column;gap:5px;}
+.boot-wrap{width:100%;max-width:560px;}
+.boot-hd{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(201,168,76,.15);padding-bottom:12px;margin-bottom:16px;}
+.boot-hd-l{font-family:var(--f1);font-size:13px;color:rgba(201,168,76,.7);letter-spacing:3px;}
+.boot-hd-r{font-family:var(--f3);font-size:10px;color:var(--dim4);}
+.boot-bar-wrap{width:100%;height:2px;background:rgba(201,168,76,.08);overflow:hidden;margin:12px 0;}
+.boot-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--blood),var(--gold));transition:width .35s ease;box-shadow:0 0 6px var(--gold);}
+.boot-terminal{background:rgba(3,2,6,.97);border:1px solid rgba(201,168,76,.08);padding:16px;font-family:var(--f3);font-size:11px;min-height:130px;display:flex;flex-direction:column;gap:4px;}
 .bt-line{animation:slideright .15s ease;}
-.bt-line.ok{color:var(--green);}
-.bt-line.w{color:var(--orange);}
-.bt-line.e{color:var(--red);}
-.bt-line.d{color:var(--dim2);}
-.bt-line.c{color:var(--cyan);}
-.boot-status{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:2px;text-align:center;}
+.bt-line.ok{color:rgba(120,180,120,.8);}
+.bt-line.w{color:rgba(201,168,76,.7);}
+.bt-line.e{color:var(--red3);}
+.bt-line.d{color:var(--dim4);}
 .boot-mods{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.bmod{background:var(--bg2);border:1px solid var(--border);padding:12px;display:flex;justify-content:space-between;align-items:center;animation:fadeup .2s ease;border-left:2px solid transparent;transition:border-color .3s;}
-.bmod.ok{border-left-color:var(--green);}
-.bmod.w{border-left-color:var(--orange);}
-.bmod.e{border-left-color:var(--red);}
-.bmod-l{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:1px;}
-.bmod-r{font-family:var(--f3);font-size:10px;letter-spacing:1px;}
-.bmod.ok .bmod-r{color:var(--green);}
-.bmod.w .bmod-r{color:var(--orange);}
-.bmod.e .bmod-r{color:var(--red);}
+.bmod{background:rgba(8,5,12,.9);border:1px solid rgba(201,168,76,.06);padding:12px;display:flex;justify-content:space-between;align-items:center;border-left:2px solid transparent;transition:border-color .3s;}
+.bmod.ok{border-left-color:rgba(100,160,100,.5);}
+.bmod.w{border-left-color:rgba(201,168,76,.4);}
+.bmod.e{border-left-color:rgba(192,0,0,.5);}
+.bmod-l{font-family:var(--f3);font-size:10px;color:var(--dim4);}
+.bmod-r{font-family:var(--f3);font-size:10px;}
+.bmod.ok .bmod-r{color:rgba(120,180,120,.7);}
+.bmod.w .bmod-r{color:rgba(201,168,76,.7);}
+.bmod.e .bmod-r{color:rgba(192,0,0,.7);}
+.boot-status{font-family:var(--f3);font-size:10px;color:var(--dim4);text-align:center;margin-top:8px;}
 
 /* ══════════════════════════════════════
    AVISO
 ══════════════════════════════════════ */
 #scr-warn{padding:0;justify-content:flex-start;}
 #warn-scroll{flex:1;overflow-y:auto;width:100%;display:flex;justify-content:center;padding:22px 16px 10px;-webkit-overflow-scrolling:touch;}
-.warn-box{width:100%;max-width:600px;background:rgba(5,3,0,.95);border:1px solid rgba(255,102,0,.25);border-top:3px solid var(--orange);}
-.warn-top-bar{height:3px;background:linear-gradient(90deg,var(--red),var(--orange),var(--red));background-size:200%;animation:borderflow 2s linear infinite;}
-.warn-hd{display:flex;align-items:center;gap:14px;padding:22px 26px 18px;border-bottom:1px solid rgba(255,102,0,.1);}
-.warn-hd-ico{width:44px;height:44px;border:2px solid rgba(255,102,0,.5);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 20px rgba(255,102,0,.3);animation:orangepulse 2s ease-in-out infinite;}
-.warn-hd-txt h2{font-family:var(--f5);font-size:20px;color:var(--orange);letter-spacing:3px;}
-.warn-hd-txt p{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:2px;margin-top:3px;}
-.warn-body{padding:22px 26px 26px;}
-.warn-txt{font-family:var(--f3);font-size:12px;line-height:2.1;color:var(--dim3);white-space:pre-wrap;}
-.warn-cursor{display:inline-block;width:8px;height:14px;background:var(--orange);animation:typeblnk .9s step-end infinite;vertical-align:middle;margin-left:2px;}
-#warn-foot{width:100%;max-width:600px;margin:0 auto;background:rgba(3,2,0,.97);border-top:1px solid rgba(255,102,0,.1);padding:14px 16px;flex-shrink:0;}
+.warn-box{width:100%;max-width:580px;background:rgba(6,3,10,.97);border:1px solid rgba(201,168,76,.15);border-top:2px solid rgba(201,168,76,.4);}
+.warn-hd{display:flex;align-items:center;gap:14px;padding:22px 24px 18px;border-bottom:1px solid rgba(201,168,76,.08);}
+.warn-hd-ico{width:40px;height:40px;border:1px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:goldpulse 2.5s ease-in-out infinite;}
+.warn-hd-txt h2{font-family:var(--f1);font-size:18px;color:rgba(201,168,76,.9);letter-spacing:3px;}
+.warn-hd-txt p{font-family:var(--f3);font-size:9px;color:var(--dim4);letter-spacing:2px;margin-top:3px;}
+.warn-body{padding:22px 24px 26px;}
+.warn-txt{font-family:var(--f3);font-size:11px;line-height:2.2;color:var(--dim4);white-space:pre-wrap;}
+.warn-cursor{display:inline-block;width:6px;height:13px;background:var(--gold);animation:typeblnk .9s step-end infinite;vertical-align:middle;margin-left:2px;}
+#warn-foot{width:100%;max-width:580px;margin:0 auto;background:rgba(4,2,8,.98);border-top:1px solid rgba(201,168,76,.08);padding:14px 16px;flex-shrink:0;}
 
 /* ══════════════════════════════════════
    FORMULÁRIO
@@ -278,181 +276,147 @@ canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 #form-sc{flex:1;overflow-y:auto;width:100%;-webkit-overflow-scrolling:touch;padding:0 14px;}
 .fwrap{width:100%;max-width:820px;margin:0 auto;padding-bottom:120px;}
 
-.ftop{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid rgba(255,102,0,.2);padding:18px 0 15px;position:sticky;top:0;background:rgba(3,3,5,.98);z-index:100;backdrop-filter:blur(12px);}
-.ftop-l h2{font-family:var(--f5);font-size:24px;color:var(--white);letter-spacing:3px;}
-.ftop-l p{font-family:var(--f3);font-size:10px;color:var(--dim2);margin-top:3px;letter-spacing:1px;}
-.fpbwrap{width:80px;height:4px;background:var(--gray2);overflow:hidden;}
-.fpbfill{height:100%;background:linear-gradient(90deg,var(--red),var(--orange));transition:width .4s;box-shadow:0 0 8px var(--orange);}
-.fpb-pct{font-family:var(--f5);font-size:12px;color:var(--orange);text-align:right;margin-top:5px;letter-spacing:1px;}
+.ftop{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(201,168,76,.12);padding:18px 0 14px;position:sticky;top:0;background:rgba(6,3,10,.98);z-index:100;backdrop-filter:blur(12px);}
+.ftop-l h2{font-family:var(--f1);font-size:20px;color:var(--white);letter-spacing:3px;}
+.ftop-l p{font-family:var(--f3);font-size:9px;color:var(--dim4);margin-top:3px;letter-spacing:1px;}
+.fpbwrap{width:70px;height:2px;background:rgba(201,168,76,.08);}
+.fpbfill{height:100%;background:linear-gradient(90deg,var(--blood),var(--gold));transition:width .4s;}
+.fpb-pct{font-family:var(--f1);font-size:11px;color:rgba(201,168,76,.6);text-align:right;margin-top:5px;}
 
-.fsec{padding:22px 0;border-bottom:1px solid rgba(255,255,255,.04);}
-.sec-lbl{font-family:var(--f5);font-size:15px;color:var(--orange);letter-spacing:3px;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
-.sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,102,0,.3),transparent);}
+.fsec{padding:22px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+.sec-lbl{font-family:var(--f1);font-size:13px;color:rgba(201,168,76,.7);letter-spacing:4px;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(201,168,76,.2),transparent);}
 
-.fi{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
-.fi label{font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:2px;text-transform:uppercase;}
-.inp{width:100%;background:rgba(8,6,2,.8);border:none;border-bottom:1px solid rgba(255,102,0,.2);color:var(--text2);font-family:var(--f2);font-size:17px;padding:11px 0;outline:none;transition:all .25s;border-radius:0;-webkit-appearance:none;font-weight:500;letter-spacing:.3px;}
-.inp:focus{border-bottom-color:var(--orange);color:var(--white);background:rgba(15,10,3,.9);}
-.inp::placeholder{color:var(--dim);}
-textarea.inp{min-height:90px;resize:none;border:1px solid rgba(255,102,0,.15);padding:12px 14px;}
-textarea.inp:focus{border-color:rgba(255,102,0,.4);}
+.fi{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.fi label{font-family:var(--f3);font-size:9px;color:var(--dim4);letter-spacing:2px;text-transform:uppercase;}
+.inp{width:100%;background:rgba(6,3,10,.8);border:none;border-bottom:1px solid rgba(201,168,76,.15);color:var(--text2);font-family:var(--f2);font-size:16px;padding:10px 0;outline:none;transition:all .3s;border-radius:0;-webkit-appearance:none;font-weight:500;}
+.inp:focus{border-bottom-color:rgba(201,168,76,.5);color:var(--white);}
+.inp::placeholder{color:var(--dim2);}
+textarea.inp{min-height:88px;resize:none;border:1px solid rgba(201,168,76,.1);padding:12px 14px;}
+textarea.inp:focus{border-color:rgba(201,168,76,.3);}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 
-.rrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:5px;}
-.ro{background:transparent;border:1px solid rgba(255,255,255,.08);color:var(--dim2);padding:10px 16px;font-family:var(--f2);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:all .2s;cursor:pointer!important;position:relative;overflow:hidden;}
-.ro::before{content:'';position:absolute;inset:0;background:var(--orange);transform:translateY(101%);transition:.2s;z-index:0;opacity:.08;}
-.ro:hover{border-color:var(--dim2);color:var(--text);}
-.ro.on{background:rgba(255,102,0,.1);border-color:var(--orange);color:var(--white);}
-.ro.on::before{transform:translateY(0);}
-.ro span{position:relative;z-index:1;}
+.rrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.ro{background:transparent;border:1px solid rgba(201,168,76,.1);color:var(--dim4);padding:9px 15px;font-family:var(--f2);font-size:13px;font-weight:600;letter-spacing:.5px;transition:all .25s;cursor:pointer!important;}
+.ro:hover{border-color:rgba(201,168,76,.3);color:var(--text);}
+.ro.on{background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.4);color:var(--gold);}
 
-/* ── DIVISÕES — Grid uniforme ── */
-.divs-label{font-family:var(--f3);font-size:9px;letter-spacing:4px;margin-bottom:12px;text-align:center;display:flex;align-items:center;gap:8px;color:rgba(255,102,0,.6);}
-.divs-label::before,.divs-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,102,0,.3),transparent);}
+/* DIVISÕES */
+.divs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+@media(max-width:700px){.divs-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:480px){.divs-grid{grid-template-columns:repeat(2,1fr);}}
 
-.divs-grid-full{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
-@media(max-width:700px){.divs-grid-full{grid-template-columns:repeat(3,1fr);}}
-@media(max-width:480px){.divs-grid-full{grid-template-columns:repeat(2,1fr);}}
+.dc{background:rgba(8,5,12,.9);border:1px solid rgba(201,168,76,.07);padding:16px 8px 13px;text-align:center;cursor:pointer!important;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .3s;position:relative;overflow:hidden;}
+.dc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--gold);transform:scaleX(0);transition:.3s;}
+.dc:hover{border-color:rgba(201,168,76,.2);}
+.dc:hover::after{transform:scaleX(1);}
+.dc-ico{font-size:20px;transition:.3s;}
+.dc-name{font-family:var(--f2);font-size:11px;font-weight:700;color:var(--dim4);letter-spacing:1px;text-transform:uppercase;transition:.3s;}
+.dc-tag{font-family:var(--f3);font-size:8px;color:rgba(90,70,100,.5);transition:.3s;}
+.dc-badge{position:absolute;top:4px;right:4px;font-family:var(--f3);font-size:7px;padding:2px 5px;border:1px solid;letter-spacing:1px;}
+.dc-badge.hard{color:rgba(192,0,0,.8);border-color:rgba(192,0,0,.3);background:rgba(192,0,0,.06);}
+.dc-badge.new{color:rgba(100,160,100,.8);border-color:rgba(100,160,100,.3);background:rgba(100,160,100,.04);}
+.dc.sel{border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.04);}
+.dc.sel::after{transform:scaleX(1);}
+.dc.sel .dc-ico{filter:brightness(1.3);}
+.dc.sel .dc-name{color:var(--gold);}
+.dc.sel .dc-tag{color:rgba(201,168,76,.5);}
 
-.dc{background:rgba(8,6,2,.9);border:1px solid rgba(255,102,0,.1);padding:18px 8px 14px;text-align:center;transition:all .3s;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer!important;position:relative;overflow:hidden;}
-.dc::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--orange);transform:scaleX(0);transition:.3s;box-shadow:0 0 8px var(--orange);}
-.dc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(255,102,0,.05),transparent 70%);opacity:0;transition:.3s;}
-.dc:hover::before,.dc:hover::after{transform:scaleX(1);opacity:1;}
-.dc svg{transition:.3s;stroke:var(--dim2);}
-.dc-name{font-family:var(--f2);font-size:11px;font-weight:700;color:var(--dim2);letter-spacing:1.5px;transition:.3s;text-transform:uppercase;}
-.dc-desc{font-family:var(--f3);font-size:9px;color:rgba(90,90,120,.5);letter-spacing:.5px;transition:.3s;line-height:1.4;}
-.dc.sel{border-color:rgba(255,102,0,.4);background:rgba(255,102,0,.07);}
-.dc.sel::before{transform:scaleX(1);}
-.dc.sel::after{opacity:1;}
-.dc.sel svg{stroke:var(--orange);}
-.dc.sel .dc-name{color:var(--white);}
-.dc.sel .dc-desc{color:rgba(255,102,0,.6);}
-.dc-badge{position:absolute;top:5px;right:5px;font-family:var(--f3);font-size:7px;letter-spacing:1px;padding:2px 5px;border:1px solid;}
-.dc-badge.top{color:var(--gold);border-color:rgba(230,168,23,.4);background:rgba(230,168,23,.08);}
-.dc-badge.new{color:var(--green);border-color:rgba(0,255,136,.4);background:rgba(0,255,136,.06);}
-.dc-badge.hot{color:var(--red2);border-color:rgba(255,60,60,.4);background:rgba(255,60,60,.06);}
+/* Div form */
+.dform{display:none;flex-direction:column;padding:20px 0 0;animation:fadeup .3s ease;}
+.dform-hd{display:flex;align-items:center;gap:10px;font-family:var(--f1);font-size:16px;letter-spacing:3px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(201,168,76,.1);}
+.div-info{background:rgba(3,2,6,.9);border-left:2px solid rgba(201,168,76,.3);padding:14px 16px;margin-bottom:16px;}
+.div-info-t{font-family:var(--f1);font-size:10px;color:rgba(201,168,76,.6);letter-spacing:3px;margin-bottom:8px;}
+.div-info p{font-family:var(--f3);font-size:11px;color:var(--dim4);line-height:2.1;}
 
-/* Formulário divisão */
-.dform{display:none;flex-direction:column;padding:20px 0 0;animation:fadeup .35s ease;}
-.dform-hd{display:flex;align-items:center;gap:12px;font-family:var(--f5);font-size:17px;letter-spacing:3px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid rgba(255,102,0,.15);}
-.dform-hd::before{content:'▶';font-size:10px;color:var(--orange);}
-.div-info-box{background:rgba(255,102,0,.03);border:1px solid rgba(255,102,0,.15);border-left:3px solid var(--orange);padding:15px 16px;margin-bottom:18px;}
-.dib-title{font-family:var(--f5);font-size:11px;color:var(--orange);letter-spacing:3px;margin-bottom:10px;}
-.dib-title::before{content:'▸ ';}
-.div-info-box p{font-family:var(--f3);font-size:12px;color:var(--dim3);line-height:2;}
-
-/* submit */
-.sbtn-area{position:sticky;bottom:0;background:rgba(3,3,5,.98);border-top:1px solid rgba(255,102,0,.15);padding:16px 0 8px;margin-top:10px;backdrop-filter:blur(12px);}
-.cbtn{position:relative;font-family:var(--f5);font-size:16px;color:var(--orange);background:transparent;border:2px solid rgba(255,102,0,.45);padding:17px 28px;letter-spacing:4px;overflow:hidden;transition:all .3s;display:block;width:100%;text-align:center;-webkit-appearance:none;cursor:pointer!important;}
-.cbtn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--red),var(--orange));transform:translateX(-101%);transition:.3s;z-index:0;}
-.cbtn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);animation:scanh 3s linear infinite;opacity:.5;}
-.cbtn:hover,.cbtn:active{color:#fff;border-color:var(--orange);box-shadow:0 0 40px rgba(255,102,0,.3);}
+.sbtn-area{position:sticky;bottom:0;background:rgba(6,3,10,.98);border-top:1px solid rgba(201,168,76,.1);padding:14px 0 8px;margin-top:8px;backdrop-filter:blur(12px);}
+.cbtn{position:relative;font-family:var(--f1);font-size:14px;color:rgba(201,168,76,.7);background:transparent;border:1px solid rgba(201,168,76,.3);padding:16px 28px;letter-spacing:4px;overflow:hidden;transition:all .4s;display:block;width:100%;text-align:center;-webkit-appearance:none;cursor:pointer!important;}
+.cbtn::before{content:'';position:absolute;inset:0;background:rgba(201,168,76,.05);transform:translateX(-101%);transition:.4s;}
 .cbtn:hover::before,.cbtn:active::before{transform:translateX(0);}
+.cbtn:hover{border-color:rgba(201,168,76,.55);color:var(--gold);}
 .cbtn span{position:relative;z-index:1;}
-
-.rec-quiz-box{background:rgba(3,3,8,.9);border:1px solid rgba(255,102,0,.2);padding:18px;margin-bottom:18px;}
-.rec-quiz-box .rq-hd{font-family:var(--f5);font-size:12px;color:var(--orange);letter-spacing:3px;margin-bottom:14px;border-bottom:1px solid rgba(255,102,0,.1);padding-bottom:10px;}
 
 /* ══════════════════════════════════════
    TRANSMISSÃO
 ══════════════════════════════════════ */
 #scr-tx{background:transparent;}
-.tx-wrap{display:flex;flex-direction:column;align-items:center;gap:22px;width:100%;max-width:460px;}
-.tx-radar{position:relative;width:180px;height:180px;border-radius:50%;border:1px solid rgba(255,102,0,.2);flex-shrink:0;}
-.tx-radar::before,.tx-radar::after{content:'';position:absolute;border-radius:50%;border:1px solid;}
-.tx-radar::before{inset:25%;border-color:rgba(0,204,255,.12);}
-.tx-radar::after{inset:50%;border-color:rgba(255,102,0,.1);}
-.tx-rline{position:absolute;top:50%;left:50%;width:50%;height:1px;transform-origin:left;background:linear-gradient(90deg,rgba(255,102,0,.9),transparent);animation:rtt 2s linear infinite;}
-.tx-rline2{position:absolute;top:50%;left:50%;width:50%;height:1px;transform-origin:left;background:linear-gradient(90deg,rgba(0,204,255,.4),transparent);animation:rtt 2s linear infinite;animation-delay:1s;}
-.tx-blip{position:absolute;width:6px;height:6px;background:var(--orange);border-radius:50%;box-shadow:0 0 8px var(--orange);}
-.tx-blip.c{background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
-.tx-title{font-family:var(--f5);font-size:22px;color:var(--white);letter-spacing:4px;}
-.tx-pbwrap{width:100%;height:4px;background:var(--gray2);overflow:hidden;}
-.tx-pbfill{height:100%;background:linear-gradient(90deg,var(--red),var(--orange));width:0%;transition:width .2s;box-shadow:0 0 10px var(--orange);}
-.tx-row{display:flex;justify-content:space-between;width:100%;font-family:var(--f3);font-size:10px;color:var(--dim2);}
-.tx-log{width:100%;background:rgba(3,3,8,.95);border:1px solid rgba(255,102,0,.1);padding:14px;font-family:var(--f3);font-size:11px;color:var(--dim2);max-height:120px;overflow-y:auto;}
-.tx-log p{margin-bottom:3px;}.tx-log p.ok{color:var(--green);}
+.tx-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:420px;}
+.tx-emblem{position:relative;width:140px;height:140px;}
+.tx-e-ring{position:absolute;border-radius:50%;border:1px solid rgba(201,168,76,.15);}
+.tx-e-r1{inset:0;animation:rtt 4s linear infinite;}
+.tx-e-r2{inset:20px;border-color:rgba(192,0,0,.2);animation:rtt2 3s linear infinite;}
+.tx-e-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f5);font-size:24px;color:var(--gold);}
+.tx-title{font-family:var(--f1);font-size:20px;color:var(--white);letter-spacing:4px;}
+.tx-pbwrap{width:100%;height:2px;background:rgba(201,168,76,.08);}
+.tx-pbfill{height:100%;background:linear-gradient(90deg,var(--blood),var(--gold));width:0%;transition:width .2s;box-shadow:0 0 6px var(--gold);}
+.tx-row{display:flex;justify-content:space-between;width:100%;font-family:var(--f3);font-size:10px;color:var(--dim4);}
+.tx-log{width:100%;background:rgba(3,2,6,.97);border:1px solid rgba(201,168,76,.06);padding:12px;font-family:var(--f3);font-size:10px;color:var(--dim4);max-height:100px;overflow-y:auto;}
+.tx-log p{margin-bottom:3px;}.tx-log p.ok{color:rgba(120,160,120,.7);}
 
 /* ══════════════════════════════════════
    FINAL
 ══════════════════════════════════════ */
 #scr-final{background:transparent;}
-.fn-box{width:100%;max-width:500px;background:rgba(3,5,3,.95);border:1px solid rgba(0,255,136,.2);border-top:3px solid var(--green);padding:50px 40px;text-align:center;animation:zoomin .5s ease;}
-.fn-chk{width:70px;height:70px;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 0 40px var(--green-glow),0 0 80px rgba(0,255,136,.1);animation:chk .6s cubic-bezier(.19,1,.22,1) forwards;}
-.fn-tit{font-family:var(--f5);font-size:30px;color:var(--green);letter-spacing:5px;margin-bottom:18px;text-shadow:0 0 25px rgba(0,255,136,.4);}
-.fn-txt{font-family:var(--f2);font-size:16px;color:var(--dim2);line-height:2;margin-bottom:6px;font-weight:400;}
-.fn-tag{font-family:var(--f3);font-size:9px;color:rgba(0,255,136,.12);margin-top:32px;letter-spacing:4px;}
-.fn-id{font-family:var(--f5);font-size:13px;color:rgba(0,255,136,.4);letter-spacing:3px;margin-top:16px;}
+.fn-box{width:100%;max-width:460px;background:rgba(4,3,8,.97);border:1px solid rgba(201,168,76,.15);border-top:2px solid rgba(201,168,76,.4);padding:44px 36px;text-align:center;animation:scalein .5s ease;}
+.fn-chk{width:60px;height:60px;border:1px solid rgba(100,160,100,.4);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;animation:chk .5s ease forwards;}
+.fn-tit{font-family:var(--f5);font-size:26px;color:rgba(100,160,100,.9);letter-spacing:5px;margin-bottom:16px;}
+.fn-txt{font-family:var(--f4);font-size:16px;color:var(--dim4);line-height:2;margin-bottom:4px;}
+.fn-id{font-family:var(--f1);font-size:12px;color:rgba(201,168,76,.3);letter-spacing:3px;margin-top:24px;}
+.fn-tag{font-family:var(--f3);font-size:8px;color:rgba(201,168,76,.1);margin-top:28px;letter-spacing:4px;}
 
-/* ══════════════════════════════════════
-   MODAL
-══════════════════════════════════════ */
-#modal-confirm{position:fixed;inset:0;z-index:5000;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.96);opacity:0;pointer-events:none;transition:opacity .3s;padding:20px;}
+/* MODAL */
+#modal-confirm{position:fixed;inset:0;z-index:5000;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.95);opacity:0;pointer-events:none;transition:opacity .3s;padding:20px;}
 #modal-confirm.on{opacity:1;pointer-events:all;}
-.mbox{width:100%;max-width:500px;background:rgba(6,4,2,.99);border:1px solid rgba(255,102,0,.3);border-top:3px solid var(--orange);animation:scalein .3s ease;}
-.mbox-top{height:3px;background:linear-gradient(90deg,var(--red),var(--orange),var(--cyan),var(--red));background-size:200%;animation:borderflow 2s linear infinite;}
-.mhd{padding:24px 26px 18px;border-bottom:1px solid rgba(255,102,0,.1);}
-.mhd h3{font-family:var(--f5);font-size:22px;color:var(--white);letter-spacing:3px;}
-.mhd p{font-family:var(--f3);font-size:10px;color:var(--dim2);margin-top:4px;letter-spacing:1px;}
-.mlist{display:flex;flex-direction:column;gap:8px;padding:20px 26px;border-bottom:1px solid rgba(255,102,0,.1);}
-.mi{display:flex;gap:12px;padding:12px 14px;background:rgba(12,8,2,.9);border:1px solid rgba(255,102,0,.1);border-left:2px solid rgba(255,102,0,.3);}
+.mbox{width:100%;max-width:480px;background:rgba(6,3,10,.99);border:1px solid rgba(201,168,76,.2);border-top:2px solid rgba(201,168,76,.4);animation:scalein .3s ease;}
+.mhd{padding:22px 24px 16px;border-bottom:1px solid rgba(201,168,76,.08);}
+.mhd h3{font-family:var(--f1);font-size:20px;color:var(--white);letter-spacing:3px;}
+.mhd p{font-family:var(--f3);font-size:9px;color:var(--dim4);margin-top:4px;}
+.mlist{display:flex;flex-direction:column;gap:7px;padding:18px 24px;border-bottom:1px solid rgba(201,168,76,.06);}
+.mi{display:flex;gap:12px;padding:11px 13px;background:rgba(10,6,15,.9);border-left:1px solid rgba(201,168,76,.2);}
 .mi strong{display:block;font-family:var(--f2);font-size:14px;font-weight:700;color:var(--text2);margin-bottom:2px;}
-.mi p{font-family:var(--f2);font-size:13px;color:var(--dim2);line-height:1.5;}
-.malt{background:rgba(255,102,0,.04);border:1px solid rgba(255,102,0,.15);padding:12px 14px;font-family:var(--f3);font-size:11px;color:var(--orange);margin:0 26px 20px;letter-spacing:.5px;line-height:1.8;}
-.mbtns{display:flex;gap:10px;padding:0 26px 24px;}
-.mbtns button{flex:1;font-family:var(--f5);font-size:14px;letter-spacing:2px;padding:15px;border:1px solid;transition:all .25s;outline:none;cursor:pointer!important;background:transparent;}
-.mbk{border-color:rgba(255,255,255,.08);color:var(--dim2);}
-.mbk:hover{border-color:var(--dim2);color:var(--text);}
-.mgo{border-color:rgba(255,102,0,.5);color:var(--orange);position:relative;overflow:hidden;}
-.mgo::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--red),var(--orange));transform:translateX(-101%);transition:.25s;z-index:0;}
-.mgo:hover::before{transform:translateX(0);}
-.mgo:hover{color:#fff;}
-.mgo span{position:relative;z-index:1;}
+.mi p{font-family:var(--f2);font-size:13px;color:var(--dim4);line-height:1.5;}
+.mbtns{display:flex;gap:10px;padding:0 24px 22px;margin-top:16px;}
+.mbtns button{flex:1;font-family:var(--f1);font-size:12px;letter-spacing:2px;padding:14px;border:1px solid;transition:all .3s;cursor:pointer!important;background:transparent;}
+.mbk{border-color:rgba(255,255,255,.07);color:var(--dim4);}
+.mbk:hover{border-color:rgba(255,255,255,.2);color:var(--text);}
+.mgo{border-color:rgba(201,168,76,.3);color:rgba(201,168,76,.8);}
+.mgo:hover{background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.5);color:var(--gold);}
 
-/* compat */
-#compat-alert{display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:8000;width:calc(100% - 32px);max-width:560px;background:rgba(8,6,2,.98);border:1px solid rgba(255,102,0,.35);border-left:3px solid var(--orange);padding:16px 18px;animation:fadeup .35s ease;backdrop-filter:blur(12px);}
-#compat-alert .ca-tag{font-family:var(--f3);font-size:9px;color:var(--orange);letter-spacing:3px;margin-bottom:8px;}
-#compat-alert .ca-msg{font-family:var(--f2);font-size:15px;color:var(--text2);line-height:1.6;}
-#compat-alert .ca-sug{font-family:var(--f5);font-size:12px;color:var(--orange);letter-spacing:2px;margin-top:10px;}
-#compat-alert .ca-close{position:absolute;top:10px;right:12px;font-family:var(--f3);font-size:11px;color:var(--dim2);background:none;border:none;cursor:pointer!important;}
-#compat-alert .ca-switch{margin-top:12px;font-family:var(--f3);font-size:11px;color:var(--orange);background:transparent;border:1px solid rgba(255,102,0,.3);padding:9px 16px;letter-spacing:2px;cursor:pointer!important;transition:all .2s;}
-#compat-alert .ca-switch:hover{background:rgba(255,102,0,.08);}
+/* Fixed btns */
+.fixed-btn{position:fixed;z-index:600;width:38px;height:38px;background:rgba(6,3,10,.92);border:1px solid rgba(201,168,76,.15);color:var(--dim4);font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .3s;cursor:pointer!important;}
+.fixed-btn:hover{border-color:rgba(201,168,76,.4);color:var(--gold);}
+#mbtn{bottom:18px;right:18px;}
+#mbtn.pl{border-color:rgba(201,168,76,.35);color:rgba(201,168,76,.7);}
+#vol-btn{bottom:62px;right:18px;}
 
-/* fixed btns */
-.fixed-btn{position:fixed;z-index:600;width:40px;height:40px;border-radius:0;background:rgba(6,4,2,.92);border:1px solid rgba(255,102,0,.2);color:var(--dim2);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .25s;cursor:pointer!important;}
-.fixed-btn:hover{border-color:var(--orange);color:var(--orange);box-shadow:0 0 16px rgba(255,102,0,.3);}
-#mbtn{bottom:20px;right:20px;}
-#mbtn.pl{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 14px var(--cyan-glow);}
-#vol-btn{bottom:68px;right:20px;}
-#vol-btn.maxed{opacity:.3;cursor:not-allowed!important;}
+#term-log{position:fixed;bottom:14px;left:60px;width:200px;pointer-events:none;z-index:500;}
+.tl{font-family:var(--f3);font-size:8px;color:rgba(60,50,80,.35);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:fadeup .2s ease;}
 
-#term-log{position:fixed;bottom:16px;left:68px;width:240px;pointer-events:none;z-index:500;}
-.tl{font-family:var(--f3);font-size:9px;color:rgba(80,80,110,.4);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:fadeup .2s ease;}
-
-#bg-music{display:none;}
+/* Compat alert */
+#compat-alert{display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:8000;width:calc(100% - 32px);max-width:520px;background:rgba(6,3,10,.98);border:1px solid rgba(201,168,76,.2);border-left:2px solid rgba(201,168,76,.4);padding:16px 18px;animation:fadeup .3s ease;backdrop-filter:blur(12px);}
+.ca-tag{font-family:var(--f3);font-size:9px;color:rgba(201,168,76,.5);letter-spacing:3px;margin-bottom:8px;}
+.ca-msg{font-family:var(--f2);font-size:15px;color:var(--text2);line-height:1.6;}
+.ca-sug{font-family:var(--f1);font-size:11px;color:rgba(201,168,76,.7);letter-spacing:2px;margin-top:10px;}
+.ca-close{position:absolute;top:10px;right:12px;font-family:var(--f3);font-size:11px;color:var(--dim4);background:none;border:none;cursor:pointer!important;}
+.ca-switch{margin-top:12px;font-family:var(--f3);font-size:11px;color:rgba(201,168,76,.7);background:transparent;border:1px solid rgba(201,168,76,.2);padding:8px 16px;letter-spacing:2px;cursor:pointer!important;transition:all .2s;}
+.ca-switch:hover{background:rgba(201,168,76,.06);}
 
 @media(max-width:600px){
   .g2{grid-template-columns:1fr;}
-  .sp-name{font-size:38px;}
+  .sp-name{font-size:36px;}
   .mbtns{flex-direction:column;}
-  .sp-stats{gap:18px;}
-  .fn-box{padding:36px 22px;}
-  .tsr-card{padding:28px 20px 24px;}
-  .tsr-headline{font-size:28px;}
-  .tsr-stats-bar{flex-direction:column;}
-  .tsr-stat-item{border-right:none;border-bottom:1px solid rgba(255,102,0,.1);}
+  .fn-box{padding:32px 20px;}
+  .intro-stats{gap:24px;}
+  .btn-discord,.btn-continuar{padding:14px 24px;}
 }
 </style>
 </head>
 <body>
 
-<audio id="bg-music" src="https://files.catbox.moe/jymrcl.wav" loop preload="auto"></audio>
 <canvas id="bg"></canvas>
 <div class="grain"></div>
 <div class="scanlines"></div>
 <div class="vig"></div>
-<div class="vhs-glitch"></div>
-<div class="grunge-overlay"></div>
 
 <div class="corner corner-tl"></div>
 <div class="corner corner-tr"></div>
@@ -464,17 +428,16 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
 
 <div id="hud">
   <div class="hud-tl">
-    <span class="ht"><span class="hud-dot o"></span>SISTEMA ATIVO</span>
-    <span class="ht" id="h-ip">IP: MASCARADO</span>
-    <span class="ht">PING <b id="h-ping">—</b>ms</span>
+    <span class="ht"><span class="hud-dot"></span>SISTEMA ATIVO</span>
+    <span class="ht" id="h-ip">IP: <b>MASCARADO</b></span>
   </div>
   <div class="hud-tr">
-    <span class="ht c" id="h-clk">--:--:--</span>
-    <span class="ht" style="color:rgba(255,102,0,.2)">CsL v10.0</span>
+    <span class="ht" id="h-clk">--:--:--</span>
+    <span class="ht" style="color:rgba(201,168,76,.15)">CsL v10.0</span>
   </div>
   <div class="hud-bl">
-    <span class="ht"><span class="hud-dot g"></span>SESSÃO CRIPTOGRAFADA</span>
-    <span class="ht" id="h-sess">SESS#——</span>
+    <span class="ht"><span class="hud-dot"></span>SESSÃO SEGURA</span>
+    <span class="ht" id="h-sess" style="color:rgba(201,168,76,.2)">SESS#——</span>
   </div>
 </div>
 
@@ -487,17 +450,15 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
 <!-- MODAL -->
 <div id="modal-confirm">
   <div class="mbox">
-    <div class="mbox-top"></div>
-    <div class="mhd"><h3>VERIFICAÇÃO FINAL</h3><p>CONFIRME OS DADOS ANTES DO ENVIO</p></div>
+    <div class="mhd"><h3>VERIFICAÇÃO FINAL</h3><p>CONFIRME ANTES DE TRANSMITIR</p></div>
     <div class="mlist">
-      <div class="mi"><span>📋</span><div><strong>Formulário Completo</strong><p>Todos os campos da sua divisão preenchidos.</p></div></div>
-      <div class="mi"><span>🔐</span><div><strong>Compromisso</strong><p>Ao enviar você aceita todas as regras da CsL.</p></div></div>
-      <div class="mi"><span>📡</span><div><strong>Transmissão Segura</strong><p>Dados criptografados antes do envio.</p></div></div>
+      <div class="mi"><span>◆</span><div><strong>Formulário Completo</strong><p>Todos os campos da sua divisão preenchidos.</p></div></div>
+      <div class="mi"><span>◆</span><div><strong>Compromisso</strong><p>Ao enviar você aceita as regras da CsL.</p></div></div>
+      <div class="mi"><span>◆</span><div><strong>Transmissão Segura</strong><p>Dados criptografados antes do envio.</p></div></div>
     </div>
-    <div class="malt">⚠ Envios incompletos ou falsos serão descartados e o IP bloqueado permanentemente.</div>
     <div class="mbtns">
       <button class="mbk" onclick="Mod.close()">VOLTAR</button>
-      <button class="mgo" onclick="Mod.confirm()"><span>TRANSMITIR</span></button>
+      <button class="mgo" onclick="Mod.confirm()">TRANSMITIR</button>
     </div>
   </div>
 </div>
@@ -505,7 +466,7 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
 <!-- COMPAT -->
 <div id="compat-alert">
   <button class="ca-close" onclick="Compat.hide()">✕</button>
-  <div class="ca-tag">⚠ ANÁLISE DE PERFIL — SISTEMA CsL</div>
+  <div class="ca-tag">◆ ANÁLISE DE COMPATIBILIDADE</div>
   <div class="ca-msg" id="ca-msg"></div>
   <div class="ca-sug" id="ca-sug"></div>
   <button class="ca-switch" id="ca-switch-btn"></button>
@@ -513,119 +474,196 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
 
 <div id="app">
 
-<!-- ════════ TEASER / DISCORD BANNER ════════ -->
-<div id="scr-teaser" class="scr on">
-  <div class="teaser-wrap">
-    <div class="tsr-topbar">
-      <span class="tsr-topbar-l">⚡ TRANSMISSÃO INTERCEPTADA</span>
-      <span class="tsr-topbar-r" id="tsr-clk">--:--:--</span>
+<!-- ════ INTRO ════ -->
+<div id="scr-intro" class="scr on">
+  <canvas id="stars-canvas" style="position:absolute;inset:0;pointer-events:none;z-index:0;"></canvas>
+  <div class="intro-wrap" style="position:relative;z-index:1;">
+    <div class="intro-emblem">
+      <div class="ie-outer"></div>
+      <div class="ie-mid"></div>
+      <div class="ie-inner"></div>
+      <!-- Constellation lines inside -->
+      <svg class="constellation-svg" viewBox="0 0 200 200">
+        <line class="c-line" x1="50" y1="80" x2="100" y2="60" style="animation-delay:.8s"/>
+        <line class="c-line" x1="100" y1="60" x2="150" y2="80" style="animation-delay:1s"/>
+        <line class="c-line" x1="150" y1="80" x2="140" y2="130" style="animation-delay:1.2s"/>
+        <line class="c-line" x1="140" y1="130" x2="100" y2="150" style="animation-delay:1.4s"/>
+        <line class="c-line" x1="100" y1="150" x2="60" y2="130" style="animation-delay:1.6s"/>
+        <line class="c-line" x1="60" y1="130" x2="50" y2="80" style="animation-delay:1.8s"/>
+        <line class="c-line" x1="100" y1="60" x2="100" y2="150" style="animation-delay:2s"/>
+        <line class="c-line" x1="50" y1="80" x2="150" y2="80" style="animation-delay:2.2s"/>
+        <circle class="c-star" cx="100" cy="60" r="2.5" style="animation-delay:.5s"/>
+        <circle class="c-star" cx="50" cy="80" r="2" style="animation-delay:.9s"/>
+        <circle class="c-star" cx="150" cy="80" r="2" style="animation-delay:1.1s"/>
+        <circle class="c-star" cx="140" cy="130" r="1.5" style="animation-delay:1.5s"/>
+        <circle class="c-star" cx="100" cy="150" r="2.5" style="animation-delay:1.9s"/>
+        <circle class="c-star" cx="60" cy="130" r="1.5" style="animation-delay:1.7s"/>
+      </svg>
+      <div class="ie-center"><span class="ie-csl">CsL</span></div>
+      <div class="blood-drip"></div>
     </div>
-    <div class="tsr-card">
-      <div class="tsr-cracks"></div>
 
-      <div class="tsr-signal">
-        <div class="tsr-sig-dot"></div>
-        <span class="tsr-sig-txt">SINAL AO VIVO</span>
-        <div class="tsr-sig-bars">
-          <span></span><span></span><span></span><span></span>
-        </div>
-      </div>
-
-      <p class="tsr-eyebrow">☠ AVISO DE SISTEMA — ACESSO PÚBLICO</p>
-      <div class="tsr-headline" style="position:relative;">
-        <span class="hl-red">QUER SABER</span><br>
-        <span class="hl-orange">MAIS SOBRE</span><br>
-        <span style="color:var(--white);">A INTERNET?</span>
-        <div class="tsr-headline-ghost" aria-hidden="true">
-          <span>QUER SABER</span><br>
-          <span>MAIS SOBRE</span><br>
-          <span>A INTERNET?</span>
-        </div>
-      </div>
-
-      <p class="tsr-sub" style="margin-top:20px;">
-        Segredos que <strong>eles não querem que você saiba.</strong><br>
-        Uma comunidade que vive na <strong>borda do sistema.</strong><br>
-        Tecnologia, táticas, poder, conexões reais.
-      </p>
-
-      <div class="tsr-features">
-        <div class="tsr-feat">COMUNIDADE EXCLUSIVA</div>
-        <div class="tsr-feat">CONTEÚDO REAL</div>
-        <div class="tsr-feat">SEM CENSURA</div>
-        <div class="tsr-feat">MISSÕES ATIVAS</div>
-        <div class="tsr-feat">REDE PROTEGIDA</div>
-        <div class="tsr-feat">ACESSO A DIVISÕES</div>
-      </div>
-
-      <div class="tsr-cta-wrap">
-        <a href="https://discord.gg/4nfJUktQK" target="_blank" class="tsr-discord-btn" onclick="A.init();A.play('impact');">
-          <svg class="tsr-discord-ico" viewBox="0 0 24 24" fill="white">
-            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.079.11 18.1.128 18.114a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
-          </svg>
-          <span>ENTRAR NO SERVIDOR</span>
-        </a>
-        <span class="tsr-discord-sub">discord.gg/4nfJUktQK — ACESSO IMEDIATO</span>
-        <button class="tsr-skip" onclick="Go.splash()">[ continuar para o sistema de recrutamento ]</button>
-      </div>
+    <div class="intro-title-block">
+      <p class="intro-eyebrow">FAMÍLIA — HAGO — ORGANIZAÇÃO</p>
+      <h1 class="intro-title"><span class="t-red">Constelação</span><br>Sangrenta</h1>
+      <p class="intro-subtitle">uma família que realmente funciona</p>
     </div>
-    <div class="tsr-stats-bar">
-      <div class="tsr-stat-item">
-        <div class="tsr-stat-n" id="tsr-m">247+</div>
-        <div class="tsr-stat-l">MEMBROS</div>
+
+    <div class="intro-divider">
+      <div class="idiv-line"></div>
+      <div class="idiv-diamond"></div>
+      <div class="idiv-line"></div>
+    </div>
+
+    <div class="intro-btns">
+      <a href="https://discord.gg/4nfJUktQK" target="_blank" class="btn-discord" onclick="A.init();">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(150,160,255,.8)"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.079.11 18.1.128 18.114a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.1.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        ENTRAR NO SERVIDOR
+      </a>
+      <button class="btn-continuar" onclick="Go.familia();A.init();">
+        <span>CONTINUAR PARA O RECRUTAMENTO</span>
+        <span class="arrow">▶</span>
+      </button>
+    </div>
+
+    <div class="intro-stats">
+      <div class="istat"><div class="istat-n" id="intro-m">247+</div><div class="istat-l">MEMBROS</div></div>
+      <div class="istat"><div class="istat-n">7</div><div class="istat-l">DIVISÕES</div></div>
+      <div class="istat"><div class="istat-n">v10</div><div class="istat-l">SISTEMA</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ FAMÍLIA ════ -->
+<div id="scr-familia" class="scr">
+  <div id="familia-scroll">
+    <div class="fam-wrap">
+      <div class="fam-header">
+        <div class="fam-h-back" onclick="Go.intro()">← VOLTAR</div>
+        <p class="fam-eyebrow">SOBRE A ORGANIZAÇÃO</p>
+        <h2 class="fam-title"><span class="t-red">Constelação</span><br>Sangrenta</h2>
+        <p class="fam-subtitle">como a família funciona</p>
       </div>
-      <div class="tsr-stat-item">
-        <div class="tsr-stat-n" id="tsr-o">89+</div>
-        <div class="tsr-stat-l">ONLINE</div>
+
+      <div class="fam-intro">
+        <p>A <span class="highlight">Constelação Sangrenta</span> funciona diferente das famílias comuns do Hago. Aqui não existe bagunça e nem panelinha fechada.</p>
+        <p>Ninguém entra pra ser mandado ou ficar preso em obrigação chata. A família é organizada, e cada pessoa faz apenas o que combina com ela. Tudo é dividido de forma leve pra não pesar pra ninguém.</p>
+        <p>Nosso foco é simples:</p>
+        <ul class="fam-bullet-list">
+          <li>manter salas vivas</li>
+          <li>criar conversas reais</li>
+          <li>incentivar ajuda entre os membros</li>
+          <li>crescer juntos sem pressão</li>
+        </ul>
+        <p style="margin-top:14px;">Quem entra na Constelação Sangrenta encontra apoio, respeito e espaço pra se destacar dentro do aplicativo, mesmo que normalmente não goste de participar de famílias.</p>
+        <p>A Constelação Sangrenta existe justamente pra quem cansou de ambiente tóxico e quer algo mais leve, ativo e que realmente funcione.</p>
       </div>
-      <div class="tsr-stat-item">
-        <div class="tsr-stat-n">12</div>
-        <div class="tsr-stat-l">DIVISÕES</div>
+
+      <div class="fam-divs-title">◆ DIVISÕES ◆</div>
+
+      <div class="div-card">
+        <div class="div-card-top">
+          <span class="div-card-ico">🛡️</span>
+          <span class="div-card-name">Segurança</span>
+          <span class="div-card-tag">INTERNO</span>
+        </div>
+        <div class="div-card-sep"></div>
+        <p class="div-card-desc">Segurança é a função de ajudar a manter o respeito nas salas e dentro da família. A pessoa observa o ambiente, evita confusão, provocações e clima ruim, além de avisar a liderança caso algo saia do controle. Não é sobre mandar em ninguém — é sobre ajudar a manter tudo tranquilo.</p>
       </div>
-      <div class="tsr-stat-item">
-        <div class="tsr-stat-n">v10</div>
-        <div class="tsr-stat-l">SISTEMA</div>
+
+      <div class="div-card">
+        <div class="div-card-top">
+          <span class="div-card-ico">🤝</span>
+          <span class="div-card-name">Recrutador</span>
+          <span class="div-card-tag">CRESCIMENTO</span>
+        </div>
+        <div class="div-card-sep"></div>
+        <p class="div-card-desc">Recrutador é quem conversa com novas pessoas, explica como a Constelação Sangrenta funciona e convida quem combina com a família. O foco não é quantidade, e sim qualidade. A função ajuda a família a crescer com pessoas que realmente querem participar.</p>
+      </div>
+
+      <div class="div-card">
+        <div class="div-card-top">
+          <span class="div-card-ico">📢</span>
+          <span class="div-card-name">Divulgador</span>
+          <span class="div-card-tag">VISIBILIDADE</span>
+        </div>
+        <div class="div-card-sep"></div>
+        <p class="div-card-desc">Divulgador ajuda a tornar a Constelação Sangrenta mais conhecida dentro do Hago. Convida pessoas para as salas, comenta sobre a família e ajuda a manter movimento e visibilidade. Não é spam — é atrair pessoas novas de forma natural.</p>
+      </div>
+
+      <div class="div-card">
+        <div class="div-card-top">
+          <span class="div-card-ico">✨</span>
+          <span class="div-card-name">Carisma</span>
+          <span class="div-card-tag">SOCIAL</span>
+        </div>
+        <div class="div-card-sep"></div>
+        <p class="div-card-desc">Carisma é a função de quem gosta de conversar e movimentar o ambiente. A pessoa puxa assunto, acolhe quem entra na sala e ajuda a manter a conversa ativa. Essa função existe pra evitar sala parada e deixar tudo mais agradável.</p>
+      </div>
+
+      <div class="div-card">
+        <div class="div-card-top">
+          <span class="div-card-ico">🖥️</span>
+          <span class="div-card-name">Moderador de Salas</span>
+          <span class="div-card-tag">ORGANIZAÇÃO</span>
+        </div>
+        <div class="div-card-sep"></div>
+        <p class="div-card-desc">Moderador de salas cuida da organização das salas da família. Ajuda a manter atividade, conversa fluindo e regras básicas sendo respeitadas. É uma função mais voltada para a sala em si, não para administrar a família inteira.</p>
+      </div>
+
+      <div class="div-card special">
+        <div class="div-card-top">
+          <span class="div-card-ico">💻</span>
+          <span class="div-card-name">Cyber</span>
+          <span class="div-card-tag" style="color:rgba(192,0,0,.7);border-color:rgba(192,0,0,.3);">DIFÍCIL</span>
+        </div>
+        <div class="div-card-sep" style="background:linear-gradient(90deg,rgba(192,0,0,.2),transparent);"></div>
+        <p class="div-card-desc">A divisão mais difícil de entrar. O Cyber precisa entender profundamente sobre tecnologia, internet, ferramentas digitais e automação. É para quem domina o ambiente digital e quer usar esse conhecimento a favor da família. Acesso por avaliação da liderança.</p>
+      </div>
+
+      <div class="fam-cta">
+        <button class="fam-cta-btn" onclick="Go.splash()">
+          <span>▶</span>
+          <span>INICIAR PROCESSO DE RECRUTAMENTO</span>
+        </button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ════════ SPLASH ════════ -->
+<!-- ════ SPLASH ════ -->
 <div id="scr-splash" class="scr">
   <div class="splash-wrap">
     <div class="sp-logo">
-      <div class="sp-hex">
-        <svg width="160" height="160" viewBox="0 0 180 180"><polygon points="90,10 165,52.5 165,127.5 90,170 15,127.5 15,52.5" fill="none" stroke="rgba(255,102,0,.3)" stroke-width="1"/></svg>
+      <div class="sp-rings">
+        <div class="sp-ring sp-r1"><div class="sp-rdot"></div></div>
+        <div class="sp-ring sp-r2"></div>
+        <div class="sp-ring sp-r3"></div>
+        <div class="sp-ring sp-r4"></div>
       </div>
-      <div class="sp-ring sp-ring-1"><div class="sp-dot"></div></div>
-      <div class="sp-ring sp-ring-2"><div class="sp-dot-c"></div></div>
-      <div class="sp-ring sp-ring-3"></div>
-      <div class="sp-ring sp-ring-4"></div>
       <div class="sp-center"><span class="sp-csl">CsL</span></div>
     </div>
-    <p class="sp-by">Sistema criado por</p>
-    <h1 class="sp-name">Eclipse<div class="sp-name-ghost">Eclipse</div></h1>
+    <p class="sp-by">sistema criado por</p>
+    <h1 class="sp-name">Eclipse</h1>
     <p class="sp-role">Arquiteto do Sistema — CsL Core</p>
-    <div class="sp-divider">
-      <div class="sp-div-line"></div>
-      <div class="sp-div-ico"></div>
-      <div class="sp-div-line c"></div>
+    <div class="sp-div">
+      <div class="sp-divline"></div>
+      <div class="sp-divromb"></div>
+      <div class="sp-divline" style="background:linear-gradient(90deg,rgba(201,168,76,.3),transparent);"></div>
     </div>
     <div class="sp-stats">
-      <div class="sp-stat"><div class="sp-stat-n" id="sp-members">—</div><div class="sp-stat-l">MEMBROS</div></div>
-      <div class="sp-stat"><div class="sp-stat-n" id="sp-online">—</div><div class="sp-stat-l">ONLINE</div></div>
-      <div class="sp-stat"><div class="sp-stat-n">v10</div><div class="sp-stat-l">VERSÃO</div></div>
+      <div><div class="sp-stat-n" id="sp-members">—</div><div class="sp-stat-l">MEMBROS</div></div>
+      <div><div class="sp-stat-n" id="sp-online">—</div><div class="sp-stat-l">ONLINE</div></div>
+      <div><div class="sp-stat-n">v10</div><div class="sp-stat-l">VERSÃO</div></div>
     </div>
     <div class="sp-btn-wrap">
-      <div class="sp-btn-glow"></div>
-      <button class="sp-btn" onclick="Go.boot()"><span>▶ Acessar Sistema</span></button>
+      <button class="sp-btn" onclick="Go.boot()">▶ Acessar Sistema</button>
     </div>
     <p class="sp-ver">Sistema de Recrutamento v10.0 — Acesso Restrito</p>
-    <p class="sp-ts" id="sp-ts">REC ● 00:00:00</p>
   </div>
 </div>
 
-<!-- ════════ BOOT A ════════ -->
+<!-- ════ BOOT A ════ -->
 <div id="scr-ba" class="scr">
   <div class="boot-wrap">
     <div class="boot-hd"><span class="boot-hd-l">Inicializando Módulos</span><span class="boot-hd-r" id="ba-step">0 / 6</span></div>
@@ -635,52 +673,50 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
   </div>
 </div>
 
-<!-- ════════ BOOT B ════════ -->
+<!-- ════ BOOT B ════ -->
 <div id="scr-bb" class="scr">
   <div class="boot-wrap">
-    <div class="boot-hd"><span class="boot-hd-l">Verificando Rede</span><span class="boot-hd-r c" id="bb-pct">0%</span></div>
+    <div class="boot-hd"><span class="boot-hd-l">Verificando Rede</span><span class="boot-hd-r" id="bb-pct">0%</span></div>
     <div class="boot-terminal" id="bb-term"></div>
     <div class="boot-bar-wrap"><div class="boot-bar" id="bb-bar"></div></div>
   </div>
 </div>
 
-<!-- ════════ BOOT C ════════ -->
+<!-- ════ BOOT C ════ -->
 <div id="scr-bc" class="scr">
   <div class="boot-wrap">
     <div class="boot-hd"><span class="boot-hd-l">Verificando Identidade</span><span class="boot-hd-r" id="bc-pct">0%</span></div>
-    <div style="display:flex;align-items:center;justify-content:center;padding:10px 0;gap:20px;">
-      <div style="position:relative;width:110px;height:62px;overflow:hidden;">
-        <div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,102,0,.3);animation:orangepulse 2s ease-in-out infinite;"></div>
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,var(--orange) 40%,transparent 70%);box-shadow:0 0 18px var(--orange);animation:pulse 1.8s ease-in-out infinite;"></div>
-        <div style="position:absolute;top:calc(50% - 0.5px);height:1px;width:0;background:linear-gradient(90deg,transparent,var(--orange),transparent);left:5px;animation:scanh 1.6s ease-in-out infinite;"></div>
+    <div style="display:flex;align-items:center;justify-content:center;padding:14px 0;gap:18px;">
+      <div style="position:relative;width:100px;height:56px;overflow:hidden;">
+        <div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(201,168,76,.2);animation:goldpulse 2s ease-in-out infinite;"></div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,var(--gold) 40%,transparent 70%);box-shadow:0 0 14px var(--gold);animation:pulse 1.8s ease-in-out infinite;"></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;" id="bc-data"></div>
     </div>
-    <div style="font-family:var(--f5);font-size:18px;color:var(--white);letter-spacing:3px;text-align:center;" id="bc-tit">Analisando...</div>
+    <div style="font-family:var(--f1);font-size:16px;color:var(--white);letter-spacing:3px;text-align:center;" id="bc-tit">Analisando...</div>
     <div class="boot-bar-wrap"><div class="boot-bar" id="bc-bar"></div></div>
     <div class="boot-status" id="bc-msg">Iniciando varredura...</div>
   </div>
 </div>
 
-<!-- ════════ BOOT D ════════ -->
+<!-- ════ BOOT D ════ -->
 <div id="scr-bd" class="scr">
   <div class="boot-wrap">
     <div class="boot-hd"><span class="boot-hd-l">CsL — Boot Sequence v10.0</span><span class="boot-hd-r" id="bd-clk">--:--:--</span></div>
     <div class="boot-terminal" id="bd-term"></div>
     <div class="boot-bar-wrap"><div class="boot-bar" id="bd-bar"></div></div>
-    <div style="font-family:var(--f5);font-size:66px;color:var(--red);text-align:center;margin-top:18px;opacity:0;letter-spacing:14px;text-shadow:0 0 40px rgba(204,0,0,.6),0 0 80px rgba(255,102,0,.2);" id="bd-csl">CsL</div>
+    <div style="font-family:var(--f5);font-size:60px;color:var(--red3);text-align:center;margin-top:16px;opacity:0;letter-spacing:12px;text-shadow:0 0 30px rgba(192,0,0,.5);" id="bd-csl">CsL</div>
     <button class="cbtn" id="bd-btn" style="display:none;margin-top:12px;" onclick="Go.warn()"><span>▶ Inicializar Sistema</span></button>
   </div>
 </div>
 
-<!-- ════════ AVISO ════════ -->
+<!-- ════ AVISO ════ -->
 <div id="scr-warn" class="scr" style="padding:0;justify-content:flex-start;">
-  <div id="warn-scroll" style="flex:1;overflow-y:auto;width:100%;display:flex;justify-content:center;padding:22px 16px 10px;-webkit-overflow-scrolling:touch;">
+  <div id="warn-scroll" style="flex:1;overflow-y:auto;width:100%;display:flex;justify-content:center;padding:22px 16px 10px;">
     <div class="warn-box">
-      <div class="warn-top-bar"></div>
       <div class="warn-hd">
         <div class="warn-hd-ico">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff6600" stroke-width="1.5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,.7)" stroke-width="1.5">
             <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
             <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
           </svg>
@@ -696,17 +732,16 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
       </div>
     </div>
   </div>
-  <div id="warn-foot">
+  <div id="warn-foot" style="width:100%;max-width:580px;margin:0 auto;background:rgba(4,2,8,.98);border-top:1px solid rgba(201,168,76,.06);padding:14px 16px;flex-shrink:0;">
     <button id="warn-btn" class="cbtn" style="display:none;" onclick="Go.form()"><span>▶ Entendido — Prosseguir</span></button>
-    <div id="warn-load" style="text-align:center;font-family:var(--f3);font-size:10px;color:var(--dim);letter-spacing:2px;padding:10px;">Carregando protocolo...</div>
+    <div id="warn-load" style="text-align:center;font-family:var(--f3);font-size:10px;color:var(--dim2);letter-spacing:2px;padding:10px;">Carregando protocolo...</div>
   </div>
 </div>
 
-<!-- ════════ FORMULÁRIO ════════ -->
+<!-- ════ FORMULÁRIO ════ -->
 <div id="scr-form" class="scr scroll-scr">
   <div id="form-sc">
     <div class="fwrap">
-
       <div class="ftop">
         <div class="ftop-l">
           <h2>Recrutamento CsL</h2>
@@ -725,7 +760,7 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
           <div class="fi"><label>Vulgo / Apelido</label><input type="text" id="f-vulgo" class="inp" placeholder="Como te chamam..."></div>
           <div class="fi"><label>Idade</label><input type="number" id="f-idade" class="inp" placeholder="00" min="1" max="99"></div>
         </div>
-        <div class="fi"><label>ID / Tag</label><input type="text" id="f-id" class="inp" placeholder="Ex: @usuario, #0001..."></div>
+        <div class="fi"><label>ID / Tag no Hago ou Discord</label><input type="text" id="f-id" class="inp" placeholder="Ex: @usuario, #0001..."></div>
         <div class="fi"><label>Há quanto tempo conhece a CsL?</label><input type="text" id="f-tempo" class="inp" placeholder="Ex: 2 meses, 1 ano..."></div>
         <div class="fi"><label>Por que quer entrar na família?</label><textarea id="f-motivo" class="inp" placeholder="Seja sincero e direto..."></textarea></div>
         <div class="fi"><label>Já foi banido de algum lugar?</label>
@@ -741,306 +776,228 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
       <!-- DIVISÃO -->
       <div class="fsec">
         <div class="sec-lbl">Escolha sua Divisão</div>
-        <div class="divs-label">◆ SELECIONE UMA DIVISÃO ABAIXO ◆</div>
-
-        <div class="divs-grid-full">
-
-          <!-- 1 Vigilante -->
-          <div class="dc" id="c-vigilante" onclick="F.div('vigilante')">
-            <div class="dc-badge top">TOP</div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="2"/></svg>
-            <span class="dc-name">Vigilante</span>
-            <span class="dc-desc">Olhos da família</span>
+        <p style="font-family:var(--f3);font-size:10px;color:var(--dim4);letter-spacing:2px;margin-bottom:16px;text-align:center;">◆ SELECIONE UMA DIVISÃO ◆</p>
+        <div class="divs-grid">
+          <div class="dc" id="c-seguranca" onclick="F.div('seguranca')">
+            <span class="dc-ico">🛡️</span>
+            <span class="dc-name">Segurança</span>
+            <span class="dc-tag">proteção</span>
           </div>
-
-          <!-- 2 Recrutador -->
           <div class="dc" id="c-recrutador" onclick="F.div('recrutador')">
-            <div class="dc-badge top">TOP</div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            <span class="dc-ico">🤝</span>
             <span class="dc-name">Recrutador</span>
-            <span class="dc-desc">Porta de entrada</span>
+            <span class="dc-tag">crescimento</span>
           </div>
-
-          <!-- 3 Organizador -->
-          <div class="dc" id="c-organizador" onclick="F.div('organizador')">
-            <div class="dc-badge top">TOP</div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-            <span class="dc-name">Organizador</span>
-            <span class="dc-desc">Estrutura interna</span>
+          <div class="dc" id="c-divulgador" onclick="F.div('divulgador')">
+            <span class="dc-ico">📢</span>
+            <span class="dc-name">Divulgador</span>
+            <span class="dc-tag">visibilidade</span>
           </div>
-
-          <!-- 4 Informante -->
-          <div class="dc" id="c-informante" onclick="F.div('informante')">
-            <div class="dc-badge hot">HOT</div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            <span class="dc-name">Informante</span>
-            <span class="dc-desc">Intel & dados</span>
+          <div class="dc" id="c-carisma" onclick="F.div('carisma')">
+            <span class="dc-ico">✨</span>
+            <span class="dc-name">Carisma</span>
+            <span class="dc-tag">social</span>
           </div>
-
-          <!-- 5 Tático -->
-          <div class="dc" id="c-tatico" onclick="F.div('tatico')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
-            <span class="dc-name">Tático</span>
-            <span class="dc-desc">Conflito & ops</span>
+          <div class="dc" id="c-moderador" onclick="F.div('moderador')">
+            <span class="dc-ico">🖥️</span>
+            <span class="dc-name">Moderador</span>
+            <span class="dc-tag">salas</span>
           </div>
-
-          <!-- 6 Cyber -->
           <div class="dc" id="c-cyber" onclick="F.div('cyber')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <div class="dc-badge hard">DIFÍCIL</div>
+            <span class="dc-ico">💻</span>
             <span class="dc-name">Cyber</span>
-            <span class="dc-desc">Tecnologia & bots</span>
+            <span class="dc-tag">tecnologia</span>
           </div>
-
-          <!-- 7 Anônimo -->
-          <div class="dc" id="c-anonimo" onclick="F.div('anonimo')">
-            <div class="dc-badge new">NOVO</div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><line x1="3" y1="3" x2="21" y2="21" stroke-dasharray="2 2"/></svg>
-            <span class="dc-name">Anônimo</span>
-            <span class="dc-desc">Sombra da família</span>
-          </div>
-
-          <!-- 8 Diplomata -->
-          <div class="dc" id="c-diplomata" onclick="F.div('diplomata')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-            <span class="dc-name">Diplomata</span>
-            <span class="dc-desc">Alianças & paz</span>
-          </div>
-
-          <!-- 9 Artilheiro -->
-          <div class="dc" id="c-artilheiro" onclick="F.div('artilheiro')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            <span class="dc-name">Artilheiro</span>
-            <span class="dc-desc">Linha de frente</span>
-          </div>
-
-          <!-- 10 Estrategista -->
-          <div class="dc" id="c-estrategista" onclick="F.div('estrategista')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span class="dc-name">Estrategista</span>
-            <span class="dc-desc">Mente por trás</span>
-          </div>
-
-          <!-- 11 Guardião -->
-          <div class="dc" id="c-guardiao" onclick="F.div('guardiao')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span class="dc-name">Guardião</span>
-            <span class="dc-desc">Protetor interno</span>
-          </div>
-
-          <!-- 12 Designer -->
-          <div class="dc" id="c-designer" onclick="F.div('designer')">
-            <div class="dc-badge new">NOVO</div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-            <span class="dc-name">Designer</span>
-            <span class="dc-desc">Arte & identidade</span>
-          </div>
-
         </div>
         <input type="hidden" id="f-div">
       </div>
 
-      <!-- ─── VIGILANTE ─── -->
-      <div id="df-vigilante" class="dform">
-        <div class="dform-hd" style="color:var(--gold);">Vigilante — Olhos da Família</div>
-        <div class="div-info-box">
-          <div class="dib-title">SOBRE ESTA DIVISÃO</div>
-          <p>O Vigilante é o olho invisível da CsL. Monitora membros, identifica conflitos e reporta à liderança. <strong style="color:var(--orange);">Nunca é exposto. Nunca aparece. Sempre observa.</strong></p>
+      <!-- SEGURANÇA -->
+      <div id="df-seguranca" class="dform">
+        <div class="dform-hd" style="color:var(--gold);">🛡️ Segurança — Proteção Interna</div>
+        <div class="div-info">
+          <div class="div-info-t">SOBRE ESTA DIVISÃO</div>
+          <p>O membro de Segurança observa o ambiente, evita confusão e clima ruim, e avisa a liderança quando algo sair do controle. Não é sobre mandar — é sobre proteger.</p>
         </div>
-        <div class="fi"><label>Frequência de monitoramento</label>
+        <div class="fi"><label>Frequência online no Hago</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'v-freq')"><span>Sempre online</span></div>
-            <div class="ro" onclick="F.radio(this,'v-freq')"><span>Várias vezes ao dia</span></div>
-            <div class="ro" onclick="F.radio(this,'v-freq')"><span>1x por dia</span></div>
-            <div class="ro" onclick="F.radio(this,'v-freq')"><span>Quando posso</span></div>
+            <div class="ro" onclick="F.radio(this,'seg-freq')"><span>Sempre online</span></div>
+            <div class="ro" onclick="F.radio(this,'seg-freq')"><span>Várias vezes ao dia</span></div>
+            <div class="ro" onclick="F.radio(this,'seg-freq')"><span>1x por dia</span></div>
+            <div class="ro" onclick="F.radio(this,'seg-freq')"><span>Quando posso</span></div>
           </div>
-          <input type="hidden" id="v-freq">
+          <input type="hidden" id="seg-freq">
         </div>
-        <div class="g2">
-          <div class="fi"><label>Usa contas alternativas?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'v-alt')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'v-alt')"><span>Não</span></div></div>
-            <input type="hidden" id="v-alt">
-          </div>
-          <div class="fi"><label>Consegue ser invisível?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'v-inv')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'v-inv')"><span>Parcialmente</span></div></div>
-            <input type="hidden" id="v-inv">
-          </div>
-        </div>
-        <div class="fi"><label>Como identificaria traição?</label><textarea id="v-metodo" class="inp" placeholder="Descreva sua forma de identificar sinais..."></textarea></div>
-        <div class="fi"><label>Consegue reportar sem se expor?</label>
+        <div class="fi"><label>Você consegue manter a calma em situações de conflito?</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'v-rep')"><span>Sim, sei me esconder</span></div>
-            <div class="ro" onclick="F.radio(this,'v-rep')"><span>Acho que sim</span></div>
-            <div class="ro" onclick="F.radio(this,'v-rep')"><span>Ainda aprendendo</span></div>
+            <div class="ro" onclick="F.radio(this,'seg-calma')"><span>Sim, sempre</span></div>
+            <div class="ro" onclick="F.radio(this,'seg-calma')"><span>Na maioria das vezes</span></div>
+            <div class="ro" onclick="F.radio(this,'seg-calma')"><span>Às vezes me perco</span></div>
           </div>
-          <input type="hidden" id="v-rep">
+          <input type="hidden" id="seg-calma">
         </div>
-        <div class="fi"><label>Situação onde salvaria a família</label><textarea id="v-situa" class="inp" placeholder="Descreva um cenário..."></textarea></div>
-        <div class="fi"><label>Entende que NUNCA deve se revelar sem autorização?</label>
+        <div class="fi"><label>Como você agiria se alguém provocasse briga na sala?</label><textarea id="seg-acao" class="inp" placeholder="Descreva sua abordagem..."></textarea></div>
+        <div class="fi"><label>Já teve experiência mantendo ordem em algum grupo?</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'v-sig')"><span>Sim, entendo e aceito</span></div>
-            <div class="ro" onclick="F.radio(this,'v-sig')"><span>Tenho dúvidas</span></div>
+            <div class="ro" onclick="F.radio(this,'seg-exp')"><span>Sim</span></div>
+            <div class="ro" onclick="F.radio(this,'seg-exp')"><span>Não, mas aprendo rápido</span></div>
           </div>
-          <input type="hidden" id="v-sig">
+          <input type="hidden" id="seg-exp">
         </div>
+        <div class="fi"><label>O que você NUNCA faria como segurança?</label><textarea id="seg-nunca" class="inp" placeholder="Seus limites claros..."></textarea></div>
       </div>
 
-      <!-- ─── RECRUTADOR ─── -->
+      <!-- RECRUTADOR -->
       <div id="df-recrutador" class="dform">
-        <div class="dform-hd" style="color:var(--gold);">Recrutador — Porta de Entrada</div>
-        <div class="div-info-box">
-          <div class="dib-title">GUIA DO RECRUTADOR</div>
-          <p><span style="color:var(--orange);">01.</span> Aborde com respeito — nunca force ninguém.<br>
-          <span style="color:var(--orange);">02.</span> Apresente a CsL com orgulho, sem revelar o interno.<br>
-          <span style="color:var(--orange);">03.</span> Nunca recrute quem foi expulso da família.<br>
-          <span style="color:var(--orange);">04.</span> Você é responsável por quem traz.<br>
-          <span style="color:var(--orange);">05.</span> Qualidade sempre acima de quantidade.</p>
-        </div>
-        <div class="rec-quiz-box">
-          <div class="rq-hd">▸ TESTE DE CAPACITAÇÃO</div>
-          <div id="rec-quiz-wrap" style="font-family:var(--f2);font-size:14px;color:var(--dim2);"></div>
+        <div class="dform-hd" style="color:var(--gold);">🤝 Recrutador — Porta de Entrada</div>
+        <div class="div-info">
+          <div class="div-info-t">GUIA DO RECRUTADOR</div>
+          <p>01. Aborde com respeito — nunca force ninguém.<br>02. Apresente a CsL com orgulho.<br>03. Nunca recrute quem foi expulso da família.<br>04. Qualidade sempre acima de quantidade.</p>
         </div>
         <div class="fi"><label>Já recrutou alguém antes?</label>
           <div class="rrow"><div class="ro" onclick="F.radio(this,'r-prev')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'r-prev')"><span>Não</span></div></div>
           <input type="hidden" id="r-prev">
         </div>
-        <div class="fi"><label>Quantas pessoas por semana?</label>
+        <div class="fi"><label>Quantas pessoas por semana consegue abordar?</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'r-num')"><span>1-2</span></div>
-            <div class="ro" onclick="F.radio(this,'r-num')"><span>3-5</span></div>
-            <div class="ro" onclick="F.radio(this,'r-num')"><span>5+</span></div>
+            <div class="ro" onclick="F.radio(this,'r-num')"><span>1-3</span></div>
+            <div class="ro" onclick="F.radio(this,'r-num')"><span>4-7</span></div>
+            <div class="ro" onclick="F.radio(this,'r-num')"><span>8+</span></div>
             <div class="ro" onclick="F.radio(this,'r-num')"><span>Depende</span></div>
           </div>
           <input type="hidden" id="r-num">
         </div>
-        <div class="fi"><label>Onde atuaria?</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'r-plat')"><span>Discord</span></div>
-            <div class="ro" onclick="F.radio(this,'r-plat')"><span>WhatsApp</span></div>
-            <div class="ro" onclick="F.radio(this,'r-plat')"><span>Telegram</span></div>
-            <div class="ro" onclick="F.radio(this,'r-plat')"><span>Roblox</span></div>
-            <div class="ro" onclick="F.radio(this,'r-plat')"><span>Vários</span></div>
-          </div>
-          <input type="hidden" id="r-plat">
-        </div>
-        <div class="fi"><label>Como abordaria um candidato?</label><textarea id="r-abord" class="inp" placeholder="Descreva sua abordagem..."></textarea></div>
-        <div class="fi"><label>O que faz um bom recruta?</label><textarea id="r-bom" class="inp" placeholder="Seus critérios..."></textarea></div>
-        <div class="fi"><label>O que você NUNCA faria?</label><textarea id="r-nao" class="inp" placeholder="Seus limites..."></textarea></div>
+        <div class="fi"><label>Como você abordaria um candidato?</label><textarea id="r-abord" class="inp" placeholder="Descreva sua abordagem..."></textarea></div>
+        <div class="fi"><label>O que faz alguém ser um bom membro para a CsL?</label><textarea id="r-bom" class="inp" placeholder="Seus critérios de seleção..."></textarea></div>
+        <div class="fi"><label>O que você NUNCA faria ao recrutar?</label><textarea id="r-nao" class="inp" placeholder="Seus limites..."></textarea></div>
       </div>
 
-      <!-- ─── ORGANIZADOR ─── -->
-      <div id="df-organizador" class="dform">
-        <div class="dform-hd" style="color:var(--gold);">Organizador — Estrutura da Família</div>
-        <div class="div-info-box">
-          <div class="dib-title">SOBRE ESTA DIVISÃO</div>
-          <p>O Organizador mantém a ordem interna. Coordena eventos, organiza hierarquias, resolve conflitos. Sem organização, não existe poder.</p>
+      <!-- DIVULGADOR -->
+      <div id="df-divulgador" class="dform">
+        <div class="dform-hd" style="color:var(--gold);">📢 Divulgador — Visibilidade da Família</div>
+        <div class="div-info">
+          <div class="div-info-t">SOBRE ESTA DIVISÃO</div>
+          <p>O Divulgador ajuda a Constelação Sangrenta a ser mais conhecida dentro do Hago. Convida para salas, fala sobre a família de forma natural — nunca spam, sempre com qualidade.</p>
         </div>
-        <div class="fi"><label>Nível de atividade diária</label>
+        <div class="fi"><label>Onde você divulgaria a família?</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'o-atv')"><span>Muito Alto</span></div>
-            <div class="ro" onclick="F.radio(this,'o-atv')"><span>Alto</span></div>
-            <div class="ro" onclick="F.radio(this,'o-atv')"><span>Médio</span></div>
-            <div class="ro" onclick="F.radio(this,'o-atv')"><span>Baixo</span></div>
+            <div class="ro" onclick="F.radio(this,'div-onde')"><span>Salas públicas</span></div>
+            <div class="ro" onclick="F.radio(this,'div-onde')"><span>Grupos Hago</span></div>
+            <div class="ro" onclick="F.radio(this,'div-onde')"><span>Stories/feeds</span></div>
+            <div class="ro" onclick="F.radio(this,'div-onde')"><span>Vários canais</span></div>
           </div>
-          <input type="hidden" id="o-atv">
+          <input type="hidden" id="div-onde">
         </div>
+        <div class="fi"><label>Qual seria sua estratégia de divulgação?</label><textarea id="div-estrat" class="inp" placeholder="Como você atrairia pessoas de forma natural..."></textarea></div>
         <div class="g2">
-          <div class="fi"><label>Já administrou grupos?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'o-adm')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'o-adm')"><span>Não</span></div></div>
-            <input type="hidden" id="o-adm">
+          <div class="fi"><label>Frequência de divulgação</label>
+            <div class="rrow">
+              <div class="ro" onclick="F.radio(this,'div-freq')"><span>Diária</span></div>
+              <div class="ro" onclick="F.radio(this,'div-freq')"><span>Semanal</span></div>
+              <div class="ro" onclick="F.radio(this,'div-freq')"><span>Quando possível</span></div>
+            </div>
+            <input type="hidden" id="div-freq">
           </div>
-          <div class="fi"><label>Resolve conflitos?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'o-conf')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'o-conf')"><span>Parcialmente</span></div></div>
-            <input type="hidden" id="o-conf">
+          <div class="fi"><label>Tem seguidores ou alcance?</label>
+            <div class="rrow">
+              <div class="ro" onclick="F.radio(this,'div-alc')"><span>Sim</span></div>
+              <div class="ro" onclick="F.radio(this,'div-alc')"><span>Não</span></div>
+            </div>
+            <input type="hidden" id="div-alc">
           </div>
         </div>
-        <div class="fi"><label>Estilo de liderança</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'o-ldr')"><span>Firme</span></div>
-            <div class="ro" onclick="F.radio(this,'o-ldr')"><span>Flexível</span></div>
-            <div class="ro" onclick="F.radio(this,'o-ldr')"><span>Democrático</span></div>
-            <div class="ro" onclick="F.radio(this,'o-ldr')"><span>Aprendendo</span></div>
-          </div>
-          <input type="hidden" id="o-ldr">
-        </div>
-        <div class="fi"><label>Horas disponíveis por dia</label><input type="text" id="o-hrs" class="inp" placeholder="Ex: 5h por dia"></div>
-        <div class="fi"><label>Como organizaria um evento?</label><textarea id="o-evento" class="inp" placeholder="Planejamento e execução..."></textarea></div>
-        <div class="fi"><label>Maior ponto forte</label><textarea id="o-forte" class="inp" placeholder="O que te destaca..."></textarea></div>
-        <div class="fi"><label>Objetivo dentro da CsL</label><textarea id="o-obj" class="inp" placeholder="O que quer alcançar..."></textarea></div>
+        <div class="fi"><label>Por que seria um bom divulgador?</label><textarea id="div-motivo" class="inp" placeholder="Seu diferencial..."></textarea></div>
       </div>
 
-      <!-- ─── INFORMANTE ─── -->
-      <div id="df-informante" class="dform">
-        <div class="dform-hd" style="color:var(--cyan);">Informante — Intel & Dados</div>
-        <div class="div-info-box" style="border-left-color:var(--cyan);border-color:rgba(0,204,255,.15);">
-          <div class="dib-title" style="color:var(--cyan);">SOBRE ESTA DIVISÃO</div>
-          <p>O Informante é a fonte de dados da família. Coleta informações sobre grupos externos, monitora movimentações e fornece inteligência para a liderança agir antes do problema chegar.</p>
+      <!-- CARISMA -->
+      <div id="df-carisma" class="dform">
+        <div class="dform-hd" style="color:var(--gold);">✨ Carisma — Alma da Sala</div>
+        <div class="div-info">
+          <div class="div-info-t">SOBRE ESTA DIVISÃO</div>
+          <p>Carisma é a função de quem gosta de conversar e movimentar o ambiente. Puxa assunto, acolhe quem chega, mantém a conversa ativa. Sala parada é sala morta — você muda isso.</p>
         </div>
-        <div class="fi"><label>Onde consegue informações?</label>
+        <div class="fi"><label>Como você movimentaria uma sala parada?</label><textarea id="car-sala" class="inp" placeholder="Sua abordagem para animar o ambiente..."></textarea></div>
+        <div class="fi"><label>Você é mais...</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'inf-fonte')"><span>Grupos públicos</span></div>
-            <div class="ro" onclick="F.radio(this,'inf-fonte')"><span>Contatos internos</span></div>
-            <div class="ro" onclick="F.radio(this,'inf-fonte')"><span>Redes sociais</span></div>
-            <div class="ro" onclick="F.radio(this,'inf-fonte')"><span>Múltiplas fontes</span></div>
+            <div class="ro" onclick="F.radio(this,'car-tipo')"><span>Engraçado</span></div>
+            <div class="ro" onclick="F.radio(this,'car-tipo')"><span>Sério e articulado</span></div>
+            <div class="ro" onclick="F.radio(this,'car-tipo')"><span>Acolhedor</span></div>
+            <div class="ro" onclick="F.radio(this,'car-tipo')"><span>Curioso</span></div>
           </div>
-          <input type="hidden" id="inf-fonte">
+          <input type="hidden" id="car-tipo">
         </div>
+        <div class="fi"><label>Você fica online com que frequência?</label>
+          <div class="rrow">
+            <div class="ro" onclick="F.radio(this,'car-freq')"><span>Muito — várias vezes ao dia</span></div>
+            <div class="ro" onclick="F.radio(this,'car-freq')"><span>1x por dia</span></div>
+            <div class="ro" onclick="F.radio(this,'car-freq')"><span>Alguns dias na semana</span></div>
+          </div>
+          <input type="hidden" id="car-freq">
+        </div>
+        <div class="fi"><label>O que te diferencia dos outros membros?</label><textarea id="car-dif" class="inp" placeholder="Seu jeito único de ser..."></textarea></div>
+      </div>
+
+      <!-- MODERADOR -->
+      <div id="df-moderador" class="dform">
+        <div class="dform-hd" style="color:var(--gold);">🖥️ Moderador de Salas</div>
+        <div class="div-info">
+          <div class="div-info-t">SOBRE ESTA DIVISÃO</div>
+          <p>O Moderador cuida da organização das salas da família. Mantém atividade, conversa fluindo e regras básicas sendo respeitadas. Foco na sala, não na família inteira.</p>
+        </div>
+        <div class="fi"><label>Já moderou salas ou grupos antes?</label>
+          <div class="rrow">
+            <div class="ro" onclick="F.radio(this,'mod-prev')"><span>Sim</span></div>
+            <div class="ro" onclick="F.radio(this,'mod-prev')"><span>Não</span></div>
+          </div>
+          <input type="hidden" id="mod-prev">
+        </div>
+        <div class="fi"><label>Como você resolve uma discussão que esquentou na sala?</label><textarea id="mod-conf" class="inp" placeholder="Sua abordagem para resolver conflitos..."></textarea></div>
+        <div class="fi"><label>Disponibilidade diária</label><input type="text" id="mod-hrs" class="inp" placeholder="Ex: 3-4h por dia, principalmente à noite..."></div>
+        <div class="fi"><label>Qual seria sua primeira ação ao assumir uma sala desorganizada?</label><textarea id="mod-acao" class="inp" placeholder="Seu plano de ação..."></textarea></div>
         <div class="g2">
-          <div class="fi"><label>Tem infiltração em grupos rivais?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'inf-infil')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'inf-infil')"><span>Não</span></div><div class="ro" onclick="F.radio(this,'inf-infil')"><span>Posso conseguir</span></div></div>
-            <input type="hidden" id="inf-infil">
+          <div class="fi"><label>Age com firmeza quando precisa?</label>
+            <div class="rrow">
+              <div class="ro" onclick="F.radio(this,'mod-firm')"><span>Sim</span></div>
+              <div class="ro" onclick="F.radio(this,'mod-firm')"><span>Prefiro ser suave</span></div>
+            </div>
+            <input type="hidden" id="mod-firm">
           </div>
-          <div class="fi"><label>Discrição ao coletar dados?</label>
-            <div class="rrow"><div class="ro" onclick="F.radio(this,'inf-disc')"><span>Alta</span></div><div class="ro" onclick="F.radio(this,'inf-disc')"><span>Média</span></div></div>
-            <input type="hidden" id="inf-disc">
+          <div class="fi"><label>Tem paciência?</label>
+            <div class="rrow">
+              <div class="ro" onclick="F.radio(this,'mod-pac')"><span>Muita</span></div>
+              <div class="ro" onclick="F.radio(this,'mod-pac')"><span>Razoável</span></div>
+            </div>
+            <input type="hidden" id="mod-pac">
           </div>
-        </div>
-        <div class="fi"><label>Como filtra informação verdadeira de falsa?</label><textarea id="inf-filtro" class="inp" placeholder="Seu método de verificação..."></textarea></div>
-        <div class="fi"><label>Já trouxe algum dado importante para um grupo?</label><textarea id="inf-hist" class="inp" placeholder="Descreva a situação..."></textarea></div>
-        <div class="fi"><label>Frequência de relatórios</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'inf-freq')"><span>Diário</span></div>
-            <div class="ro" onclick="F.radio(this,'inf-freq')"><span>Semanal</span></div>
-            <div class="ro" onclick="F.radio(this,'inf-freq')"><span>Sob demanda</span></div>
-          </div>
-          <input type="hidden" id="inf-freq">
         </div>
       </div>
 
-      <!-- ─── TÁTICO ─── -->
-      <div id="df-tatico" class="dform">
-        <div class="dform-hd" style="color:var(--red);">Tático — Conflito & Operações</div>
-        <div class="fi"><label>Grupos / Famílias anteriores</label><input type="text" id="t-orgs" class="inp" placeholder="Quais grupos você já fez parte..."></div>
-        <div class="g2">
-          <div class="fi"><label>Experiência em tretas?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-exp')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'t-exp')"><span>Não</span></div></div><input type="hidden" id="t-exp"></div>
-          <div class="fi"><label>Sabe gastar / travar?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-gast')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'t-gast')"><span>Não</span></div></div><input type="hidden" id="t-gast"></div>
-        </div>
-        <div class="fi"><label>Estilo de atuação</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'t-est')"><span>Agressivo</span></div>
-            <div class="ro" onclick="F.radio(this,'t-est')"><span>Controlado</span></div>
-            <div class="ro" onclick="F.radio(this,'t-est')"><span>Argumentativo</span></div>
-            <div class="ro" onclick="F.radio(this,'t-est')"><span>Defensivo</span></div>
-          </div>
-          <input type="hidden" id="t-est">
-        </div>
-        <div class="g2">
-          <div class="fi"><label>Já entregou alguém?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-x9')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'t-x9')"><span>Não</span></div></div><input type="hidden" id="t-x9"></div>
-          <div class="fi"><label>Segue ordens?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'t-ord')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'t-ord')"><span>Depende</span></div></div><input type="hidden" id="t-ord"></div>
-        </div>
-        <div class="fi"><label>Disponibilidade diária</label><input type="text" id="t-hrs" class="inp" placeholder="Ex: 4h por dia"></div>
-        <div class="fi"><label>Ponto forte em conflito</label><input type="text" id="t-forte" class="inp" placeholder="O que você faz melhor..."></div>
-        <div class="fi"><label>Papel e objetivo</label><textarea id="t-obj" class="inp" placeholder="O que quer fazer e oferecer..."></textarea></div>
-      </div>
-
-      <!-- ─── CYBER ─── -->
+      <!-- CYBER -->
       <div id="df-cyber" class="dform">
-        <div class="dform-hd" style="color:var(--cyan);">Cyber — Tecnologia & Operações Digitais</div>
-        <div class="fi"><label>Linguagens que conhece</label><input type="text" id="c-ling" class="inp" placeholder="Ex: JS, Python, Bash..."></div>
-        <div class="g2">
-          <div class="fi"><label>Usa Linux / Termux?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'c-lnx')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'c-lnx')"><span>Não</span></div></div><input type="hidden" id="c-lnx"></div>
-          <div class="fi"><label>Cria bots / scripts?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'c-bot')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'c-bot')"><span>Não</span></div></div><input type="hidden" id="c-bot"></div>
+        <div class="dform-hd" style="color:var(--red3);">💻 Cyber — Divisão Restrita</div>
+        <div class="div-info" style="border-left-color:rgba(192,0,0,.4);">
+          <div class="div-info-t" style="color:rgba(192,0,0,.7);">ATENÇÃO — ACESSO RESTRITO</div>
+          <p>A divisão Cyber é a mais difícil de entrar. Exige conhecimento real sobre tecnologia, internet, ferramentas digitais e automação. Seu pedido será avaliado pessoalmente pela liderança.</p>
         </div>
-        <div class="fi"><label>Nível técnico</label>
+        <div class="fi"><label>Quais tecnologias você domina?</label><input type="text" id="c-ling" class="inp" placeholder="Ex: JS, Python, automação, redes..."></div>
+        <div class="g2">
+          <div class="fi"><label>Usa Linux / Termux?</label>
+            <div class="rrow">
+              <div class="ro" onclick="F.radio(this,'c-lnx')"><span>Sim</span></div>
+              <div class="ro" onclick="F.radio(this,'c-lnx')"><span>Não</span></div>
+            </div>
+            <input type="hidden" id="c-lnx">
+          </div>
+          <div class="fi"><label>Cria bots ou scripts?</label>
+            <div class="rrow">
+              <div class="ro" onclick="F.radio(this,'c-bot')"><span>Sim</span></div>
+              <div class="ro" onclick="F.radio(this,'c-bot')"><span>Não</span></div>
+            </div>
+            <input type="hidden" id="c-bot">
+          </div>
+        </div>
+        <div class="fi"><label>Nível de conhecimento técnico</label>
           <div class="rrow">
             <div class="ro" onclick="F.radio(this,'c-nv')"><span>Iniciante</span></div>
             <div class="ro" onclick="F.radio(this,'c-nv')"><span>Intermediário</span></div>
@@ -1048,208 +1005,35 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
           </div>
           <input type="hidden" id="c-nv">
         </div>
-        <div class="fi"><label>Área de interesse</label>
+        <div class="fi"><label>Área de maior interesse</label>
           <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'c-area')"><span>Bots</span></div>
-            <div class="ro" onclick="F.radio(this,'c-area')"><span>Design</span></div>
             <div class="ro" onclick="F.radio(this,'c-area')"><span>Automação</span></div>
-            <div class="ro" onclick="F.radio(this,'c-area')"><span>Segurança</span></div>
-            <div class="ro" onclick="F.radio(this,'c-area')"><span>Sistemas</span></div>
+            <div class="ro" onclick="F.radio(this,'c-area')"><span>Bots</span></div>
+            <div class="ro" onclick="F.radio(this,'c-area')"><span>Redes</span></div>
+            <div class="ro" onclick="F.radio(this,'c-area')"><span>Segurança digital</span></div>
+            <div class="ro" onclick="F.radio(this,'c-area')"><span>Programação</span></div>
           </div>
           <input type="hidden" id="c-area">
         </div>
-        <div class="fi"><label>Ferramentas do dia a dia</label><input type="text" id="c-tools" class="inp" placeholder="Ex: VS Code, Kali, Termux..."></div>
-        <div class="fi"><label>O que pode oferecer?</label><textarea id="c-ofer" class="inp" placeholder="Suas habilidades e contribuições..."></textarea></div>
-      </div>
-
-      <!-- ─── ANÔNIMO ─── -->
-      <div id="df-anonimo" class="dform">
-        <div class="dform-hd" style="color:var(--dim3);">Membro Anônimo — Sombra da Família</div>
-        <div class="div-info-box" style="border-left-color:var(--dim2);border-color:rgba(120,120,120,.15);">
-          <div class="dib-title" style="color:var(--dim3);">SOBRE ESTA DIVISÃO</div>
-          <p>O Anônimo existe dentro da CsL sem que ninguém saiba. Sem tag visível, sem exposição. Presença silenciosa que só a liderança conhece.</p>
-        </div>
-        <div class="fi"><label>Por que prefere o anonimato?</label><textarea id="an-motivo" class="inp" placeholder="Explique sua razão..."></textarea></div>
-        <div class="fi"><label>Tem histórico que justifica?</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'an-hist')"><span>Sim, prefiro não explicar</span></div>
-            <div class="ro" onclick="F.radio(this,'an-hist')"><span>Sim, posso explicar à liderança</span></div>
-            <div class="ro" onclick="F.radio(this,'an-hist')"><span>Não, só prefiro assim</span></div>
-          </div>
-          <input type="hidden" id="an-hist">
-        </div>
-        <div class="g2">
-          <div class="fi"><label>Ajuda sem aparecer?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'an-ajud')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'an-ajud')"><span>Depende</span></div></div><input type="hidden" id="an-ajud"></div>
-          <div class="fi"><label>Só a liderança saberá?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'an-acei')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'an-acei')"><span>Não</span></div></div><input type="hidden" id="an-acei"></div>
-        </div>
-        <div class="fi"><label>O que oferece nas sombras?</label><textarea id="an-ofer" class="inp" placeholder="Informações, apoio, observação..."></textarea></div>
-        <div class="fi"><label>Canal de contato privado</label><input type="text" id="an-contato" class="inp" placeholder="Canal seguro..."></div>
-      </div>
-
-      <!-- ─── DIPLOMATA ─── -->
-      <div id="df-diplomata" class="dform">
-        <div class="dform-hd" style="color:var(--cyan);">Diplomata — Alianças & Relações</div>
-        <div class="div-info-box" style="border-left-color:var(--cyan);border-color:rgba(0,204,255,.15);">
-          <div class="dib-title" style="color:var(--cyan);">SOBRE ESTA DIVISÃO</div>
-          <p>O Diplomata representa a CsL em negociações, cria alianças estratégicas e mantém relações com outras famílias. A língua é sua arma mais poderosa.</p>
-        </div>
-        <div class="fi"><label>Já negociou para algum grupo?</label>
-          <div class="rrow"><div class="ro" onclick="F.radio(this,'dip-prev')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'dip-prev')"><span>Não</span></div></div>
-          <input type="hidden" id="dip-prev">
-        </div>
-        <div class="fi"><label>Estilo de negociação</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'dip-est')"><span>Firme mas justo</span></div>
-            <div class="ro" onclick="F.radio(this,'dip-est')"><span>Diplomático total</span></div>
-            <div class="ro" onclick="F.radio(this,'dip-est')"><span>Estratégico</span></div>
-            <div class="ro" onclick="F.radio(this,'dip-est')"><span>Impositivo</span></div>
-          </div>
-          <input type="hidden" id="dip-est">
-        </div>
-        <div class="fi"><label>Tem conexões com outros grupos?</label>
-          <div class="rrow"><div class="ro" onclick="F.radio(this,'dip-con')"><span>Sim, várias</span></div><div class="ro" onclick="F.radio(this,'dip-con')"><span>Algumas</span></div><div class="ro" onclick="F.radio(this,'dip-con')"><span>Poucas</span></div><div class="ro" onclick="F.radio(this,'dip-con')"><span>Não</span></div></div>
-          <input type="hidden" id="dip-con">
-        </div>
-        <div class="fi"><label>Como resolveria um conflito com grupo aliado?</label><textarea id="dip-cenario" class="inp" placeholder="Descreva sua abordagem..."></textarea></div>
-        <div class="fi"><label>Por que a CsL deveria ter você como diplomata?</label><textarea id="dip-motivo" class="inp" placeholder="Seus diferenciais..."></textarea></div>
-      </div>
-
-      <!-- ─── ARTILHEIRO ─── -->
-      <div id="df-artilheiro" class="dform">
-        <div class="dform-hd" style="color:var(--red);">Artilheiro — Linha de Frente</div>
-        <div class="div-info-box" style="border-left-color:var(--red);border-color:rgba(204,0,0,.15);">
-          <div class="dib-title" style="color:var(--red);">SOBRE ESTA DIVISÃO</div>
-          <p>O Artilheiro é quem está na frente nos conflitos. Sem medo, sem recuo. Quando a família precisa de força bruta, o Artilheiro responde.</p>
-        </div>
-        <div class="fi"><label>Plataformas onde está ativo</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'art-plat')"><span>Discord</span></div>
-            <div class="ro" onclick="F.radio(this,'art-plat')"><span>WhatsApp</span></div>
-            <div class="ro" onclick="F.radio(this,'art-plat')"><span>Telegram</span></div>
-            <div class="ro" onclick="F.radio(this,'art-plat')"><span>Roblox</span></div>
-            <div class="ro" onclick="F.radio(this,'art-plat')"><span>Todas</span></div>
-          </div>
-          <input type="hidden" id="art-plat">
-        </div>
-        <div class="g2">
-          <div class="fi"><label>Aguenta pressão?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'art-press')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'art-press')"><span>Depende</span></div></div><input type="hidden" id="art-press"></div>
-          <div class="fi"><label>Age por impulso ou com calma?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'art-imp')"><span>Calma</span></div><div class="ro" onclick="F.radio(this,'art-imp')"><span>Impulso</span></div><div class="ro" onclick="F.radio(this,'art-imp')"><span>Depende</span></div></div><input type="hidden" id="art-imp"></div>
-        </div>
-        <div class="fi"><label>Já liderou ataques / tretas?</label>
-          <div class="rrow"><div class="ro" onclick="F.radio(this,'art-lid')"><span>Sim, várias vezes</span></div><div class="ro" onclick="F.radio(this,'art-lid')"><span>Algumas</span></div><div class="ro" onclick="F.radio(this,'art-lid')"><span>Nunca liderei</span></div></div>
-          <input type="hidden" id="art-lid">
-        </div>
-        <div class="fi"><label>Disponibilidade em crises</label><input type="text" id="art-disp" class="inp" placeholder="Ex: disponível 24h, só à noite..."></div>
-        <div class="fi"><label>Por que é o melhor na linha de frente?</label><textarea id="art-motivo" class="inp" placeholder="Suas habilidades em conflito..."></textarea></div>
-      </div>
-
-      <!-- ─── ESTRATEGISTA ─── -->
-      <div id="df-estrategista" class="dform">
-        <div class="dform-hd" style="color:var(--purple);">Estrategista — A Mente por Trás</div>
-        <div class="div-info-box" style="border-left-color:var(--purple);border-color:rgba(155,0,255,.15);">
-          <div class="dib-title" style="color:var(--purple);">SOBRE ESTA DIVISÃO</div>
-          <p>O Estrategista não aparece na frente. Ele planeja, analisa cenários, antecipa movimentos inimigos e define como a família deve agir antes mesmo do problema aparecer.</p>
-        </div>
-        <div class="fi"><label>Como você analisa situações complexas?</label><textarea id="est-analise" class="inp" placeholder="Seu processo de pensamento..."></textarea></div>
-        <div class="fi"><label>Prefere agir...</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'est-pref')"><span>Antes do problema</span></div>
-            <div class="ro" onclick="F.radio(this,'est-pref')"><span>Durante o conflito</span></div>
-            <div class="ro" onclick="F.radio(this,'est-pref')"><span>Após analisar tudo</span></div>
-          </div>
-          <input type="hidden" id="est-pref">
-        </div>
-        <div class="fi"><label>Tem experiência em liderança estratégica?</label>
-          <div class="rrow"><div class="ro" onclick="F.radio(this,'est-exp')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'est-pref2')"><span>Não</span></div><div class="ro" onclick="F.radio(this,'est-pref2')"><span>Aprendendo</span></div></div>
-          <input type="hidden" id="est-exp">
-        </div>
-        <div class="fi"><label>Como montaria um plano de ataque contra um inimigo?</label><textarea id="est-plano" class="inp" placeholder="Descreva suas etapas..."></textarea></div>
-        <div class="fi"><label>Maior ponto forte como estrategista</label><input type="text" id="est-forte" class="inp" placeholder="O que te diferencia..."></div>
-      </div>
-
-      <!-- ─── GUARDIÃO ─── -->
-      <div id="df-guardiao" class="dform">
-        <div class="dform-hd" style="color:var(--green);">Guardião — Protetor Interno</div>
-        <div class="div-info-box" style="border-left-color:var(--green);border-color:rgba(0,255,136,.15);">
-          <div class="dib-title" style="color:var(--green);">SOBRE ESTA DIVISÃO</div>
-          <p>O Guardião protege os membros da família de ameaças internas e externas. Identifica infiltrados, protege informações e garante que ninguém dentro da família seja traído.</p>
-        </div>
-        <div class="fi"><label>Como identificaria um infiltrado?</label><textarea id="grd-metodo" class="inp" placeholder="Seus sinais de alerta..."></textarea></div>
-        <div class="g2">
-          <div class="fi"><label>Já protegeu algum grupo?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'grd-prev')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'grd-prev')"><span>Não</span></div></div><input type="hidden" id="grd-prev"></div>
-          <div class="fi"><label>Age com frieza em crises?</label><div class="rrow"><div class="ro" onclick="F.radio(this,'grd-frio')"><span>Sim</span></div><div class="ro" onclick="F.radio(this,'grd-frio')"><span>Às vezes</span></div></div><input type="hidden" id="grd-frio"></div>
-        </div>
-        <div class="fi"><label>Disponibilidade para proteger a família</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'grd-disp')"><span>24/7</span></div>
-            <div class="ro" onclick="F.radio(this,'grd-disp')"><span>Alta</span></div>
-            <div class="ro" onclick="F.radio(this,'grd-disp')"><span>Média</span></div>
-          </div>
-          <input type="hidden" id="grd-disp">
-        </div>
-        <div class="fi"><label>Situação onde agiu para proteger alguém</label><textarea id="grd-hist" class="inp" placeholder="Descreva o que aconteceu..."></textarea></div>
-        <div class="fi"><label>O que faz de você um bom guardião?</label><textarea id="grd-forte" class="inp" placeholder="Seus pontos fortes..."></textarea></div>
-      </div>
-
-      <!-- ─── DESIGNER ─── -->
-      <div id="df-designer" class="dform">
-        <div class="dform-hd" style="color:var(--cyan);">Designer — Arte & Identidade Visual</div>
-        <div class="div-info-box" style="border-left-color:var(--cyan);border-color:rgba(0,204,255,.15);">
-          <div class="dib-title" style="color:var(--cyan);">SOBRE ESTA DIVISÃO</div>
-          <p>O Designer constrói a identidade visual da CsL. Banners, logos, posts, perfis, artes. A família precisa parecer poderosa — e você é quem faz isso acontecer.</p>
-        </div>
-        <div class="fi"><label>Ferramentas que usa</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'des-tool')"><span>Photoshop</span></div>
-            <div class="ro" onclick="F.radio(this,'des-tool')"><span>Canva</span></div>
-            <div class="ro" onclick="F.radio(this,'des-tool')"><span>Figma</span></div>
-            <div class="ro" onclick="F.radio(this,'des-tool')"><span>Illustrator</span></div>
-            <div class="ro" onclick="F.radio(this,'des-tool')"><span>Outras</span></div>
-          </div>
-          <input type="hidden" id="des-tool">
-        </div>
-        <div class="fi"><label>Nível de habilidade</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'des-nv')"><span>Iniciante</span></div>
-            <div class="ro" onclick="F.radio(this,'des-nv')"><span>Intermediário</span></div>
-            <div class="ro" onclick="F.radio(this,'des-nv')"><span>Avançado</span></div>
-            <div class="ro" onclick="F.radio(this,'des-nv')"><span>Profissional</span></div>
-          </div>
-          <input type="hidden" id="des-nv">
-        </div>
-        <div class="fi"><label>O que cria com mais facilidade?</label>
-          <div class="rrow">
-            <div class="ro" onclick="F.radio(this,'des-esp')"><span>Logos</span></div>
-            <div class="ro" onclick="F.radio(this,'des-esp')"><span>Banners</span></div>
-            <div class="ro" onclick="F.radio(this,'des-esp')"><span>Perfis</span></div>
-            <div class="ro" onclick="F.radio(this,'des-esp')"><span>Animações</span></div>
-            <div class="ro" onclick="F.radio(this,'des-esp')"><span>Tudo</span></div>
-          </div>
-          <input type="hidden" id="des-esp">
-        </div>
-        <div class="fi"><label>Tem portfólio ou exemplos?</label><input type="text" id="des-port" class="inp" placeholder="Link ou descrição do seu trabalho..."></div>
-        <div class="fi"><label>O que criaria para representar a CsL?</label><textarea id="des-ideia" class="inp" placeholder="Sua visão para a identidade da família..."></textarea></div>
-        <div class="fi"><label>Disponibilidade para criações</label><input type="text" id="des-disp" class="inp" placeholder="Ex: 3 artes por semana..."></div>
+        <div class="fi"><label>Ferramentas que usa no dia a dia</label><input type="text" id="c-tools" class="inp" placeholder="Ex: VS Code, Termux, Wireshark..."></div>
+        <div class="fi"><label>O que você poderia oferecer à família com seu conhecimento?</label><textarea id="c-ofer" class="inp" placeholder="Seja específico — aqui qualidade importa muito..."></textarea></div>
+        <div class="fi"><label>Por que quer entrar na divisão mais difícil?</label><textarea id="c-motivo" class="inp" placeholder="Sua motivação real..."></textarea></div>
       </div>
 
       <div id="sec-sub" style="display:none;" class="sbtn-area">
         <button class="cbtn" onclick="Mod.open()"><span>▶ Transmitir ao Mainframe</span></button>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- ════════ TRANSMISSÃO ════════ -->
+<!-- ════ TRANSMISSÃO ════ -->
 <div id="scr-tx" class="scr">
   <div class="tx-wrap">
-    <div class="tx-radar">
-      <div class="tx-rline"></div>
-      <div class="tx-rline2"></div>
-      <div class="tx-blip" style="top:25%;left:62%;"></div>
-      <div class="tx-blip c" style="top:62%;left:31%;animation-delay:.8s;"></div>
-      <div class="tx-blip" style="top:40%;left:72%;animation-delay:1.8s;"></div>
-      <div class="tx-blip c" style="top:70%;left:50%;animation-delay:2.5s;"></div>
+    <div class="tx-emblem">
+      <div class="tx-e-ring tx-e-r1"></div>
+      <div class="tx-e-ring tx-e-r2"></div>
+      <div class="tx-e-center">CsL</div>
     </div>
     <div class="tx-title" id="tx-tit">Estabelecendo Conexão</div>
     <div class="tx-pbwrap"><div class="tx-pbfill" id="tx-fill"></div></div>
@@ -1258,25 +1042,25 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
   </div>
 </div>
 
-<!-- ════════ FINAL ════════ -->
+<!-- ════ FINAL ════ -->
 <div id="scr-final" class="scr">
   <div class="fn-box">
     <div class="fn-chk">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="2.5">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(100,160,100,.9)" stroke-width="2">
         <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
       </svg>
     </div>
     <div class="fn-tit">Transmitido</div>
     <p class="fn-txt">Seu protocolo foi criptografado e enviado aos servidores da família CsL.</p>
-    <p class="fn-txt">Aguarde o contato da liderança. <strong style="color:var(--green);">Nós vamos te encontrar.</strong></p>
+    <p class="fn-txt">Aguarde o contato da liderança.<br><span style="color:rgba(100,160,100,.7);">Nós vamos te encontrar.</span></p>
     <div class="fn-id" id="fn-id">PROTOCOLO #——</div>
-    <div style="margin-top:24px;">
-      <a href="https://discord.gg/4nfJUktQK" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:rgba(88,101,242,.12);border:1px solid rgba(88,101,242,.4);padding:12px 24px;font-family:var(--f5);font-size:14px;color:#fff;letter-spacing:2px;text-decoration:none;transition:all .3s;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.079.11 18.1.128 18.114a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+    <div style="margin-top:22px;">
+      <a href="https://discord.gg/4nfJUktQK" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:rgba(88,101,242,.07);border:1px solid rgba(88,101,242,.3);padding:12px 24px;font-family:var(--f1);font-size:12px;color:rgba(180,185,255,.8);letter-spacing:2px;text-decoration:none;transition:all .3s;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(150,160,255,.8)"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.079.11 18.1.128 18.114a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
         ENTRAR NO DISCORD
       </a>
     </div>
-    <div class="fn-tag">[ Sessão Encerrada — CsL v10.0 — Constelação Sangrenta ]</div>
+    <div class="fn-tag">[ CsL v10.0 — Constelação Sangrenta ]</div>
   </div>
 </div>
 
@@ -1285,155 +1069,239 @@ textarea.inp:focus{border-color:rgba(255,102,0,.4);}
 <script>
 'use strict';
 
-const Vol={steps:[.15,.28,.42,.58,.75,.92,1.0],cur:0,btn:null,
-  init(){this.btn=document.getElementById('vol-btn');const m=document.getElementById('bg-music');if(m)m.volume=this.steps[0];},
-  up(){const m=document.getElementById('bg-music');if(!m)return;if(this.cur<this.steps.length-1){this.cur++;m.volume=this.steps[this.cur];A.play('click');this.btn.textContent=this.cur+1;setTimeout(()=>{this.btn.textContent='▲';},800);if(this.cur===this.steps.length-1)this.btn.classList.add('maxed');}}
+/* ── VOLUME ── */
+const Vol={steps:[.08,.14,.22,.32,.44,.58,.72],cur:0,btn:null,
+  init(){this.btn=document.getElementById('vol-btn');},
+  up(){const m=document.getElementById('bg-music');if(!m)return;if(this.cur<this.steps.length-1){this.cur++;if(m)m.volume=this.steps[this.cur];this.btn.textContent=this.cur+1;setTimeout(()=>{this.btn.textContent='▲';},800);}}
 };
 
+/* ── NAVIGATION ── */
 const Go={
-  cur:'scr-teaser',
+  cur:'scr-intro',
   to(id){
     const prev=document.getElementById(Go.cur),next=document.getElementById(id);
     if(!next||next===prev)return;
     prev.classList.remove('on');prev.classList.add('out');
-    setTimeout(()=>prev.classList.remove('out'),600);
-    setTimeout(()=>next.classList.add('on'),130);
+    setTimeout(()=>prev.classList.remove('out'),700);
+    setTimeout(()=>next.classList.add('on'),160);
     Go.cur=id;
   },
-  splash(){A.init();Go.to('scr-splash');HUD.animStat('sp-members',247,1800);HUD.animStat('sp-online',89,1400);},
+  intro(){Go.to('scr-intro');},
+  familia(){Go.to('scr-familia');},
+  splash(){Go.to('scr-splash');HUD.animStat('sp-members',247,1600);HUD.animStat('sp-online',89,1200);},
   boot(){A.init();Go.to('scr-ba');setTimeout(()=>BA.run(),300);},
   bb(){Go.to('scr-bb');setTimeout(()=>BB.run(),300);},
   bc(){Go.to('scr-bc');setTimeout(()=>BC.run(),300);},
   bd(){Go.to('scr-bd');setTimeout(()=>BD.run(),300);},
   warn(){Go.to('scr-warn');setTimeout(()=>Warn.run(),400);},
-  form(){Go.to('scr-form');F.initRecruiterQuiz();},
+  form(){Go.to('scr-form');},
   tx(){Go.to('scr-tx');},
-  fin(){Go.to('scr-final');},
+  fin(){Go.to('scr-final');}
 };
 
+/* ── BACKGROUND ── */
 const BG={
-  c:document.getElementById('bg'),ctx:null,w:0,h:0,pts:[],time:0,
+  c:document.getElementById('bg'),ctx:null,w:0,h:0,stars:[],conns:[],time:0,
   init(){
     this.ctx=this.c.getContext('2d');this.resize();
     window.addEventListener('resize',()=>this.resize());
-    const n=Math.min(45,Math.floor(window.innerWidth/20));
-    for(let i=0;i<n;i++)this.pts.push({
+    const n=Math.min(60,Math.floor(window.innerWidth*window.innerHeight/14000));
+    for(let i=0;i<n;i++)this.stars.push({
       x:Math.random()*this.w,y:Math.random()*this.h,
-      vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,
-      r:Math.random()*1.4+.3,hue:Math.random()>.65?180:Math.random()>.5?30:0
+      vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,
+      r:Math.random()*1.2+.2,
+      hue:Math.random()>.7?30:Math.random()>.5?0:50,
+      twinkle:Math.random()*Math.PI*2
     });
     this.loop();
   },
   resize(){this.w=this.c.width=window.innerWidth;this.h=this.c.height=window.innerHeight;},
   loop(){
-    this.time++;
+    this.time+=.008;
     const ctx=this.ctx;
-    ctx.fillStyle='rgba(3,3,5,.14)';ctx.fillRect(0,0,this.w,this.h);
-    this.pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>this.w)p.vx*=-1;if(p.y<0||p.y>this.h)p.vy*=-1;});
-    this.pts.forEach((a,i)=>{
-      this.pts.slice(i+1).forEach(b=>{
+    ctx.fillStyle='rgba(6,3,10,.18)';ctx.fillRect(0,0,this.w,this.h);
+    this.stars.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.twinkle+=.02;
+      if(p.x<0||p.x>this.w)p.vx*=-1;if(p.y<0||p.y>this.h)p.vy*=-1;
+    });
+    this.stars.forEach((a,i)=>{
+      this.stars.slice(i+1).forEach(b=>{
         const d=Math.hypot(a.x-b.x,a.y-b.y);
-        if(d<130){
-          const alpha=.05*(1-d/130);
-          const hue=a.hue===0?'204,0,0':a.hue===30?'255,102,0':'0,200,255';
-          ctx.strokeStyle=`rgba(${hue},${alpha})`;
-          ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+        if(d<110){
+          const alpha=.04*(1-d/110);
+          ctx.strokeStyle=`rgba(201,168,76,${alpha})`;
+          ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
         }
       });
-      const col=a.hue===0?'rgba(180,0,0,.15)':a.hue===30?'rgba(255,102,0,.12)':'rgba(0,180,220,.09)';
-      ctx.fillStyle=col;ctx.beginPath();ctx.arc(a.x,a.y,a.r,0,Math.PI*2);ctx.fill();
+      const tw=(Math.sin(p.twinkle)+1)/2;
+      const col=p.hue===30?`rgba(192,0,0,${.06+tw*.06})`:p.hue===50?`rgba(201,168,76,${.08+tw*.1})`:`rgba(201,168,76,${.05+tw*.05})`;
+      ctx.fillStyle=col;ctx.beginPath();ctx.arc(p.x,p.y,p.r*(0.7+tw*.5),0,Math.PI*2);ctx.fill();
     });
     requestAnimationFrame(()=>this.loop());
   }
 };
 
+/* ── STARS INTRO CANVAS ── */
+const StarsIntro={
+  c:null,ctx:null,w:0,h:0,pts:[],
+  init(){
+    this.c=document.getElementById('stars-canvas');if(!this.c)return;
+    this.ctx=this.c.getContext('2d');this.resize();
+    window.addEventListener('resize',()=>this.resize());
+    for(let i=0;i<120;i++)this.pts.push({
+      x:Math.random()*this.w,y:Math.random()*this.h,
+      size:Math.random()*1.5+.3,
+      opacity:Math.random()*.6+.1,
+      twinkle:Math.random()*Math.PI*2,speed:Math.random()*.015+.005
+    });
+    this.loop();
+  },
+  resize(){this.w=this.c.width=window.innerWidth;this.h=this.c.height=window.innerHeight;},
+  loop(){
+    const ctx=this.ctx;ctx.clearRect(0,0,this.w,this.h);
+    this.pts.forEach(p=>{
+      p.twinkle+=p.speed;
+      const o=p.opacity*(0.5+0.5*Math.sin(p.twinkle));
+      ctx.fillStyle=`rgba(201,168,76,${o})`;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+    });
+    requestAnimationFrame(()=>this.loop());
+  }
+};
+
+/* ── CURSOR ── */
 const Cur={
   el:document.getElementById('cur'),r:document.getElementById('cur2'),mx:0,my:0,cx:0,cy:0,
   init(){
     if(matchMedia('(pointer:coarse)').matches){this.el.style.display='none';this.r.style.display='none';return;}
     document.addEventListener('mousemove',e=>{this.mx=e.clientX;this.my=e.clientY;});
-    document.addEventListener('mousedown',()=>{this.el.style.transform='translate(-50%,-50%) rotate(45deg) scale(3)';this.r.style.opacity='.9';this.r.style.borderColor='rgba(255,102,0,.9)';});
-    document.addEventListener('mouseup',()=>{this.el.style.transform='translate(-50%,-50%) rotate(45deg) scale(1)';this.r.style.opacity='.4';this.r.style.borderColor='';});
+    document.addEventListener('mousedown',()=>{this.el.style.transform='translate(-50%,-50%) scale(2.5)';});
+    document.addEventListener('mouseup',()=>{this.el.style.transform='translate(-50%,-50%) scale(1)';});
     this.loop();
   },
   loop(){
-    this.cx+=(this.mx-this.cx)*.2;this.cy+=(this.my-this.cy)*.2;
+    this.cx+=(this.mx-this.cx)*.18;this.cy+=(this.my-this.cy)*.18;
     this.el.style.left=this.cx+'px';this.el.style.top=this.cy+'px';
     this.r.style.left=this.mx+'px';this.r.style.top=this.my+'px';
     requestAnimationFrame(()=>this.loop());
   }
 };
 
+/* ── AUDIO ── */
 const A={
   ctx:null,g:null,ok:false,
   init(){
     if(this.ctx)return;
-    const AC=window.AudioContext||window.webkitAudioContext;
+    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
     this.ctx=new AC();this.g=this.ctx.createGain();
-    this.g.gain.value=.1;this.g.connect(this.ctx.destination);
-    this.ok=true;
-    const m=document.getElementById('bg-music');if(m)m.play().catch(()=>{});
-    Music.start();
+    this.g.gain.value=.07;this.g.connect(this.ctx.destination);
+    this.ok=true;Music.start();
   },
   play(t){
     if(!this.ok||!this.ctx)return;
     const c=this.ctx,now=c.currentTime;
     const mk=()=>{const o=c.createOscillator(),gn=c.createGain();o.connect(gn);gn.connect(this.g);return{o,gn};};
-    if(t==='click'){const{o,gn}=mk();o.type='square';o.frequency.setValueAtTime(380,now);o.frequency.exponentialRampToValueAtTime(40,now+.09);gn.gain.setValueAtTime(.18,now);gn.gain.exponentialRampToValueAtTime(.001,now+.09);o.start(now);o.stop(now+.09);}
-    else if(t==='type'){const{o,gn}=mk();o.type='triangle';o.frequency.value=400+Math.random()*900;gn.gain.setValueAtTime(.028,now);gn.gain.exponentialRampToValueAtTime(.001,now+.07);o.start(now);o.stop(now+.07);}
-    else if(t==='err'){const{o,gn}=mk();o.type='sawtooth';o.frequency.setValueAtTime(120,now);o.frequency.linearRampToValueAtTime(20,now+.5);gn.gain.setValueAtTime(.3,now);gn.gain.linearRampToValueAtTime(.001,now+.5);o.start(now);o.stop(now+.5);if(navigator.vibrate)navigator.vibrate([80,40,80]);}
-    else if(t==='impact'){[70,50,35].forEach((f,i)=>{const{o,gn}=mk();const fl=c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=220;o.disconnect();o.connect(fl);fl.connect(gn);o.type='sine';o.frequency.setValueAtTime(f,now+i*.06);o.frequency.exponentialRampToValueAtTime(1,now+.8+i*.06);gn.gain.setValueAtTime(.35,now+i*.06);gn.gain.exponentialRampToValueAtTime(.001,now+.8+i*.06);o.start(now+i*.06);o.stop(now+.9+i*.06);});if(navigator.vibrate)navigator.vibrate(80);}
-    else if(t==='ok'){[320,400,520,660].forEach((f,i)=>{const{o,gn}=mk();o.type='sine';o.frequency.value=f;const s=now+i*.1;gn.gain.setValueAtTime(0,s);gn.gain.linearRampToValueAtTime(.1,s+.05);gn.gain.exponentialRampToValueAtTime(.001,s+.4);o.start(s);o.stop(s+.4);});}
-    else if(t==='boot'){const{o,gn}=mk();const fl=c.createBiquadFilter();fl.type='bandpass';fl.frequency.value=90;fl.Q.value=2;o.disconnect();o.connect(fl);fl.connect(gn);o.type='sawtooth';o.frequency.setValueAtTime(22,now);o.frequency.linearRampToValueAtTime(90,now+2);gn.gain.setValueAtTime(.2,now);gn.gain.linearRampToValueAtTime(.4,now+1);gn.gain.linearRampToValueAtTime(.001,now+2);o.start(now);o.stop(now+2);}
-    else if(t==='discord'){[200,300,500].forEach((f,i)=>{const{o,gn}=mk();o.type='sine';o.frequency.value=f;const s=now+i*.08;gn.gain.setValueAtTime(0,s);gn.gain.linearRampToValueAtTime(.12,s+.04);gn.gain.exponentialRampToValueAtTime(.001,s+.5);o.start(s);o.stop(s+.5);});}
+    if(t==='click'){const{o,gn}=mk();o.type='sine';o.frequency.setValueAtTime(320,now);o.frequency.exponentialRampToValueAtTime(80,now+.08);gn.gain.setValueAtTime(.12,now);gn.gain.exponentialRampToValueAtTime(.001,now+.08);o.start(now);o.stop(now+.08);}
+    else if(t==='type'){const{o,gn}=mk();o.type='sine';o.frequency.value=600+Math.random()*400;gn.gain.setValueAtTime(.018,now);gn.gain.exponentialRampToValueAtTime(.001,now+.06);o.start(now);o.stop(now+.06);}
+    else if(t==='ok'){[280,360,460,580].forEach((f,i)=>{const{o,gn}=mk();o.type='sine';o.frequency.value=f;const s=now+i*.09;gn.gain.setValueAtTime(0,s);gn.gain.linearRampToValueAtTime(.08,s+.04);gn.gain.exponentialRampToValueAtTime(.001,s+.4);o.start(s);o.stop(s+.4);});}
+    else if(t==='impact'){[60,45,30].forEach((f,i)=>{const{o,gn}=mk();o.type='sine';o.frequency.setValueAtTime(f,now+i*.05);o.frequency.exponentialRampToValueAtTime(.5,now+.7+i*.05);gn.gain.setValueAtTime(.28,now+i*.05);gn.gain.exponentialRampToValueAtTime(.001,now+.7+i*.05);o.start(now+i*.05);o.stop(now+.8+i*.05);});}
+    else if(t==='err'){const{o,gn}=mk();o.type='sawtooth';o.frequency.setValueAtTime(100,now);o.frequency.linearRampToValueAtTime(20,now+.4);gn.gain.setValueAtTime(.2,now);gn.gain.linearRampToValueAtTime(.001,now+.4);o.start(now);o.stop(now+.4);}
+    else if(t==='boot'){const{o,gn}=mk();const fl=c.createBiquadFilter();fl.type='bandpass';fl.frequency.value=80;fl.Q.value=2;o.disconnect();o.connect(fl);fl.connect(gn);o.type='sawtooth';o.frequency.setValueAtTime(20,now);o.frequency.linearRampToValueAtTime(80,now+2.5);gn.gain.setValueAtTime(.15,now);gn.gain.linearRampToValueAtTime(.3,now+1.2);gn.gain.linearRampToValueAtTime(.001,now+2.5);o.start(now);o.stop(now+2.5);}
   }
 };
 
+/* ── MUSIC ── */
 const Music={
   on:false,nodes:[],btn:document.getElementById('mbtn'),
-  start(){if(this.on||!A.ctx)return;this.on=true;this.btn.textContent='♫';this.btn.classList.add('pl');this._pad();this._beat();this._arp();this._drone();},
-  stop(){this.on=false;this.btn.textContent='♪';this.btn.classList.remove('pl');this.nodes.forEach(n=>{try{n.stop();}catch(e){}});this.nodes=[];const m=document.getElementById('bg-music');if(m)m.pause();},
-  toggle(){if(A.ok){if(this.on)this.stop();else{const m=document.getElementById('bg-music');if(m)m.play().catch(()=>{});this.start();}}else A.init();},
-  _osc(type,freq,gain){const c=A.ctx,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=freq;g.gain.value=gain;o.connect(g);g.connect(A.g);o.start();this.nodes.push(o);return{o,g};},
-  _pad(){if(!this.on)return;[36.7,55,73.4,110].forEach((f,i)=>{const{o}=this._osc('sine',f+(i%2===0?-.3:.3),.016);const lfo=A.ctx.createOscillator();lfo.type='sine';lfo.frequency.value=.1+i*.05;const lfog=A.ctx.createGain();lfog.gain.value=.7;lfo.connect(lfog);lfog.connect(o.frequency);lfo.start();this.nodes.push(lfo);});},
-  _drone(){if(!this.on)return;const c=A.ctx;const buf=c.createBuffer(1,c.sampleRate*4,c.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*.5;const src=c.createBufferSource();src.buffer=buf;src.loop=true;const fl=c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=120;const g=c.createGain();g.gain.value=.024;src.connect(fl);fl.connect(g);g.connect(A.g);src.start();this.nodes.push(src);},
-  _beat(){if(!this.on)return;let s=0;const BPM=85,step=60/BPM/2;const pat=[1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0];const hat=[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0];const iv=setInterval(()=>{if(!this.on){clearInterval(iv);return;}const c=A.ctx,now=c.currentTime;if(pat[s%16]){const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(100,now);o.frequency.exponentialRampToValueAtTime(.5,now+.4);g.gain.setValueAtTime(.48,now);g.gain.exponentialRampToValueAtTime(.001,now+.4);o.connect(g);g.connect(A.g);o.start(now);o.stop(now+.4);}if(hat[s%16]){const buf=A.ctx.createBuffer(1,2048,A.ctx.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const src=A.ctx.createBufferSource();src.buffer=buf;const fl=A.ctx.createBiquadFilter();fl.type='highpass';fl.frequency.value=8000;const g=A.ctx.createGain();g.gain.setValueAtTime(.038,now);g.gain.exponentialRampToValueAtTime(.001,now+.08);src.connect(fl);fl.connect(g);g.connect(A.g);src.start(now);src.stop(now+.1);}s++;},step*1000);},
-  _arp(){if(!this.on)return;const scale=[55,65.4,73.4,82.4,98,110,130.8];let i=0;const play=()=>{if(!this.on)return;const c=A.ctx,now=c.currentTime;const freq=scale[i%scale.length]*(Math.random()>.85?2:1);const o=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();o.type='sine';o.frequency.value=freq;fl.type='bandpass';fl.frequency.value=freq;fl.Q.value=9;g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(.042,now+.06);g.gain.exponentialRampToValueAtTime(.001,now+.8);o.connect(fl);fl.connect(g);g.connect(A.g);o.start(now);o.stop(now+.8);i++;if(this.on)setTimeout(play,700+Math.random()*900);};setTimeout(play,1200);}
+  start(){if(this.on||!A.ctx)return;this.on=true;this.btn.textContent='♫';this.btn.classList.add('pl');this._pad();this._drone();this._heartbeat();this._arp();},
+  stop(){this.on=false;this.btn.textContent='♪';this.btn.classList.remove('pl');this.nodes.forEach(n=>{try{n.stop();}catch(e){}});this.nodes=[];},
+  toggle(){if(A.ok){if(this.on)this.stop();else this.start();}else A.init();},
+  _osc(type,freq,gain,delay=0){
+    const c=A.ctx,o=c.createOscillator(),g=c.createGain();
+    o.type=type;o.frequency.value=freq;g.gain.value=0;
+    o.connect(g);g.connect(A.g);o.start(c.currentTime+delay);
+    const now=c.currentTime+delay;
+    g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(gain,now+2);
+    this.nodes.push(o);return{o,g};
+  },
+  _pad(){
+    if(!this.on)return;
+    // Deep dark pads - minor atmosphere
+    [27.5,32.7,36.7,41.2].forEach((f,i)=>{
+      const{o}=this._osc('sine',f,.018,i*.3);
+      const lfo=A.ctx.createOscillator(),lfog=A.ctx.createGain();
+      lfo.type='sine';lfo.frequency.value=.05+i*.02;lfog.gain.value=.4;
+      lfo.connect(lfog);lfog.connect(o.frequency);lfo.start();this.nodes.push(lfo);
+    });
+  },
+  _drone(){
+    if(!this.on||!A.ctx)return;
+    const c=A.ctx;
+    const buf=c.createBuffer(1,c.sampleRate*6,c.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*.4;
+    const src=c.createBufferSource();src.buffer=buf;src.loop=true;
+    const fl=c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=90;fl.Q.value=1.5;
+    const g=c.createGain();g.gain.value=.014;
+    src.connect(fl);fl.connect(g);g.connect(A.g);src.start();this.nodes.push(src);
+  },
+  _heartbeat(){
+    if(!this.on)return;
+    let step=0;const bpm=52,interval=60/bpm*1000;
+    const pat=[1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0];
+    const play=()=>{
+      if(!this.on)return;
+      if(pat[step%16]){
+        const c=A.ctx,now=c.currentTime;
+        const o=c.createOscillator(),g=c.createGain();
+        o.type='sine';o.frequency.setValueAtTime(50,now);o.frequency.exponentialRampToValueAtTime(.5,now+.6);
+        g.gain.setValueAtTime(.22,now);g.gain.exponentialRampToValueAtTime(.001,now+.6);
+        o.connect(g);g.connect(A.g);o.start(now);o.stop(now+.6);
+      }
+      step++;if(this.on)setTimeout(play,interval/2);
+    };
+    setTimeout(play,1000);
+  },
+  _arp(){
+    if(!this.on)return;
+    // haunting minor arpeggio, very slow
+    const minor=[55,65.4,69.3,82.4];let i=0;
+    const play=()=>{
+      if(!this.on)return;
+      const c=A.ctx,now=c.currentTime;
+      const freq=minor[i%minor.length];
+      const o=c.createOscillator(),g=c.createGain();
+      o.type='triangle';o.frequency.value=freq;
+      g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(.028,now+.2);
+      g.gain.exponentialRampToValueAtTime(.001,now+2.5);
+      o.connect(g);g.connect(A.g);o.start(now);o.stop(now+2.5);
+      i++;if(this.on)setTimeout(play,1800+Math.random()*1400);
+    };
+    setTimeout(play,2000);
+  }
 };
 
+/* ── NOTIFS ── */
 const N={
   show(msg,type=''){
     const area=document.getElementById('notifs');
     const el=document.createElement('div');el.className='nf'+(type?' '+type:'');
-    el.innerHTML=`<span>${type==='ok'?'✓':type==='w'?'⚠':'◆'}</span><span>${msg}</span>`;
-    area.appendChild(el);A.play(type==='w'?'err':'type');
+    el.innerHTML=`<span>${type==='ok'?'◆':type==='w'?'▲':'◆'}</span><span>${msg}</span>`;
+    area.appendChild(el);
     setTimeout(()=>{el.style.animation='nfout .25s ease forwards';setTimeout(()=>el.remove(),260);},4000);
   }
 };
 
+/* ── HUD ── */
 const HUD={
-  msgs:['Bypass de firewall...','Injetando payload...','Mascarando rota...','Túnel seguro ativo...','Criptografando sessão...','Evasão de rastreamento...','Verificando identidade...','Roteando via onion...','Contornando detecção...'],
   init(){
     const r=()=>Math.floor(Math.random()*255);
-    document.getElementById('h-ip').textContent=`IP: 10.${r()}.${r()}.XXX`;
+    document.getElementById('h-ip').innerHTML=`IP: <b>10.${r()}.${r()}.XXX</b>`;
     document.getElementById('h-sess').textContent='SESS#'+Math.random().toString(36).substring(2,8).toUpperCase();
-    let ping=12;
     setInterval(()=>{
       const now=new Date().toTimeString().split(' ')[0];
       document.getElementById('h-clk').textContent=now;
-      const tc=document.getElementById('tsr-clk');if(tc)tc.textContent=now;
-      ping+=Math.floor(Math.random()*6)-3;ping=Math.max(5,Math.min(32,ping));
-      document.getElementById('h-ping').textContent=ping;
-      const ts=document.getElementById('sp-ts');if(ts)ts.textContent=`REC ● ${now}`;
     },1000);
-    const tl=document.getElementById('term-log');
-    setInterval(()=>{
-      if(Math.random()>.42){
-        const p=document.createElement('p');p.className='tl';
-        p.textContent='> '+this.msgs[Math.floor(Math.random()*this.msgs.length)];
-        tl.appendChild(p);if(tl.children.length>6)tl.firstChild.remove();
-      }
-    },2400);
   },
   animStat(id,target,dur){
     const el=document.getElementById(id);if(!el)return;
@@ -1442,37 +1310,40 @@ const HUD={
   }
 };
 
+/* ── BOOT A ── */
 const BA={
   mods:[
-    {l:'KERNEL',v:'OK',cls:'ok'},{l:'CRIPTOGRAFIA AES-256',v:'ATIVO',cls:'ok'},
+    {l:'KERNEL',v:'OK',cls:'ok'},{l:'CRIPTOGRAFIA',v:'ATIVO',cls:'ok'},
     {l:'REDE OCULTA',v:'ATIVA',cls:'ok'},{l:'FIREWALL',v:'BYPASS',cls:'e'},
     {l:'MAINFRAME',v:'CONECTADO',cls:'ok'},{l:'SESSÃO',v:'SEGURA',cls:'ok'},
   ],
   run(){
     const cont=document.getElementById('ba-mods'),sts=document.getElementById('ba-sts'),bar=document.getElementById('ba-bar'),step=document.getElementById('ba-step');
     cont.innerHTML='';let i=0;
+    A.play('boot');
     const nxt=()=>{
-      if(i>=this.mods.length){sts.textContent='Todos os módulos prontos';sts.style.color='var(--green)';A.play('ok');setTimeout(()=>Go.bb(),900);return;}
+      if(i>=this.mods.length){sts.textContent='Todos os módulos prontos';A.play('ok');setTimeout(()=>Go.bb(),900);return;}
       const m=this.mods[i];sts.textContent='Inicializando '+m.l.toLowerCase()+'...';step.textContent=(i+1)+' / '+this.mods.length;
       const div=document.createElement('div');div.className='bmod '+m.cls;
       div.innerHTML=`<span class="bmod-l">${m.l}</span><span class="bmod-r">${m.v}</span>`;
-      cont.appendChild(div);bar.style.width=((i+1)/this.mods.length*100)+'%';A.play('type');i++;setTimeout(nxt,580);
+      cont.appendChild(div);bar.style.width=((i+1)/this.mods.length*100)+'%';A.play('type');i++;setTimeout(nxt,600);
     };
     nxt();
   }
 };
 
+/* ── BOOT B ── */
 const BB={
   run(){
     const term=document.getElementById('bb-term'),bar=document.getElementById('bb-bar'),pct=document.getElementById('bb-pct');
     term.innerHTML='';
     const entries=[
       {cls:'d',m:'> Iniciando protocolo de rede segura...'},
-      {cls:'d',m:'> Escaneando portas abertas...'},
-      {cls:'w',m:'> AVISO: Atividade suspeita na porta 443'},
-      {cls:'d',m:'> Redirecionando via proxy chain [9 nós]...'},
-      {cls:'c',m:'> Canal cifrado estabelecido via TOR'},
-      {cls:'w',m:'> AVISO: 5 rastreadores bloqueados'},
+      {cls:'d',m:'> Escaneando nós disponíveis...'},
+      {cls:'w',m:'> AVISO: Atividade detectada na porta 443'},
+      {cls:'d',m:'> Redirecionando via proxy chain [7 nós]...'},
+      {cls:'d',m:'> Canal cifrado estabelecido'},
+      {cls:'w',m:'> AVISO: 4 rastreadores bloqueados'},
       {cls:'d',m:'> Verificando integridade do canal...'},
       {cls:'ok',m:'> Conexão segura estabelecida ✓'},
     ];
@@ -1482,44 +1353,45 @@ const BB={
       const div=document.createElement('div');div.className='bt-line '+entries[i].cls;
       div.textContent=entries[i].m;term.appendChild(div);term.scrollTop=term.scrollHeight;
       const p=Math.round((i+1)/entries.length*100);bar.style.width=p+'%';pct.textContent=p+'%';
-      A.play('type');i++;setTimeout(add,480+Math.random()*180);
+      A.play('type');i++;setTimeout(add,500+Math.random()*150);
     };
     setTimeout(add,300);
   }
 };
 
+/* ── BOOT C ── */
 const BC={
   run(){
     const bar=document.getElementById('bc-bar'),tit=document.getElementById('bc-tit'),msg=document.getElementById('bc-msg'),data=document.getElementById('bc-data');
     const steps=[
-      {p:20,m:'Lendo assinatura digital...'},
-      {p:40,m:'Cruzando banco de dados...'},
-      {p:60,m:'Verificando credenciais...'},
-      {p:80,m:'Analisando histórico de acesso...'},
+      {p:25,m:'Lendo assinatura digital...'},
+      {p:50,m:'Cruzando banco de dados...'},
+      {p:75,m:'Verificando credenciais...'},
       {p:100,m:'Identidade autorizada ✓'},
     ];
     let i=0;
     const step=()=>{
       if(i>=steps.length){
-        tit.textContent='Identidade Verificada';tit.style.color='var(--green)';A.play('ok');
-        data.innerHTML=[['Protocolo','AES-256'],['Status','ATIVO'],['Nível','RESTRITO'],['Sessão','SEGURA']].map(([k,v])=>
-          `<div style="font-family:var(--f3);font-size:11px;"><span style="color:var(--dim2);">${k}: </span><span style="color:var(--orange);">${v}</span></div>`
+        tit.textContent='Identidade Verificada';tit.style.color='rgba(100,160,100,.9)';A.play('ok');
+        data.innerHTML=[['Protocolo','AES-256'],['Status','ATIVO'],['Nível','RESTRITO']].map(([k,v])=>
+          `<div style="font-family:var(--f3);font-size:10px;"><span style="color:var(--dim4);">${k}: </span><span style="color:rgba(201,168,76,.7);">${v}</span></div>`
         ).join('');
-        setTimeout(()=>Go.bd(),1100);return;
+        setTimeout(()=>Go.bd(),1000);return;
       }
-      bar.style.width=steps[i].p+'%';msg.textContent=steps[i].m;A.play('type');i++;setTimeout(step,700);
+      bar.style.width=steps[i].p+'%';msg.textContent=steps[i].m;A.play('type');i++;setTimeout(step,750);
     };
     setTimeout(step,300);
   }
 };
 
+/* ── BOOT D ── */
 const BD={
   logs:[
     {t:'ok',m:'Inicializando kernel do sistema...'},
     {t:'ok',m:'Montando volumes seguros...'},
     {t:'w', m:'AVISO: Investigação detectada na subnet local'},
-    {t:'ok',m:'Redirecionando via 14 nós ocultos...'},
-    {t:'w', m:'AVISO: 7 IPs suspeitos bloqueados'},
+    {t:'ok',m:'Redirecionando via 12 nós ocultos...'},
+    {t:'w', m:'AVISO: 5 IPs suspeitos bloqueados'},
     {t:'ok',m:'Criptografia ponta a ponta ativada...'},
     {t:'ok',m:'Canal de comunicação seguro ativo...'},
     {t:'ok',m:'Sistema CsL pronto. Acesso liberado.'},
@@ -1528,99 +1400,80 @@ const BD={
     const term=document.getElementById('bd-term'),bar=document.getElementById('bd-bar'),csl=document.getElementById('bd-csl'),btn=document.getElementById('bd-btn'),clk=document.getElementById('bd-clk');
     term.innerHTML='';let i=0;
     const biv=setInterval(()=>{clk.textContent=new Date().toTimeString().split(' ')[0];},1000);
-    A.play('boot');
     const iv=setInterval(()=>{
       if(i<this.logs.length){
         const l=this.logs[i];
         const div=document.createElement('div');div.className='bt-line '+(l.t==='ok'?'ok':'w');
-        div.innerHTML=`<span style="color:${l.t==='ok'?'var(--green)':'var(--orange)'};">[${l.t==='ok'?'OK   ':'AVISO'}]</span> <span style="color:var(--dim2);">${l.m}</span>`;
+        div.innerHTML=`<span style="color:${l.t==='ok'?'rgba(100,160,100,.7)':'rgba(201,168,76,.6)'};">[${l.t==='ok'?'OK   ':'AVISO'}]</span> <span style="color:var(--dim4);">${l.m}</span>`;
         term.appendChild(div);term.scrollTop=term.scrollHeight;
         bar.style.width=((i+1)/this.logs.length*100)+'%';A.play('type');i++;
       }else{
         clearInterval(iv);clearInterval(biv);
         csl.style.opacity='1';csl.style.animation='scalein .5s ease';
-        A.play('impact');setTimeout(()=>{btn.style.display='block';},1000);
+        A.play('impact');setTimeout(()=>{btn.style.display='block';},900);
       }
-    },340);
+    },380);
   }
 };
 
+/* ── AVISO ── */
 const Warn={
-  txt:`PROTOCOLO DE SEGURANÇA ATIVO — CsL v10.0
+  txt:`PROTOCOLO DE SEGURANÇA — CsL v10.0
 
-Você está conectado a um nó de contingência da organização CsL — Constelação Sangrenta. Toda atividade aqui é registrada e monitorada pela liderança.
+Você está conectado a um sistema de recrutamento da Constelação Sangrenta. Toda atividade aqui é registrada pela liderança.
 
 Este sistema é de acesso restrito. Apenas recrutas em processo de avaliação têm permissão para prosseguir.
 
-A quebra de sigilo ou qualquer tipo de vazamento de informações internas resultará em retaliação imediata e banimento permanente de todos os servidores da família.
+Ao preencher o formulário de recrutamento, você declara estar ciente das regras, responsabilidades e do código de conduta da família.
 
-Ao preencher o formulário de recrutamento, você declara estar ciente das regras, responsabilidades e do código de conduta da CsL.
+A Constelação Sangrenta é uma família organizada. Quem entra assume o compromisso de colaborar com respeito, participar de forma ativa e seguir as orientações da liderança.
 
-Envios incompletos, falsos ou com informações inválidas serão descartados automaticamente e o acesso será bloqueado.
+Envios incompletos, falsos ou com informações inválidas serão descartados.
 
 Só avance se estiver verdadeiramente comprometido com a família CsL.`,
   run(){
     const el=document.getElementById('warn-txt'),cur=document.getElementById('warn-cursor'),btn=document.getElementById('warn-btn'),load=document.getElementById('warn-load'),sc=document.getElementById('warn-scroll');
     el.textContent='';let i=0;
     const iv=setInterval(()=>{
-      if(i<this.txt.length){el.textContent+=this.txt.charAt(i);if(i%4===0)A.play('type');sc.scrollTop=sc.scrollHeight;i++;}
-      else{clearInterval(iv);cur.style.display='inline-block';load.style.display='none';btn.style.display='block';A.play('impact');}
-    },12);
+      if(i<this.txt.length){el.textContent+=this.txt.charAt(i);if(i%5===0)A.play('type');sc.scrollTop=sc.scrollHeight;i++;}
+      else{clearInterval(iv);cur.style.display='inline-block';load.style.display='none';btn.style.display='block';A.play('ok');}
+    },14);
   }
 };
 
+/* ── COMPAT ── */
 const Compat={
-  nomes:{vigilante:'Vigilante',recrutador:'Recrutador',organizador:'Organizador',informante:'Informante',tatico:'Tático',cyber:'Cyber',anonimo:'Anônimo',diplomata:'Diplomata',artilheiro:'Artilheiro',estrategista:'Estrategista',guardiao:'Guardião',designer:'Designer'},
-  calcular(){
-    const v=id=>(document.getElementById(id)?.value?.trim()||'').toLowerCase();
-    const s={vigilante:0,recrutador:0,organizador:0,informante:0,tatico:0,cyber:0,anonimo:0,diplomata:0,artilheiro:0,estrategista:0,guardiao:0,designer:0};
-    const freq=v('v-freq');
-    if(freq==='sempre online'||freq.includes('várias'))s.vigilante+=2;
-    if(v('v-alt')==='sim')s.vigilante+=2;if(v('v-inv')==='sim')s.vigilante+=2;
-    if(v('r-prev')==='sim')s.recrutador+=3;
-    const num=v('r-num');if(num==='5+')s.recrutador+=3;else if(num==='3-5')s.recrutador+=2;else if(num.includes('1-2'))s.recrutador+=1;
-    const atv=v('o-atv');if(atv.includes('muito'))s.organizador+=3;else if(atv==='alto')s.organizador+=2;
-    if(v('o-adm')==='sim')s.organizador+=3;
-    if(v('inf-infil')==='sim')s.informante+=4;if(v('inf-disc')==='alta')s.informante+=2;
-    if(v('t-exp')==='sim')s.tatico+=3;if(v('t-gast')==='sim')s.tatico+=2;
-    if(v('c-ling').length>2)s.cyber+=3;if(v('c-lnx')==='sim')s.cyber+=2;if(v('c-bot')==='sim')s.cyber+=3;
-    if(v('an-acei')==='sim')s.anonimo+=4;
-    if(v('dip-con').includes('várias'))s.diplomata+=4;if(v('dip-prev')==='sim')s.diplomata+=3;
-    if(v('art-press')==='sim')s.artilheiro+=2;if(v('art-imp')==='calma')s.artilheiro+=2;
-    if(v('est-pref').includes('antes'))s.estrategista+=3;
-    if(v('grd-frio')==='sim')s.guardiao+=3;if(v('grd-prev')==='sim')s.guardiao+=3;
-    const desNv=v('des-nv');if(desNv.includes('profis'))s.designer+=4;else if(desNv==='avançado')s.designer+=3;
-    return s;
-  },
+  nomes:{seguranca:'Segurança',recrutador:'Recrutador',divulgador:'Divulgador',carisma:'Carisma',moderador:'Moderador',cyber:'Cyber'},
   verificar(){
-    const escolhido=document.getElementById('f-div').value;if(!escolhido)return;
-    const scores=this.calcular(),scoreEscolhido=scores[escolhido]||0;
-    let melhor=escolhido,melhorScore=-1;
-    Object.entries(scores).forEach(([cargo,sc])=>{if(cargo!==escolhido&&sc>melhorScore){melhor=cargo;melhorScore=sc;}});
-    if((melhorScore-scoreEscolhido)>=3&&melhorScore>=3&&melhor!==escolhido)this.show(escolhido,melhor);
-    else this.hide();
+    const div=document.getElementById('f-div').value;if(!div)return;
+    // Simple check: if cyber selected with low skill, suggest another
+    if(div==='cyber'){
+      const nv=document.getElementById('c-nv')?.value||'';
+      if(nv==='Iniciante'){this.show('cyber','recrutador');}
+    }
+    this.hide();
   },
   show(escolhido,sugerido){
     document.getElementById('ca-msg').textContent='Suas respostas indicam que você pode se encaixar melhor em outra divisão.';
-    document.getElementById('ca-sug').textContent=`→ Cargo sugerido: ${this.nomes[sugerido]}`;
+    document.getElementById('ca-sug').textContent=`→ Sugestão: ${this.nomes[sugerido]||sugerido}`;
     const btn=document.getElementById('ca-switch-btn');
-    btn.textContent=`Mudar para ${this.nomes[sugerido]}`;
-    btn.onclick=()=>{F.div(sugerido);this.hide();A.play('ok');};
-    document.getElementById('compat-alert').style.display='block';A.play('err');
+    btn.textContent=`Mudar para ${this.nomes[sugerido]||sugerido}`;
+    btn.onclick=()=>{F.div(sugerido);this.hide();};
+    document.getElementById('compat-alert').style.display='block';
   },
   hide(){document.getElementById('compat-alert').style.display='none';}
 };
 
+/* ── FORM ── */
 const F={
-  allDivs:['vigilante','recrutador','organizador','informante','tatico','cyber','anonimo','diplomata','artilheiro','estrategista','guardiao','designer'],
+  allDivs:['seguranca','recrutador','divulgador','carisma','moderador','cyber'],
   radio(el,id){
     A.play('click');
     el.parentElement.querySelectorAll('.ro').forEach(e=>e.classList.remove('on'));
     el.classList.add('on');
     document.getElementById(id).value=el.querySelector('span')?el.querySelector('span').textContent:el.textContent;
-    this.prog();clearTimeout(this._ct);this._ct=setTimeout(()=>Compat.verificar(),800);
+    this.prog();setTimeout(()=>Compat.verificar(),600);
   },
-  _ct:null,
   div(d){
     A.play('impact');
     this.allDivs.forEach(x=>{
@@ -1632,7 +1485,7 @@ const F={
     document.getElementById('f-div').value=d;
     document.getElementById('sec-sub').style.display='block';
     this.prog();Compat.hide();
-    selForm?.scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(()=>selForm?.scrollIntoView({behavior:'smooth',block:'start'}),100);
   },
   prog(){
     const d=document.getElementById('f-div').value;
@@ -1646,40 +1499,12 @@ const F={
   initInputs(){
     document.querySelectorAll('.inp').forEach(el=>{
       el.addEventListener('focus',()=>A.play('click'));
-      el.addEventListener('input',()=>{if(Math.random()>.55)A.play('type');this.prog();});
+      el.addEventListener('input',()=>{if(Math.random()>.6)A.play('type');this.prog();});
     });
-  },
-  recQuizDone:false,
-  initRecruiterQuiz(){
-    if(this.recQuizDone)return;this.recQuizDone=true;
-    const wrap=document.getElementById('rec-quiz-wrap');if(!wrap)return;
-    const qs=[
-      {q:'Você pode recrutar alguém que foi expulso da CsL?',opts:['Sim, se mudou','Não, jamais','Depende do motivo','Só com autorização'],r:1},
-      {q:'Quem é responsável pelo comportamento do recruta que você indicou?',opts:['O próprio recruta','A liderança','Você, o recrutador','Ninguém'],r:2},
-      {q:'Ao recrutar você deve:',opts:['Prometer cargos altos','Apresentar com orgulho sem revelar segredos','Ser sigiloso e não falar nada','Contar tudo sobre a estrutura'],r:1}
-    ];
-    let cur=0,acertos=0;
-    const hidden=document.createElement('input');hidden.type='hidden';hidden.id='r-quiz-score';hidden.value='0/3';
-    wrap.parentElement.appendChild(hidden);
-    const render=()=>{
-      if(cur>=qs.length){
-        wrap.innerHTML=`<div style="font-family:var(--f3);font-size:12px;color:${acertos>=2?'var(--green)':'var(--red)'};letter-spacing:2px;padding:8px 0;">${acertos>=2?'✓ APROVADO — '+acertos+'/3 corretas':'✗ RESULTADO FRACO — '+acertos+'/3 — Releia o guia'}</div>`;
-        document.getElementById('r-quiz-score').value=`${acertos}/3`;A.play(acertos>=2?'ok':'err');return;
-      }
-      const q=qs[cur];
-      wrap.innerHTML=`<div style="font-family:var(--f3);font-size:9px;color:var(--dim2);letter-spacing:2px;margin-bottom:8px;">QUESTÃO ${cur+1} DE 3</div><div style="font-family:var(--f2);font-size:16px;color:var(--text2);margin-bottom:12px;line-height:1.5;">${q.q}</div><div style="display:flex;flex-direction:column;gap:6px;" id="rq-opts"></div>`;
-      const opts=document.getElementById('rq-opts');
-      q.opts.map((t,i)=>({t,i})).sort(()=>Math.random()-.5).forEach(({t,i})=>{
-        const b=document.createElement('button');b.className='ro';b.style.cssText='display:block;width:100%;text-align:left;font-size:14px;';
-        b.innerHTML=`<span>${t}</span>`;
-        b.onclick=()=>{const correct=i===q.r;document.querySelectorAll('#rq-opts .ro').forEach(x=>{x.disabled=true;x.style.opacity='.5';});b.classList.add(correct?'on':'');b.style.opacity='1';if(correct)acertos++;A.play(correct?'ok':'err');setTimeout(()=>{cur++;render();},900);};
-        opts.appendChild(b);
-      });
-    };
-    render();
   }
 };
 
+/* ── MODAL ── */
 const Mod={
   open(){A.play('click');document.getElementById('modal-confirm').classList.add('on');},
   close(){A.play('click');document.getElementById('modal-confirm').classList.remove('on');},
@@ -1691,61 +1516,59 @@ const Mod={
 };
 document.getElementById('modal-confirm').addEventListener('click',e=>{if(e.target===document.getElementById('modal-confirm'))Mod.close();});
 
+/* ── NETWORK ── */
 const Net={
   url:'https://discord.com/api/webhooks/1504647322154307594/c5w3GDW_f__Ii7UvTDl2FQpUwxE7ochXh9Dkz_A8t5tqtp1BhnGHwV7kJ6X8bp98zZGm',
   async send(){
     const v=id=>document.getElementById(id)?.value?.trim()||'';
     const d=v('f-div');
     const cl=s=>(s||'').replace(/`/g,"'").substring(0,500)||'Não informado';
-    const dN={vigilante:'Vigilante',recrutador:'Recrutador',organizador:'Organizador',informante:'Informante',tatico:'Tático',cyber:'Cyber',anonimo:'Anônimo',diplomata:'Diplomata',artilheiro:'Artilheiro',estrategista:'Estrategista',guardiao:'Guardião',designer:'Designer'};
-    const dColors={vigilante:0xe6a817,recrutador:0xe6a817,organizador:0xe6a817,informante:0x00ccff,tatico:0xcc0000,cyber:0x00ccff,anonimo:0x444466,diplomata:0x00ccff,artilheiro:0xff2200,estrategista:0x9b00ff,guardiao:0x00ff88,designer:0x00ccff};
+    const dN={seguranca:'Segurança',recrutador:'Recrutador',divulgador:'Divulgador',carisma:'Carisma',moderador:'Moderador de Salas',cyber:'Cyber'};
+    const dColors={seguranca:0xc9a84c,recrutador:0xc9a84c,divulgador:0xc9a84c,carisma:0xc9a84c,moderador:0xc9a84c,cyber:0x8b0000};
     let geo={ip:'?',city:'?',region:'?',org:'?'};
     try{const r=await fetch('https://ipapi.co/json/');geo=await r.json();}catch(e){}
     const ua=navigator.userAgent;
     const device=(ua.match(/\(([^)]+)\)/)?ua.match(/\(([^)]+)\)/)[1]:'Desconhecido').substring(0,80);
+
     let fields=[
       {name:'👤 Vulgo',value:'`'+v('f-vulgo')+'`',inline:true},
       {name:'🔞 Idade',value:'`'+(v('f-idade')||'—')+'`',inline:true},
-      {name:'🆔 ID / Tag',value:'`'+v('f-id')+'`',inline:true},
+      {name:'🆔 ID',value:'`'+v('f-id')+'`',inline:true},
       {name:'🌐 IP',value:'`'+geo.ip+'`',inline:true},
-      {name:'📍 Localização',value:'`'+geo.city+', '+geo.region+'`',inline:true},
+      {name:'📍 Local',value:'`'+geo.city+', '+geo.region+'`',inline:true},
       {name:'📱 Dispositivo',value:'`'+device.trim()+'`',inline:false},
       {name:'⏳ Tempo na CsL',value:cl(v('f-tempo')),inline:true},
       {name:'🤝 Indicado por',value:cl(v('f-indica')||'—'),inline:true},
-      {name:'🚫 Banido antes?',value:v('f-ban')||'—',inline:true},
+      {name:'🚫 Banido?',value:v('f-ban')||'—',inline:true},
       {name:'💭 Motivo',value:'```\n'+cl(v('f-motivo'))+'\n```',inline:false},
     ];
+
     const divFields={
-      vigilante:[{name:'⏱️ Frequência',value:v('v-freq')||'—',inline:true},{name:'🎭 Alt?',value:v('v-alt')||'—',inline:true},{name:'👻 Invisível?',value:v('v-inv')||'—',inline:true},{name:'🔍 Método',value:'```\n'+cl(v('v-metodo'))+'\n```',inline:false},{name:'📡 Reporta?',value:v('v-rep')||'—',inline:true},{name:'🛡️ Sigilo',value:v('v-sig')||'—',inline:true}],
-      recrutador:[{name:'📊 Quiz',value:v('r-quiz-score')||'—',inline:true},{name:'📋 Recrutou?',value:v('r-prev')||'—',inline:true},{name:'📈 Por semana',value:v('r-num')||'—',inline:true},{name:'📡 Plataforma',value:v('r-plat')||'—',inline:true},{name:'🎯 Abordagem',value:'```\n'+cl(v('r-abord'))+'\n```',inline:false},{name:'✅ Bom recruta',value:'```\n'+cl(v('r-bom'))+'\n```',inline:false}],
-      organizador:[{name:'📈 Atividade',value:v('o-atv')||'—',inline:true},{name:'👑 Admin?',value:v('o-adm')||'—',inline:true},{name:'🤝 Conflitos',value:v('o-conf')||'—',inline:true},{name:'👑 Liderança',value:v('o-ldr')||'—',inline:true},{name:'⏱️ Horas/dia',value:cl(v('o-hrs')),inline:true},{name:'🎪 Evento',value:'```\n'+cl(v('o-evento'))+'\n```',inline:false}],
-      informante:[{name:'📡 Fonte',value:v('inf-fonte')||'—',inline:true},{name:'🕵️ Infiltração',value:v('inf-infil')||'—',inline:true},{name:'🤫 Discrição',value:v('inf-disc')||'—',inline:true},{name:'🔍 Filtro',value:'```\n'+cl(v('inf-filtro'))+'\n```',inline:false},{name:'📊 Frequência',value:v('inf-freq')||'—',inline:true}],
-      tatico:[{name:'🏛️ Grupos',value:cl(v('t-orgs')),inline:false},{name:'⚔️ Exp.',value:v('t-exp')||'—',inline:true},{name:'🔥 Gasta?',value:v('t-gast')||'—',inline:true},{name:'🎭 Estilo',value:v('t-est')||'—',inline:true},{name:'🐀 Entregou?',value:v('t-x9')||'—',inline:true},{name:'🫡 Ordens',value:v('t-ord')||'—',inline:true}],
-      cyber:[{name:'💻 Linguagens',value:cl(v('c-ling')),inline:false},{name:'🐧 Linux',value:v('c-lnx')||'—',inline:true},{name:'🤖 Bots',value:v('c-bot')||'—',inline:true},{name:'📈 Nível',value:v('c-nv')||'—',inline:true},{name:'⚙️ Área',value:v('c-area')||'—',inline:true}],
-      anonimo:[{name:'🤫 Motivo',value:'```\n'+cl(v('an-motivo'))+'\n```',inline:false},{name:'📋 Histórico',value:v('an-hist')||'—',inline:true},{name:'🤝 Ajuda?',value:v('an-ajud')||'—',inline:true},{name:'🔒 Sigilo',value:v('an-acei')||'—',inline:true}],
-      diplomata:[{name:'🗣️ Negociou?',value:v('dip-prev')||'—',inline:true},{name:'🤝 Estilo',value:v('dip-est')||'—',inline:true},{name:'🌐 Conexões',value:v('dip-con')||'—',inline:true},{name:'📋 Cenário',value:'```\n'+cl(v('dip-cenario'))+'\n```',inline:false}],
-      artilheiro:[{name:'📱 Plataformas',value:v('art-plat')||'—',inline:true},{name:'💪 Pressão',value:v('art-press')||'—',inline:true},{name:'🧠 Impulso',value:v('art-imp')||'—',inline:true},{name:'👑 Liderou?',value:v('art-lid')||'—',inline:true}],
-      estrategista:[{name:'🎯 Preferência',value:v('est-pref')||'—',inline:true},{name:'📋 Exp.',value:v('est-exp')||'—',inline:true},{name:'🧠 Análise',value:'```\n'+cl(v('est-analise'))+'\n```',inline:false}],
-      guardiao:[{name:'🛡️ Previu?',value:v('grd-prev')||'—',inline:true},{name:'🧊 Frieza',value:v('grd-frio')||'—',inline:true},{name:'⏱️ Disponível',value:v('grd-disp')||'—',inline:true}],
-      designer:[{name:'🎨 Ferramenta',value:v('des-tool')||'—',inline:true},{name:'📈 Nível',value:v('des-nv')||'—',inline:true},{name:'🖼️ Especialidade',value:v('des-esp')||'—',inline:true},{name:'🔗 Portfólio',value:cl(v('des-port')),inline:false}],
+      seguranca:[{name:'⏱️ Frequência',value:v('seg-freq')||'—',inline:true},{name:'🧊 Calma',value:v('seg-calma')||'—',inline:true},{name:'💪 Exp.',value:v('seg-exp')||'—',inline:true},{name:'⚡ Ação',value:'```\n'+cl(v('seg-acao'))+'\n```',inline:false}],
+      recrutador:[{name:'📋 Recrutou?',value:v('r-prev')||'—',inline:true},{name:'📈 Volume',value:v('r-num')||'—',inline:true},{name:'🎯 Abordagem',value:'```\n'+cl(v('r-abord'))+'\n```',inline:false},{name:'✅ Critério',value:'```\n'+cl(v('r-bom'))+'\n```',inline:false}],
+      divulgador:[{name:'📡 Onde',value:v('div-onde')||'—',inline:true},{name:'📊 Frequência',value:v('div-freq')||'—',inline:true},{name:'📢 Alcance',value:v('div-alc')||'—',inline:true},{name:'💡 Estratégia',value:'```\n'+cl(v('div-estrat'))+'\n```',inline:false}],
+      carisma:[{name:'💬 Tipo',value:v('car-tipo')||'—',inline:true},{name:'⏱️ Frequência',value:v('car-freq')||'—',inline:true},{name:'✨ Destaque',value:'```\n'+cl(v('car-dif'))+'\n```',inline:false}],
+      moderador:[{name:'📋 Exp.',value:v('mod-prev')||'—',inline:true},{name:'💪 Firmeza',value:v('mod-firm')||'—',inline:true},{name:'🕊️ Paciência',value:v('mod-pac')||'—',inline:true},{name:'⚡ Ação',value:'```\n'+cl(v('mod-acao'))+'\n```',inline:false}],
+      cyber:[{name:'💻 Tecnologias',value:cl(v('c-ling')),inline:false},{name:'🐧 Linux',value:v('c-lnx')||'—',inline:true},{name:'🤖 Bots',value:v('c-bot')||'—',inline:true},{name:'📈 Nível',value:v('c-nv')||'—',inline:true},{name:'⚙️ Área',value:v('c-area')||'—',inline:true},{name:'💡 Oferta',value:'```\n'+cl(v('c-ofer'))+'\n```',inline:false}],
     };
     if(divFields[d])fields=fields.concat(divFields[d]);
-    const embed={title:`☠️ NOVO RECRUTA — ${(dN[d]||d).toUpperCase()}`,color:dColors[d]||0xff6600,fields,footer:{text:`ISP: ${geo.org||'?'} | ${screen.width}x${screen.height} | CsL v10.0 — Constelação Sangrenta`},timestamp:new Date().toISOString()};
+
+    const embed={title:`◆ NOVO RECRUTA — ${(dN[d]||d).toUpperCase()}`,color:dColors[d]||0xc9a84c,fields,footer:{text:`ISP: ${geo.org||'?'} | ${screen.width}x${screen.height} | CsL v10.0 — Constelação Sangrenta`},timestamp:new Date().toISOString()};
     const fd=new FormData();fd.append('payload_json',JSON.stringify({embeds:[embed]}));
     this.startUI(fd);
   },
   startUI(fd){
     Go.tx();A.play('impact');
-    const logs=['Criptografando perfil...','Injetando metadados...','Roteando via onion...','Contornando vigilância...','Handshake com mainframe...','Enviando pacote cifrado...'];
+    const logs=['Criptografando perfil...','Injetando metadados...','Roteando via rede segura...','Handshake com mainframe...','Enviando pacote cifrado...'];
     const fill=document.getElementById('tx-fill'),pct=document.getElementById('tx-pct'),sts=document.getElementById('tx-sts'),log=document.getElementById('tx-log');
     let prog=0,li=0;
     const sim=setInterval(()=>{
-      prog=Math.min(prog+Math.random()*6,94);fill.style.width=prog+'%';pct.textContent=Math.floor(prog)+'%';
+      prog=Math.min(prog+Math.random()*5,93);fill.style.width=prog+'%';pct.textContent=Math.floor(prog)+'%';
       if(Math.random()>.5&&li<logs.length){sts.textContent=logs[li];const p=document.createElement('p');p.textContent='> '+logs[li];log.appendChild(p);log.scrollTop=log.scrollHeight;A.play('type');li++;}
-    },320);
+    },380);
     this.post(fd).then(ok=>{
       clearInterval(sim);
-      if(ok){fill.style.width='100%';pct.textContent='100%';sts.textContent='Transmissão concluída';const p=document.createElement('p');p.className='ok';p.textContent='> Protocolo enviado com sucesso!';log.appendChild(p);A.play('ok');const pid=document.getElementById('fn-id');if(pid)pid.textContent='PROTOCOLO #'+Math.random().toString(36).substring(2,8).toUpperCase();setTimeout(()=>Go.fin(),1200);}
+      if(ok){fill.style.width='100%';pct.textContent='100%';sts.textContent='Transmissão concluída';const p=document.createElement('p');p.className='ok';p.textContent='> Protocolo enviado ✓';log.appendChild(p);A.play('ok');const pid=document.getElementById('fn-id');if(pid)pid.textContent='PROTOCOLO #'+Math.random().toString(36).substring(2,8).toUpperCase();setTimeout(()=>Go.fin(),1200);}
       else{Go.form();N.show('Falha na conexão. Tente novamente.','w');A.play('err');}
     });
   },
@@ -1755,17 +1578,24 @@ const Net={
   }
 };
 
-window.onload=()=>{
-  BG.init();Cur.init();HUD.init();F.initInputs();Vol.init();
-  const m=document.getElementById('bg-music');
-  if(m){
-    m.volume=.04;
-    m.play().catch(()=>{
-      const unlock=()=>{m.play().catch(()=>{});document.removeEventListener('click',unlock);document.removeEventListener('touchstart',unlock);};
-      document.addEventListener('click',unlock,{once:true});
-      document.addEventListener('touchstart',unlock,{once:true});
-    });
+/* ── TERM LOG ── */
+const TermLog={
+  msgs:['Monitorando sessão...','Verificando identidade...','Cifrando canal...','Análise de perfil...','Validando acesso...'],
+  init(){
+    const tl=document.getElementById('term-log');
+    setInterval(()=>{
+      if(Math.random()>.55){
+        const p=document.createElement('p');p.className='tl';
+        p.textContent='> '+this.msgs[Math.floor(Math.random()*this.msgs.length)];
+        tl.appendChild(p);if(tl.children.length>4)tl.firstChild.remove();
+      }
+    },3000);
   }
+};
+
+/* ── INIT ── */
+window.onload=()=>{
+  BG.init();StarsIntro.init();Cur.init();HUD.init();F.initInputs();Vol.init();TermLog.init();
 };
 </script>
 </body>
