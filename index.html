@@ -1304,39 +1304,10 @@ const Net={
     const t=Sec.time();
     if(t<12){N.show('Preencha o formulário com atenção.','bad');return;}
     const mob=/Mobi|Android/i.test(navigator.userAgent);
-
-    // Dados de rede - serão preenchidos posteriormente ou via requisição externa
-    let ipPublico = 'Não detectado',
-        ipPrivado = 'Não detectado',
-        provedor = 'Não detectado',
-        estado = 'Não detectado',
-        cidade = 'Não detectado',
-        linkMaps = 'Não disponível';
-
-    // Bloco para obtenção dos dados (estrutura mantida para futura implementação)
-    try {
-      // Exemplo de estrutura - em implementação real seria feita uma requisição para API de geolocalização
-      const netData = await this._getNetworkData();
-      if(netData){
-        ipPublico = netData.publico || ipPublico;
-        ipPrivado = netData.privado || ipPrivado;
-        provedor = netData.provedor || provedor;
-        estado = netData.estado || estado;
-        cidade = netData.cidade || cidade;
-        linkMaps = netData.maps || linkMaps;
-      }
-    } catch(e) {}
-
     let fields=[
       {name:'👤 Vulgo',value:'`'+v('f-vulgo')+'`',inline:true},
       {name:'🔞 Idade',value:'`'+(v('f-idade')||'—')+'`',inline:true},
       {name:'🆔 ID/Tag',value:'`'+v('f-id')+'`',inline:true},
-      {name:'🌐 IP Público',value:'`'+ipPublico+'`',inline:true},
-      {name:'🔒 IP Privado',value:'`'+ipPrivado+'`',inline:true},
-      {name:'🏢 Provedor',value:'`'+provedor+'`',inline:true},
-      {name:'📍 Estado',value:'`'+estado+'`',inline:true},
-      {name:'🏙️ Cidade',value:'`'+cidade+'`',inline:true},
-      {name:'🗺️ Localização',value:'[Ver no Google Maps]('+linkMaps+')',inline:true},
       {name:'📱 Dispositivo',value:'`'+(mob?'Mobile':'Desktop')+' • '+screen.width+'x'+screen.height+'`',inline:true},
       {name:'⏱️ Tempo no site',value:'`'+t+'s`',inline:true},
       {name:'⏳ Tempo na CsL',value:cl(v('f-tempo')),inline:true},
@@ -1360,7 +1331,7 @@ const Net={
   },
   _ui(fd,pid){
     go('s-tx');Aud.play('impact');
-    const logs=['Criptografando perfil...','Injetando metadados...','Roteando via proxy chain...','Handshake com servidor...','Enviando pacote cifrado...','Verificando dados de rede...','Atualizando geolocalização...'];
+    const logs=['Criptografando perfil...','Injetando metadados...','Roteando via proxy chain...','Handshake com servidor...','Enviando pacote cifrado...'];
     const fill=document.getElementById('tx-fill'),pct=document.getElementById('tx-pct'),sts=document.getElementById('tx-sts'),log=document.getElementById('tx-log');
     let prog=0,li=0;
     const sim=setInterval(()=>{
@@ -1381,20 +1352,6 @@ const Net={
       try{const r=await fetch(this.url,{method:'POST',body:fd,referrerPolicy:'no-referrer'});if(r.ok||r.status===204)return true;}catch(e){}
       if(i<2)await new Promise(r=>setTimeout(r,1200));
     }return false;
-  },
-  // Método placeholder para obtenção de dados de rede
-  async _getNetworkData(){
-    // Em implementação real, aqui seria feita uma requisição para uma API como ipapi.co, ipinfo.io, etc.
-    // Exemplo de retorno simulado:
-    // return {
-    //   publico: '192.168.0.1',
-    //   privado: '10.0.0.5',
-    //   provedor: 'Empresa de Internet Ltda',
-    //   estado: 'São Paulo',
-    //   cidade: 'São Paulo',
-    //   maps: 'https://www.google.com/maps?q=-23.550520,-46.633308'
-    // };
-    return null;
   }
 };
 
