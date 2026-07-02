@@ -689,7 +689,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 ════════════════════════════════════════ */
 (()=>{
   const cv = document.getElementById('bgCanvas');
+  if(!cv){console.warn('[SC] bgCanvas element not found');return;}
   const cx = cv.getContext('2d');
+  if(!cx){console.warn('[SC] Could not get 2d canvas context');return;}
   let W,H;
   const resize=()=>{ W=cv.width=innerWidth; H=cv.height=innerHeight; };
   resize();
@@ -730,12 +732,14 @@ const fd={};
 
 function go(n){
   const prev=document.getElementById('s'+cur);
+  if(!prev){console.warn('[SC go] Screen element not found: s'+cur);return;}
   prev.classList.remove('active');
   prev.classList.add('out');
   setTimeout(()=>prev.classList.remove('out'),600);
   cur=n;
   setTimeout(()=>{
     const next=document.getElementById('s'+n);
+    if(!next){console.warn('[SC go] Screen element not found: s'+n);return;}
     next.classList.add('active');
     onEnter(n);
   },300);
@@ -767,6 +771,7 @@ function countdown(idx,total,ringId,numId,btnId){
   const ring=document.getElementById(ringId);
   const num=document.getElementById(numId);
   const btn=document.getElementById(btnId);
+  if(!ring||!num||!btn){console.warn('[SC countdown] Missing element(s):',{ringId:!!ring,numId:!!num,btnId:!!btn});return;}
   let rem=total;
   ring.style.strokeDashoffset='0';
   const t=setInterval(()=>{
@@ -842,6 +847,7 @@ function dots(active){
 ════════════════════════════════════════ */
 function ans(key,inputId,next){
   const el=document.getElementById(inputId);
+  if(!el){console.warn('[SC ans] Input element not found:',inputId);return;}
   const v=(el.value||'').trim();
   if(!v){
     el.classList.add('shake');
@@ -873,7 +879,9 @@ function dcRefuse(){fd.discord='RECUSOU';finish()}
    FINISH
 ════════════════════════════════════════ */
 function finish(){
-  document.getElementById('doneName').textContent=fd.name||'Candidato';
+  const nameEl=document.getElementById('doneName');
+  if(nameEl) nameEl.textContent=fd.name||'Candidato';
+  else console.warn('[SC finish] doneName element not found');
   go(12);
   console.log('Dados coletados:',fd);
 }
