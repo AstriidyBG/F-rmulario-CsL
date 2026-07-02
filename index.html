@@ -12,10 +12,10 @@
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     
-    <title>Sombra Coletiva — Portal de Admissão</title>
+    <title>Portal de Admissão — Sombra Coletiva</title>
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-/jR5WcCH+yNIDQo+RN5rKasbNJ45NdlCVDm5Zm/vBt1p4xDcIIJrQvsqQIWOmW4FFwcHvo+Zcj8NSmzweUzNAw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     
     <!-- Stylesheet -->
@@ -25,29 +25,184 @@
     <!-- Canvas Background -->
     <canvas id="bgCanvas" aria-hidden="true"></canvas>
     
-    <!-- Top Bar Decoration -->
-    <div class="top-bar" aria-hidden="true"></div>
+    <!-- Animated Grid Background -->
+    <div class="grid-bg" aria-hidden="true"></div>
     
-    <!-- Corner Decorations -->
-    <div class="corner c-tl" aria-hidden="true"></div>
-    <div class="corner c-tr" aria-hidden="true"></div>
-    <div class="corner c-bl" aria-hidden="true"></div>
-    <div class="corner c-br" aria-hidden="true"></div>
+    <!-- Top Line Accent -->
+    <div class="top-line" aria-hidden="true"></div>
     
-    <!-- Theme Picker -->
-    <button id="themeBtn" class="theme-btn" aria-label="Abrir menu de temas" title="Selecione um tema visual">
-        <i class="fas fa-palette"></i> TEMA
-    </button>
-    <nav id="themeMenu" class="theme-menu" role="menu" aria-label="Menu de temas">
-        <button class="theme-option" data-theme="red" role="menuitem" title="Tema Sangue">◈ SANGUE</button>
-        <button class="theme-option" data-theme="purple" role="menuitem" title="Tema Sombra">◈ SOMBRA</button>
-        <button class="theme-option" data-theme="blue" role="menuitem" title="Tema Cyber">◈ CYBER</button>
-        <button class="theme-option" data-theme="green" role="menuitem" title="Tema Matrix">◈ MATRIX</button>
-        <button class="theme-option" data-theme="gold" role="menuitem" title="Tema Élite">◈ ÉLITE</button>
-    </nav>
-    
-    <!-- Progress Dots -->
-    <div id="dotBar" class="dot-bar" aria-label="Progresso do formulário" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="8">
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Screen 0: Professional Splash -->
+        <div class="screen active" id="s0">
+            <div class="splash-content">
+                <!-- Logo/Badge -->
+                <div class="badge">
+                    <span class="badge-label">ACESSO RESTRITO</span>
+                </div>
+
+                <!-- Main Title -->
+                <h1 class="main-title">
+                    <span class="title-line">Sombra</span>
+                    <span class="title-line">Coletiva</span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="subtitle">Portal de Admissão</p>
+
+                <!-- Divider -->
+                <div class="divider"></div>
+
+                <!-- Description -->
+                <p class="description">
+                    Bem-vindo ao processo de seleção<br>
+                    Preencha o formulário para continuar
+                </p>
+
+                <!-- Loading Bar Animation -->
+                <div class="loading-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+
+                <!-- Start Button -->
+                <button class="cta-button" id="startBtn">
+                    <span>INICIAR</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <!-- Footer Info -->
+                <div class="footer-info">
+                    <p class="security-note">
+                        <i class="fas fa-lock"></i>
+                        Conexão segura • Dados criptografados
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 1: WARNING -->
+        <div class="screen" id="s1">
+            <div class="warn-box">
+                <div class="warn-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2>Aviso Importante</h2>
+                <p class="warn-text">
+                    Este é um ambiente de seleção restrito.<br>
+                    Apenas candidatos autorizados podem prosseguir.
+                </p>
+                <div class="divider"></div>
+                
+                <div class="button-group">
+                    <button class="btn-secondary" id="b1">PROSSEGUIR</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 2: MANIFESTO -->
+        <div class="screen scroll-screen" id="s2">
+            <div class="manifesto-container">
+                <h2 class="section-title">Nossos Princípios</h2>
+                
+                <div class="principles-grid">
+                    <div class="principle-card">
+                        <div class="principle-number">01</div>
+                        <h3>Excelência</h3>
+                        <p>Compromisso com os mais altos padrões de qualidade</p>
+                    </div>
+                    <div class="principle-card">
+                        <div class="principle-number">02</div>
+                        <h3>Integridade</h3>
+                        <p>Transparência e honestidade em todas as ações</p>
+                    </div>
+                    <div class="principle-card">
+                        <div class="principle-number">03</div>
+                        <h3>Inovação</h3>
+                        <p>Pensamento criativo e busca contínua por melhoria</p>
+                    </div>
+                    <div class="principle-card">
+                        <div class="principle-number">04</div>
+                        <h3>Colaboração</h3>
+                        <p>Trabalho em equipe e respeito mútuo</p>
+                    </div>
+                </div>
+
+                <div class="divider" style="margin: 40px 0;"></div>
+
+                <button class="cta-button" id="b2" style="width: fit-content; margin: 0 auto; display: block;">
+                    <span>CONTINUAR</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen 3: LOADING -->
+        <div class="screen" id="s3">
+            <div class="loading-screen">
+                <div class="spinner"></div>
+                <h3 class="loading-text" id="loadingText">Inicializando...</h3>
+                <div class="dots-loader">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 4-9: Form Screens (Input Templates) -->
+        <!-- These will be inserted by JavaScript -->
+
+        <!-- Screen 10: Roles -->
+        <div class="screen scroll-screen" id="s10">
+            <div class="roles-container">
+                <h2 class="section-title">Selecione sua Função</h2>
+                <div class="roles-grid" id="rolesGrid"></div>
+                <button class="cta-button" id="roleConfirm" disabled style="width: fit-content; margin: 30px auto 0; display: block;">
+                    <span>CONFIRMAR</span>
+                    <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen 11: DISCORD -->
+        <div class="screen" id="s11">
+            <div class="discord-screen">
+                <h2>Próximo Passo</h2>
+                <p>Junte-se à nossa comunidade no Discord</p>
+                <div class="discord-card">
+                    <i class="fab fa-discord"></i>
+                    <h3>Servidor Official</h3>
+                </div>
+                <div class="button-group">
+                    <button class="btn-primary" id="dcAccept">
+                        <i class="fas fa-check"></i> ACEITAR
+                    </button>
+                    <button class="btn-secondary" id="dcRefuse">
+                        <i class="fas fa-times"></i> RECUSAR
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 12: SUCCESS -->
+        <div class="screen" id="s12">
+            <div class="success-screen">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Solicitação Enviada</h2>
+                <p class="success-message">Bem-vindo(a), <strong id="successName"></strong></p>
+                <p class="success-note">Você receberá um email em breve com os próximos passos</p>
+                <button class="btn-secondary" onclick="location.reload()">REINICIAR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-dots" id="progressDots">
         <div class="dot" id="d0"></div>
         <div class="dot" id="d1"></div>
         <div class="dot" id="d2"></div>
@@ -57,330 +212,23 @@
         <div class="dot" id="d6"></div>
         <div class="dot" id="d7"></div>
     </div>
-    
-    <!-- SlayKitty SVG Template -->
-    <template id="skTpl">
-        <svg class="sk-char" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <!-- Cat ears -->
-            <path d="M58 85 L43 42 L75 74" fill="#0a0010" stroke="#6a006a" stroke-width="1.3"/>
-            <path d="M142 85 L157 42 L125 74" fill="#0a0010" stroke="#6a006a" stroke-width="1.3"/>
-            <path d="M59 83 L48 55 L70 72" fill="#4d0066" opacity=".65"/>
-            <path d="M141 83 L152 55 L130 72" fill="#4d0066" opacity=".65"/>
-            
-            <!-- Hair back -->
-            <ellipse cx="100" cy="100" rx="57" ry="62" fill="#0b000f"/>
-            
-            <!-- Face -->
-            <ellipse cx="100" cy="114" rx="46" ry="50" fill="#f4c09e"/>
-            
-            <!-- Hair front -->
-            <ellipse cx="100" cy="72" rx="56" ry="34" fill="#0b000f"/>
-            
-            <!-- Side hair strands -->
-            <path d="M53 84 Q42 128 46 162" stroke="#0b000f" stroke-width="23" stroke-linecap="round" fill="none"/>
-            <path d="M147 84 Q158 128 154 162" stroke="#0b000f" stroke-width="23" stroke-linecap="round" fill="none"/>
-            
-            <!-- Hair highlight -->
-            <path d="M76 62 Q97 54 110 59" stroke="#2d0040" stroke-width="3" stroke-linecap="round" opacity=".7"/>
-            <path d="M82 57 Q100 50 112 53" stroke="#3d0055" stroke-width="1.5" stroke-linecap="round" opacity=".4"/>
-            
-            <!-- Eyes -->
-            <ellipse cx="79" cy="116" rx="14.5" ry="15.5" fill="white"/>
-            <ellipse cx="79" cy="119" rx="10" ry="11" fill="#56008f"/>
-            <ellipse cx="79" cy="119" rx="6.5" ry="7" fill="#050005"/>
-            <circle cx="84" cy="113" r="3.2" fill="white"/>
-            <circle cx="77" cy="123" r="1.5" fill="white" opacity=".4"/>
-            
-            <ellipse cx="121" cy="116" rx="14.5" ry="15.5" fill="white"/>
-            <ellipse cx="121" cy="119" rx="10" ry="11" fill="#56008f"/>
-            <ellipse cx="121" cy="119" rx="6.5" ry="7" fill="#050005"/>
-            <circle cx="126" cy="113" r="3.2" fill="white"/>
-            <circle cx="119" cy="123" r="1.5" fill="white" opacity=".4"/>
-            
-            <!-- Blush and features -->
-            <ellipse cx="64" cy="130" rx="10" ry="5" fill="#ff9ca3" opacity=".38"/>
-            <ellipse cx="136" cy="130" rx="10" ry="5" fill="#ff9ca3" opacity=".38"/>
-            <path d="M96 137 Q100 141 104 137" stroke="#c07880" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-            
-            <!-- Neck and choker -->
-            <rect x="87" y="160" width="26" height="18" rx="4" fill="#f4c09e"/>
-            <rect x="80" y="158" width="40" height="8" rx="4" fill="#0a0010"/>
-            <circle cx="100" cy="162" r="3.5" fill="#8b0015"/>
-            
-            <!-- Body -->
-            <path d="M48 182 Q68 166 88 166 L100 177 L112 166 Q132 166 152 182 L158 268 L42 268 Z" fill="#090012"/>
-            <line x1="100" y1="182" x2="100" y2="268" stroke="#2d0040" stroke-width=".8" opacity=".6"/>
-            
-            <!-- Arms and hands -->
-            <path d="M50 182 Q29 188 26 228 Q26 248 38 255" stroke="#090012" stroke-width="23" stroke-linecap="round" fill="none"/>
-            <path d="M150 182 Q171 188 174 228 Q174 248 162 255" stroke="#090012" stroke-width="23" stroke-linecap="round" fill="none"/>
-            <ellipse cx="36" cy="257" rx="14" ry="11" fill="#f4c09e"/>
-            <ellipse cx="164" cy="257" rx="14" ry="11" fill="#f4c09e"/>
-            
-            <!-- Skirt -->
-            <path d="M42 256 Q46 310 60 322 L140 322 Q154 310 158 256 Z" fill="#0d0018"/>
-        </svg>
+
+    <!-- Form Templates (Hidden) -->
+    <template id="formScreen">
+        <div class="screen" id="formScreenPlaceholder">
+            <div class="form-container">
+                <h2 class="form-title" id="formTitle"></h2>
+                <form class="form-group" id="formElement">
+                    <input type="text" class="form-input" id="formInput" placeholder="Digite aqui..." required>
+                    <button type="submit" class="cta-button">
+                        <span>PRÓXIMO</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
     </template>
-    
-    <!-- Screen 0: Splash -->
-    <div class="screen active" id="s0">
-        <div class="splash-wrap">
-            <h1 class="sc-title" data-text="Sombra Coletiva">Sombra Coletiva</h1>
-            <p class="splash-tag">◈ PORTAL DE ADMISSÃO ◈</p>
-            <div class="cd-wrap" id="cd0">
-                <div class="cd-ring">
-                    <svg viewBox="0 0 82 82" aria-hidden="true">
-                        <circle class="r-bg" cx="41" cy="41" r="36"/>
-                        <circle class="r-fg" id="rf0" cx="41" cy="41" r="36" stroke-dasharray="226" stroke-dashoffset="0"/>
-                    </svg>
-                    <div class="cd-num" id="cn0">10</div>
-                </div>
-                <button class="btn btn-main hidden" id="b0">◈ CONTINUAR ◈</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 1: Warning -->
-    <div class="screen" id="s1">
-        <div class="warn-box">
-            <div class="warn-icon" aria-hidden="true">⚠</div>
-            <div class="hr-glow" aria-hidden="true"></div>
-            <p class="warn-text">
-                Calma... você sabe o que<br>
-                <em>nós fazemos</em> antes de<br>
-                entrar para a <em>família</em>?
-            </p>
-            <div class="hr-glow" aria-hidden="true"></div>
-            <div class="cd-wrap">
-                <div class="cd-ring">
-                    <svg viewBox="0 0 82 82" aria-hidden="true">
-                        <circle class="r-bg" cx="41" cy="41" r="36"/>
-                        <circle class="r-fg" id="rf1" cx="41" cy="41" r="36" stroke-dasharray="226" stroke-dashoffset="0"/>
-                    </svg>
-                    <div class="cd-num" id="cn1">5</div>
-                </div>
-                <button class="btn btn-main hidden" id="b1">◈ CONTINUAR ◈</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 2: Manifesto -->
-    <div class="screen scroll-screen" id="s2">
-        <div class="manifesto-box">
-            <div class="m-header">✨ ─── 🍷 • sombra coletiva • 🩸 ─── ✨</div>
-            <div class="m-crown">👑 PROPÓSITOS • SC</div>
-            <div class="m-line" id="ml0"><span class="m-ico">⚔️</span><span><strong>Combate:</strong> Aniquilar abusos e toxicidade virtual com precisão cirúrgica.</span></div>
-            <div class="m-line" id="ml1"><span class="m-ico">🔒</span><span><strong>Defesa:</strong> Preservar a privacidade e a integridade de cada membro.</span></div>
-            <div class="m-line" id="ml2"><span class="m-ico">👁️</span><span><strong>Exposição:</strong> Investigar e expor crimes cibernéticos.</span></div>
-            <div class="m-line" id="ml3"><span class="m-ico">🧠</span><span><strong>Inteligência:</strong> Avançar continuamente em conhecimento tecnológico.</span></div>
-            <div class="m-line" id="ml4"><span class="m-ico">🌐</span><span><strong>Soberania:</strong> Impor respeito absoluto no cenário digital.</span></div>
-            <div class="m-footer" id="mf">🔱 &nbsp; A ELITE PERMANECE INTOCÁVEL &nbsp; 🔱</div>
-            <div style="margin-top:44px">
-                <div class="cd-wrap">
-                    <div class="cd-ring">
-                        <svg viewBox="0 0 82 82" aria-hidden="true">
-                            <circle class="r-bg" cx="41" cy="41" r="36"/>
-                            <circle class="r-fg" id="rf2" cx="41" cy="41" r="36" stroke-dasharray="226" stroke-dashoffset="0"/>
-                        </svg>
-                        <div class="cd-num" id="cn2">20</div>
-                    </div>
-                    <button class="btn btn-main hidden" id="b2">◈ PROSSEGUIR ◈</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 3: Loading -->
-    <div class="screen" id="s3">
-        <div class="load-box">
-            <div class="loader-rig">
-                <div class="ld-ring ld-r1" aria-hidden="true"></div>
-                <div class="ld-ring ld-r2" aria-hidden="true"></div>
-                <div class="ld-ring ld-r3" aria-hidden="true"></div>
-                <div class="ld-ring ld-r4" aria-hidden="true"></div>
-                <div class="ld-core">SC</div>
-            </div>
-            <div class="ld-phase" id="ldPh">INICIALIZANDO SISTEMA...</div>
-            <div class="ld-bar-w"><div class="ld-bar" id="ldBar"></div></div>
-            <div class="ld-pct" id="ldPct">0%</div>
-        </div>
-    </div>
-    
-    <!-- Screen 4: Name Input -->
-    <div class="screen" id="s4">
-        <div class="sk-layout">
-            <div id="sk4"></div>
-            <div class="sk-panel">
-                <div class="bubble">
-                    <div class="bubble-name">✦ SLAYKTTY</div>
-                    <div class="bubble-text">Por favor, senhor(a)... digite o seu <strong>nome</strong>.</div>
-                </div>
-                <div class="sk-field">
-                    <input class="sk-input" id="i_name" type="text" placeholder="Seu nome ou vulgo..." maxlength="50" autocomplete="off" required>
-                </div>
-                <button class="btn btn-send" id="btn_name">→ ENVIAR</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 5: Age Input -->
-    <div class="screen" id="s5">
-        <div class="sk-layout">
-            <div id="sk5"></div>
-            <div class="sk-panel">
-                <div class="bubble">
-                    <div class="bubble-name">✦ SLAYKTTY</div>
-                    <div class="bubble-text">Por favor, senhor(a)... agora informe a sua <strong>idade</strong>.</div>
-                </div>
-                <div class="sk-field">
-                    <input class="sk-input" id="i_age" type="number" placeholder="Sua idade..." min="13" max="120" autocomplete="off" required>
-                </div>
-                <button class="btn btn-send" id="btn_age">→ ENVIAR</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 6: Recruiter Input -->
-    <div class="screen" id="s6">
-        <div class="sk-layout">
-            <div id="sk6"></div>
-            <div class="sk-panel">
-                <div class="bubble">
-                    <div class="bubble-name">✦ SLAYKTTY</div>
-                    <div class="bubble-text">Por favor, senhor(a)... <strong>quem te recrutou</strong>?</div>
-                </div>
-                <div class="sk-field">
-                    <input class="sk-input" id="i_rec" type="text" placeholder="Nome do recrutador..." autocomplete="off" maxlength="50">
-                </div>
-                <button class="btn btn-send" id="btn_rec">→ ENVIAR</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 7: Family Time Input -->
-    <div class="screen" id="s7">
-        <div class="sk-layout">
-            <div id="sk7"></div>
-            <div class="sk-panel">
-                <div class="bubble">
-                    <div class="bubble-name">✦ SLAYKTTY</div>
-                    <div class="bubble-text">Você conhece a <strong>família</strong> há quanto tempo?</div>
-                </div>
-                <div class="sk-field">
-                    <input class="sk-input" id="i_fam" type="text" placeholder="Ex: 2 meses, 1 ano..." autocomplete="off" maxlength="50">
-                </div>
-                <button class="btn btn-send" id="btn_fam">→ ENVIAR</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 8: App Time Input -->
-    <div class="screen" id="s8">
-        <div class="sk-layout">
-            <div id="sk8"></div>
-            <div class="sk-panel">
-                <div class="bubble">
-                    <div class="bubble-name">✦ SLAYKTTY</div>
-                    <div class="bubble-text">Você usa o <strong>aplicativo</strong> há muito tempo?</div>
-                </div>
-                <div class="sk-field">
-                    <input class="sk-input" id="i_app" type="text" placeholder="Ex: 6 meses, 3 anos..." autocomplete="off" maxlength="50">
-                </div>
-                <button class="btn btn-send" id="btn_app">→ ENVIAR</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 9: User ID Input -->
-    <div class="screen" id="s9">
-        <div class="sk-layout">
-            <div id="sk9"></div>
-            <div class="sk-panel">
-                <div class="bubble">
-                    <div class="bubble-name">✦ SLAYKTTY</div>
-                    <div class="bubble-text">E qual é o seu <strong>ID</strong>?</div>
-                </div>
-                <div class="sk-field">
-                    <input class="sk-input" id="i_id" type="text" placeholder="Seu ID..." autocomplete="off" maxlength="50">
-                </div>
-                <button class="btn btn-send" id="btn_id">→ ENVIAR</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 10: Role Selection -->
-    <div class="screen scroll-screen" id="s10">
-        <div class="roles-outer">
-            <div class="roles-header">
-                <div id="sk10" style="flex-shrink:0"></div>
-                <div class="bubble" style="flex:1;border-radius:12px;margin-bottom:0">
-                    <div class="bubble-name">✦ SLAYKTTY</div>
-                    <div class="bubble-text">Escolha a sua <strong>função</strong>, senhor(a)...</div>
-                </div>
-            </div>
-            <div class="roles-grid" role="listbox" aria-label="Seleção de funções">
-                <button class="r-card" data-role="Organizador" role="option">
-                    <div class="r-name">📋 Organizador</div>
-                    <div class="r-desc">Mantém a ordem e estrutura</div>
-                </button>
-                <button class="r-card" data-role="Recrutador" role="option">
-                    <div class="r-name">📡 Recrutador</div>
-                    <div class="r-desc">Traz novos membros</div>
-                </button>
-                <button class="r-card" data-role="Vigilante" role="option">
-                    <div class="r-name">👁️ Vigilante</div>
-                    <div class="r-desc">Monitora e protege</div>
-                </button>
-                <button class="r-card" data-role="Designer" role="option">
-                    <div class="r-name">🎨 Designer</div>
-                    <div class="r-desc">Cria identidade visual</div>
-                </button>
-                <button class="r-card" data-role="Segurança" role="option">
-                    <div class="r-name">🛡️ Segurança</div>
-                    <div class="r-desc">Proteção dos membros</div>
-                </button>
-                <button class="r-card" data-role="Conselheiro" role="option">
-                    <div class="r-name">🧠 Conselheiro</div>
-                    <div class="r-desc">Orienta a liderança</div>
-                </button>
-            </div>
-            <div style="text-align:center;margin-top:20px">
-                <button class="btn btn-main" id="roleConfirm" disabled>◈ CONFIRMAR FUNÇÃO ◈</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 11: Discord -->
-    <div class="screen" id="s11">
-        <div class="discord-wrap">
-            <div id="sk11" style="display:flex;justify-content:center;margin-bottom:14px"></div>
-            <div class="bubble" style="border-radius:12px;text-align:left">
-                <div class="bubble-name">✦ SLAYKTTY</div>
-                <div class="bubble-text">Que tal entrar no nosso <strong>servidor</strong>? 🩸</div>
-            </div>
-            <div class="dc-card">
-                <div class="dc-icon"><i class="fab fa-discord"></i></div>
-                <div class="dc-name">SOMBRA COLETIVA</div>
-                <div class="dc-sub">Servidor Oficial &nbsp;•&nbsp; TNT Network</div>
-            </div>
-            <div class="dc-btns">
-                <button class="btn btn-accept" id="dcAccept">✓ ACEITAR</button>
-                <button class="btn btn-refuse" id="dcRefuse">✕ RECUSAR</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Screen 12: Done -->
-    <div class="screen" id="s12">
-        <div class="done-wrap">
-            <div class="done-symbol">🩸</div>
-            <div class="done-title">SOLICITAÇÃO ENVIADA</div>
-            <div class="hr-thin" aria-hidden="true"></div>
-            <div class="done-name">BEM-VINDO(A), <span id="doneName"></span></div>
-            <div class="done-info" style="margin-top:10px">Aguarde contato de um recrutador.</div>
-        </div>
-    </div>
-    
+
     <!-- Scripts -->
     <script src="script.js"></script>
 </body>
