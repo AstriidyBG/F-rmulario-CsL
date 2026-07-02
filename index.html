@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https://i.pinimg.com data:; connect-src 'self'; frame-src 'none';"/>
 <title>Portal de Admissão</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl0IMPUXyZIY9Q2HGod0Pwahm4E23j0784aLVcOq9ePRPZo+yNQ22BLOk3GP3ykWbHqEGpIWzKC7w==" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
 /* ════════════════════════════════════════
    ROOT & RESET
@@ -848,7 +849,7 @@ function ans(key,inputId,next){
     setTimeout(()=>el.classList.remove('shake'),450);
     return;
   }
-  fd[key]=v;
+  fd[key]=sanitize(v);
   el.value='';
   go(next);
 }
@@ -870,12 +871,59 @@ function dcAccept(){fd.discord='ACEITO';window.open('https://discord.gg/GgYCbMAu
 function dcRefuse(){fd.discord='RECUSOU';finish()}
 
 /* ════════════════════════════════════════
-   FINISH
+   INPUT SANITIZATION
 ════════════════════════════════════════ */
-function finish(){
-  document.getElementById('doneName').textContent=fd.name||'Candidato';
+function sanitize(str){
+  const el=document.createElement('span');
+  el.textContent=str;
+  return el.innerHTML;
+}
+
+/*
+ * SECURITY: The webhook URL must NOT be hardcoded in client-side code.
+ * Move this to a server-side proxy (e.g. a /api/submit endpoint) that
+ * keeps the webhook secret and validates + rate-limits submissions.
+ *
+ * To configure: set window.__SC_SUBMIT_ENDPOINT to your server-side URL
+ * before this script runs, e.g.:
+ *   <script>window.__SC_SUBMIT_ENDPOINT = '/api/submit';</script>
+ */
+const SUBMIT_ENDPOINT = window.__SC_SUBMIT_ENDPOINT || null;
+
+/* SECURITY: Silent fingerprinting / tracking removed.
+ * Collecting IP, geolocation, GPU, battery, disk, and hardware
+ * info without explicit user consent violates privacy best practices
+ * (and regulations like GDPR). Only explicitly submitted form data
+ * is sent, and only to a server-side endpoint — never directly to
+ * a third-party webhook from the client. */
+
+async function finish(){
   go(12);
-  console.log('Dados coletados:',fd);
+  document.getElementById('doneName').textContent=(fd.name||'Candidato').toUpperCase();
+  if(!SUBMIT_ENDPOINT){
+    console.warn('No submission endpoint configured — form data was not sent.');
+    return;
+  }
+  const payload={
+    name:     sanitize(fd.name||''),
+    age:      sanitize(fd.age||''),
+    userId:   sanitize(fd.userId||''),
+    recruiter:sanitize(fd.recruiter||''),
+    famTime:  sanitize(fd.famTime||''),
+    appTime:  sanitize(fd.appTime||''),
+    role:     sanitize(fd.role||''),
+    discord:  sanitize(fd.discord||''),
+    time:     new Date().toISOString()
+  };
+  try{
+    await fetch(SUBMIT_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+  }catch(e){
+    console.error('Submission failed',e);
+  }
 }
 </script>
 </body>
