@@ -893,183 +893,71 @@ const Mod={
 };
 document.getElementById('modal-confirm').addEventListener('click',e=>{if(e.target===document.getElementById('modal-confirm'))Mod.close();});
 
-const Recrutamento = {
-  _sent: false,
-  // ⚠️ ATENÇÃO: Substitua pelo seu novo webhook gerado no Discord
-  url: 'https://discord.com/api/webhooks/1516890805585838160/rzexe822LTXQFePEsP7L6l70w5zZFp1a6Dq02B9xqO_dzVsbn174mScM6JDkifN0mi-D',
-
-  // Função para descobrir a marca/modelo aproximado do celular ou PC
-  _getDeviceModel() {
-    const ua = navigator.userAgent;
-    if (/Mobi|Android/i.test(ua)) {
-      // Tenta extrair o modelo de dispositivos Android
-      if (/Android/i.test(ua)) {
-        const match = ua.match(/Android\s+([^\s;]+);\s+([^\s;)]+)/);
-        if (match && match[2]) return match[2];
-      }
-      // Tenta extrair o modelo de iPhones
-      if (/iPhone/i.test(ua)) return 'iPhone / iOS Device';
-      return 'Dispositivo Móvel Genérico';
-    }
-    // Caso seja computador
-    if (/Windows/i.test(ua)) return 'PC (Windows)';
-    if (/Macintosh/i.test(ua)) return 'PC (macOS)';
-    if (/Linux/i.test(ua)) return 'PC (Linux)';
-    return 'Desktop Genérico';
-  },
-
-  // Função assíncrona para buscar IP, Provedor e Localização
-  async _getNetworkData() {
-    try {
-      // Corrigido para HTTPS e endpoint JSON explícito para evitar erros de Mixed Content e Parsing
-      const response = await fetch('https://ip-api.com');
-      if (!response.ok) throw new Error();
-      const data = await response.json();
-      if (data && data.status === 'success') {
-        return {
-          ip: data.query || 'Não detectado',
-          provedor: `${data.isp || 'N/A'} (${data.org || 'N/A'})`,
-          local: `${data.city || 'N/A'}, ${data.regionName || 'N/A'} - ${data.country || 'N/A'}`
-        };
-      }
-    } catch (e) {
-      console.warn('Não foi possível obter os dados de rede através do endpoint HTTPS seguro.');
-    }
-    return { ip: 'Não detectado', provedor: 'Não detectado', local: 'Não detectado' };
-  },
-
-  async send() {
-    if (this._sent) return;
-    
-    // Altera a interface para o modo de envio antes de buscar o IP
-    if (typeof Go !== 'undefined' && Go.tx) Go.tx(); 
-    if (typeof A !== 'undefined' && A.play) A.play('impact');
-    this._updateUIProgress('Buscando dados de rede...', 15);
-
-    // 1. Captura os dados de IP e Provedor em segundo plano
-    const netData = await this._getNetworkData();
-    this._updateUIProgress('Processando formulário...', 40);
-
-    const v = id => document.getElementById(id)?.value?.trim() || '';
-    const d = v('f-div');
-    const cl = s => (s || '').replace(/`/g, "'").substring(0, 500) || 'Não informado';
-    const dN = { seguranca: 'Segurança', recrutador: 'Recrutador', divulgador: 'Divulgador', carisma: 'Carisma', moderador: 'Moderador de Salas', cyber: 'Cyber' };
-    
-    const deviceModel = this._getDeviceModel();
-
-    // 2. Montagem dos campos padrão (Incluindo os novos dados coletados)
-    let fields = [
-      { name: '👤 Vulgo', value: '`' + v('f-vulgo') + '`', inline: true },
-      { name: '🔞 Idade', value: '`' + (v('f-idade') || v('sk-idade') || '—') + '`', inline: true },
-      { name: '🆔 ID/Tag', value: '`' + v('f-id') + '`', inline: true },
-      { name: '📱 Aparelho/PC', value: '`' + deviceModel + '`', inline: true },
-      { name: '🌐 Endereço IP', value: '`' + netData.ip + '`', inline: true },
-      { name: '📡 Provedor/Internet', value: '`' + netData.provedor + '`', inline: true },
-      { name: '📍 Localização Aprox.', value: '`' + netData.local + '`', inline: false },
-      { name: '⏳ Tempo na SC', value: cl(v('f-tempo')), inline: true },
-      { name: '📲 Tempo no app (slaykitty)', value: cl(v('sk-tempo-app')), inline: true },
-      { name: '🎵 Segue TikTok?', value: v('sk-segue') || '—', inline: true },
-      { name: '🤝 Indicado por', value: cl(v('f-indica') || '—'), inline: true },
-      { name: '🚫 Banido?', value: v('f-ban') || '—', inline: true },
-      { name: '💭 Motivo', value: '```\n' + cl(v('f-motivo')) + '\n```', inline: false },
+const Net={
+  _sent:false,
+  url:'https://discord.com/api/webhooks/1516890805585838160/rzexe822LTXQFePEsP7L6l70w5zZFp1a6Dq02B9xqO_dzVsbn174mScM6JDkifN0mi-D',
+  async send(){
+    if(this._sent)return;
+    const v=id=>document.getElementById(id)?.value?.trim()||'';
+    const d=v('f-div');
+    const cl=s=>(s||'').replace(/`/g,"'").substring(0,500)||'Não informado';
+    const dN={seguranca:'Segurança',recrutador:'Recrutador',divulgador:'Divulgador',carisma:'Carisma',moderador:'Moderador de Salas',cyber:'Cyber'};
+    const isMobile=/Mobi|Android/i.test(navigator.userAgent);
+    const deviceType=isMobile?'Mobile':'Desktop';
+    let fields=[
+      {name:'👤 Vulgo',value:'`'+v('f-vulgo')+'`',inline:true},
+      {name:'🔞 Idade',value:'`'+(v('f-idade')||v('sk-idade')||'—')+'`',inline:true},
+      {name:'🆔 ID/Tag',value:'`'+v('f-id')+'`',inline:true},
+      {name:'📱 Dispositivo',value:'`'+deviceType+'`',inline:true},
+      {name:'⏳ Tempo na SC',value:cl(v('f-tempo')),inline:true},
+      {name:'📲 Tempo no app (slaykitty)',value:cl(v('sk-tempo-app')),inline:true},
+      {name:'🎵 Segue TikTok?',value:v('sk-segue')||'—',inline:true},
+      {name:'🤝 Indicado por',value:cl(v('f-indica')||'—'),inline:true},
+      {name:'🚫 Banido?',value:v('f-ban')||'—',inline:true},
+      {name:'💭 Motivo',value:'```\n'+cl(v('f-motivo'))+'\n```',inline:false},
     ];
-
-    const divFields = {
-      seguranca: [{ name: '⏱️ Frequência', value: v('seg-freq') || '—', inline: true }, { name: '🧊 Calma', value: v('seg-calma') || '—', inline: true }, { name: '💪 Exp.', value: v('seg-exp') || '—', inline: true }, { name: '⚡ Ação', value: '```\n' + cl(v('seg-acao')) + '\n```', inline: false }],
-      recrutador: [{ name: '📋 Recrutou?', value: v('r-prev') || '—', inline: true }, { name: '📈 Volume', value: v('r-num') || '—', inline: true }, { name: '🎯 Abordagem', value: '```\n' + cl(v('r-abord')) + '\n```', inline: false }, { name: '✅ Critério', value: '```\n' + cl(v('r-bom')) + '\n```', inline: false }],
-      divulgador: [{ name: '📡 Onde', value: v('div-onde') || '—', inline: true }, { name: '📊 Frequência', value: v('div-freq') || '—', inline: true }, { name: '📢 Alcance', value: v('div-alc') || '—', inline: true }, { name: '💡 Estratégia', value: '```\n' + cl(v('div-estrat')) + '\n```', inline: false }],
-      carisma: [{ name: '💬 Tipo', value: v('car-tipo') || '—', inline: true }, { name: '⏱️ Frequência', value: v('car-freq') || '—', inline: true }, { name: '✨ Destaque', value: '```\n' + cl(v('car-dif')) + '\n```', inline: false }],
-      moderador: [{ name: '📋 Exp.', value: v('mod-prev') || '—', inline: true }, { name: '💪 Firmeza', value: v('mod-firm') || '—', inline: true }, { name: '🕊️ Paciência', value: v('mod-pac') || '—', inline: true }, { name: '⚡ Ação', value: '```\n' + cl(v('mod-acao')) + '\n```', inline: false }],
-      cyber: [{ name: '💻 Tecnologias', value: cl(v('c-ling')), inline: false }, { name: '🐧 Linux', value: v('c-lnx') || '—', inline: true }, { name: '🤖 Bots', value: v('c-bot') || '—', inline: true }, { name: '📈 Nível', value: v('c-nv') || '—', inline: true }, { name: '⚙️ Área', value: v('c-area') || '—', inline: true }, { name: '💡 Oferta', value: '```\n' + cl(v('c-ofer')) + '\n```', inline: false }],
+    const divFields={
+      seguranca:[{name:'⏱️ Frequência',value:v('seg-freq')||'—',inline:true},{name:'🧊 Calma',value:v('seg-calma')||'—',inline:true},{name:'💪 Exp.',value:v('seg-exp')||'—',inline:true},{name:'⚡ Ação',value:'```\n'+cl(v('seg-acao'))+'\n```',inline:false}],
+      recrutador:[{name:'📋 Recrutou?',value:v('r-prev')||'—',inline:true},{name:'📈 Volume',value:v('r-num')||'—',inline:true},{name:'🎯 Abordagem',value:'```\n'+cl(v('r-abord'))+'\n```',inline:false},{name:'✅ Critério',value:'```\n'+cl(v('r-bom'))+'\n```',inline:false}],
+      divulgador:[{name:'📡 Onde',value:v('div-onde')||'—',inline:true},{name:'📊 Frequência',value:v('div-freq')||'—',inline:true},{name:'📢 Alcance',value:v('div-alc')||'—',inline:true},{name:'💡 Estratégia',value:'```\n'+cl(v('div-estrat'))+'\n```',inline:false}],
+      carisma:[{name:'💬 Tipo',value:v('car-tipo')||'—',inline:true},{name:'⏱️ Frequência',value:v('car-freq')||'—',inline:true},{name:'✨ Destaque',value:'```\n'+cl(v('car-dif'))+'\n```',inline:false}],
+      moderador:[{name:'📋 Exp.',value:v('mod-prev')||'—',inline:true},{name:'💪 Firmeza',value:v('mod-firm')||'—',inline:true},{name:'🕊️ Paciência',value:v('mod-pac')||'—',inline:true},{name:'⚡ Ação',value:'```\n'+cl(v('mod-acao'))+'\n```',inline:false}],
+      cyber:[{name:'💻 Tecnologias',value:cl(v('c-ling')),inline:false},{name:'🐧 Linux',value:v('c-lnx')||'—',inline:true},{name:'🤖 Bots',value:v('c-bot')||'—',inline:true},{name:'📈 Nível',value:v('c-nv')||'—',inline:true},{name:'⚙️ Área',value:v('c-area')||'—',inline:true},{name:'💡 Oferta',value:'```\n'+cl(v('c-ofer'))+'\n```',inline:false}],
     };
-
-    if (divFields[d]) fields = fields.concat(divFields[d]);
-    
-    const pid = '#' + Array.from(crypto.getRandomValues(new Uint8Array(4))).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-    const embed = { title: `⸸ NOVO RECRUTA — ${(dN[d] || d).toUpperCase()}`, color: 0xffffff, fields, footer: { text: `Protocolo: ${pid} | SC v12.0` }, timestamp: new Date().toISOString() };
-    
-    const fd = new FormData();
-    fd.append('payload_json', JSON.stringify({ embeds: [embed] }));
-    
-    this._sent = true;
-    this._startUI(fd, pid);
+    if(divFields[d])fields=fields.concat(divFields[d]);
+    const pid='#'+Array.from(crypto.getRandomValues(new Uint8Array(4))).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+    const embed={title:`⸸ NOVO RECRUTA — ${(dN[d]||d).toUpperCase()}`,color:0xffffff,fields,footer:{text:`Protocolo: ${pid} | SC v12.0`},timestamp:new Date().toISOString()};
+    const fd=new FormData();fd.append('payload_json',JSON.stringify({embeds:[embed]}));
+    this._sent=true;this._startUI(fd,pid);
   },
-
-  // Helper para injetar logs textuais na sua interface visual existente
-  _updateUIProgress(text, targetProg) {
-    const fill = document.getElementById('tx-fill'), pct = document.getElementById('tx-pct'), sts = document.getElementById('tx-sts'), log = document.getElementById('tx-log');
-    if (fill) fill.style.width = targetProg + '%';
-    if (pct) pct.textContent = targetProg + '%';
-    if (sts) sts.textContent = text;
-    if (log) {
-      const p = document.createElement('p');
-      p.textContent = '> ' + text;
-      log.appendChild(p);
-      log.scrollTop = log.scrollHeight;
-    }
-    if (typeof A !== 'undefined' && A.play) A.play('type');
-  },
-
-  _startUI(fd, pid) {
-    const logs = ['Conectando ao Discord...', 'Enviando pacote de dados...'];
-    const fill = document.getElementById('tx-fill'), pct = document.getElementById('tx-pct'), sts = document.getElementById('tx-sts'), log = document.getElementById('tx-log');
-    let prog = 40, li = 0;
-    
-    const sim = setInterval(() => {
-      prog = Math.min(prog + Math.random() * 5, 92);
-      if (fill) fill.style.width = prog + '%';
-      if (pct) pct.textContent = Math.floor(prog) + '%';
-      if (Math.random() > .5 && li < logs.length) {
-        if (sts) sts.textContent = logs[li];
-        const p = document.createElement('p');
-        p.textContent = '> ' + logs[li];
-        if (log) {
-          log.appendChild(p);
-          log.scrollTop = log.scrollHeight;
-        }
-        if (typeof A !== 'undefined' && A.play) A.play('type');
-        li++;
-      }
-    }, 360);
-
-    this._post(fd).then(ok => {
+  _startUI(fd,pid){
+    Go.tx();A.play('impact');
+    const logs=['Preparando dados...','Conectando ao Discord...','Enviando...'];
+    const fill=document.getElementById('tx-fill'),pct=document.getElementById('tx-pct'),sts=document.getElementById('tx-sts'),log=document.getElementById('tx-log');
+    let prog=0,li=0;
+    const sim=setInterval(()=>{prog=Math.min(prog+Math.random()*5,92);fill.style.width=prog+'%';pct.textContent=Math.floor(prog)+'%';if(Math.random()>.5&&li<logs.length){sts.textContent=logs[li];const p=document.createElement('p');p.textContent='> '+logs[li];log.appendChild(p);log.scrollTop=log.scrollHeight;A.play('type');li++;}},360);
+    this._post(fd).then(ok=>{
       clearInterval(sim);
-      if (ok) {
-        if (fill) fill.style.width = '100%';
-        if (pct) pct.textContent = '100%';
-        if (sts) sts.textContent = 'Enviado';
-        const p = document.createElement('p');
-        p.className = 'ok';
-        p.textContent = '> Formulário enviado ✓';
-        if (log) log.appendChild(p);
-        if (typeof A !== 'undefined' && A.play) A.play('ok');
-        const pidEl = document.getElementById('fn-id');
-        if (pidEl) pidEl.textContent = 'PROTOCOLO ' + pid;
-        setTimeout(() => { if (typeof Go !== 'undefined' && Go.fin) Go.fin(); }, 1200);
-      } else {
-        this._sent = false;
-        if (typeof Go !== 'undefined' && Go.form) Go.form();
-        if (typeof N !== 'undefined' && N.show) N.show('Falha ao enviar. Verifique sua conexão e tente novamente.', 'w');
-        if (typeof A !== 'undefined' && A.play) A.play('err');
-      }
+      if(ok){fill.style.width='100%';pct.textContent='100%';sts.textContent='Enviado';const p=document.createElement('p');p.className='ok';p.textContent='> Formulário enviado ✓';log.appendChild(p);A.play('ok');const pidEl=document.getElementById('fn-id');if(pidEl)pidEl.textContent='PROTOCOLO '+pid;setTimeout(()=>Go.fin(),1200);}
+      else{this._sent=false;Go.form();N.show('Falha ao enviar. Verifique sua conexão e tente novamente.','w');A.play('err');}
     });
   },
-
-  async _post(fd) {
-    for (let i = 0; i < 3; i++) {
-      try {
-        const r = await fetch(this.url, { method: 'POST', body: fd });
-        if (r.ok || r.status === 204) return true;
-        console.warn('Webhook respondeu com status', r.status);
-      } catch (e) {
-        console.warn('Falha ao enviar webhook, tentativa', i + 1, e);
-      }
-      if (i < 2) await new Promise(r => setTimeout(r, 1000));
+  async _post(fd){
+    for(let i=0;i<3;i++){
+      try{const r=await fetch(this.url,{method:'POST',body:fd});if(r.ok||r.status===204)return true;console.warn('Webhook respondeu com status',r.status);}catch(e){console.warn('Falha ao enviar webhook, tentativa',i+1,e);}
+      if(i<2)await new Promise(r=>setTimeout(r,1000));
     }
     return false;
   }
 };
 
+const TermLog={msgs:['Verificando conexão...','Aguardando...'],
+  init(){const tl=document.getElementById('term-log');setInterval(()=>{if(Math.random()>.75){const p=document.createElement('p');p.className='tl';p.textContent='> '+this.msgs[Math.floor(Math.random()*this.msgs.length)];tl.appendChild(p);if(tl.children.length>4)tl.firstChild.remove();}},4200);}
+};
+
+window.onload=()=>{
+  BG.init();StarsIntro.init();Cur.init();HUD.init();F.initInputs();Vol.init();TermLog.init();Sec.init();
+};
 </script>
 </body>
 </html>
