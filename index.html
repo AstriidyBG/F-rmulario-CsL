@@ -206,7 +206,7 @@ canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .sp-btn:hover{border-color:rgba(255,255,255,.7);color:var(--w);box-shadow:0 0 30px rgba(255,255,255,.15);}
 .sp-ver{font-family:var(--f-mono);font-size:8px;color:rgba(255,255,255,.12);letter-spacing:4px;margin-top:16px;opacity:0;animation:fadein .4s ease forwards 1.5s;}
 
-/* BOOT */
+/* BOOT (mantido apenas o CSS por compatibilidade visual; telas não são mais usadas no fluxo) */
 .boot-wrap{width:100%;max-width:540px;}
 .boot-hd{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:11px;margin-bottom:14px;}
 .boot-hd-l{font-family:var(--f-display);font-weight:600;font-size:14px;color:rgba(255,255,255,.75);letter-spacing:3px;}
@@ -434,21 +434,21 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
 <div id="sec-overlay">
   <div class="sec-ov-ico">⚠</div>
   <div class="sec-ov-msg">ACESSO BLOQUEADO</div>
-  <div class="sec-ov-sub">Comportamento suspeito detectado.<br>Aguarde antes de tentar novamente.</div>
+  <div class="sec-ov-sub">Atividade automatizada detectada.<br>Aguarde antes de tentar novamente.</div>
   <div class="sec-ov-timer" id="sec-timer">60</div>
 </div>
 
 <div id="modal-confirm">
   <div class="mbox">
-    <div class="mhd"><h3>Verificação Final</h3><p>CONFIRME ANTES DE TRANSMITIR</p></div>
+    <div class="mhd"><h3>Verificação Final</h3><p>CONFIRME ANTES DE ENVIAR</p></div>
     <div class="mlist">
       <div class="mi"><span style="color:var(--w);">⸸</span><div><strong>Formulário Completo</strong><p>Todos os campos da divisão preenchidos.</p></div></div>
       <div class="mi"><span style="color:var(--w);">⸸</span><div><strong>Compromisso</strong><p>Ao enviar você aceita as regras da SC.</p></div></div>
-      <div class="mi"><span style="color:var(--w);">⸸</span><div><strong>Transmissão Segura</strong><p>Dados criptografados ponta a ponta.</p></div></div>
+      <div class="mi"><span style="color:var(--w);">⸸</span><div><strong>Envio dos dados</strong><p>Suas respostas serão enviadas para a liderança da SC via Discord.</p></div></div>
     </div>
     <div class="mbtns">
       <button class="mbk" onclick="Mod.close()">VOLTAR</button>
-      <button class="mgo" onclick="Mod.confirm()">TRANSMITIR</button>
+      <button class="mgo" onclick="Mod.confirm()">ENVIAR</button>
     </div>
   </div>
 </div>
@@ -544,55 +544,8 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
       <div><div class="sp-sn" id="sp-online">—</div><div class="sp-sl">ONLINE</div></div>
       <div><div class="sp-sn">v12</div><div class="sp-sl">VERSÃO</div></div>
     </div>
-    <div class="sp-btn-wrap"><button class="sp-btn" onclick="Go.boot()">▶ Acessar Sistema</button></div>
-    <p class="sp-ver">Sistema de Recrutamento v12.0 — Acesso Restrito</p>
-  </div>
-</div>
-
-<!-- BOOT A -->
-<div id="scr-ba" class="scr">
-  <div class="boot-wrap">
-    <div class="boot-hd"><span class="boot-hd-l">Inicializando Módulos</span><span class="boot-hd-r" id="ba-step">0 / 6</span></div>
-    <div class="boot-mods" id="ba-mods"></div>
-    <div class="boot-bar-wrap"><div class="boot-bar" id="ba-bar"></div></div>
-    <div class="boot-status" id="ba-sts">Aguardando...</div>
-  </div>
-</div>
-
-<!-- BOOT B -->
-<div id="scr-bb" class="scr">
-  <div class="boot-wrap">
-    <div class="boot-hd"><span class="boot-hd-l">Verificando Rede</span><span class="boot-hd-r" id="bb-pct">0%</span></div>
-    <div class="boot-terminal" id="bb-term"></div>
-    <div class="boot-bar-wrap"><div class="boot-bar" id="bb-bar"></div></div>
-  </div>
-</div>
-
-<!-- BOOT C -->
-<div id="scr-bc" class="scr">
-  <div class="boot-wrap">
-    <div class="boot-hd"><span class="boot-hd-l">Verificando Identidade</span><span class="boot-hd-r" id="bc-pct">0%</span></div>
-    <div style="display:flex;align-items:center;justify-content:center;padding:14px 0;gap:18px;">
-      <div style="position:relative;width:90px;height:52px;overflow:hidden;">
-        <div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.2);animation:borderpulse 2s ease-in-out infinite;"></div>
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;background:var(--w);clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);box-shadow:0 0 16px var(--w);animation:pulse 1.8s ease-in-out infinite;"></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;" id="bc-data"></div>
-    </div>
-    <div style="font-family:var(--f-display);font-weight:600;font-size:17px;color:var(--w);letter-spacing:3px;text-align:center;" id="bc-tit">Analisando...</div>
-    <div class="boot-bar-wrap"><div class="boot-bar" id="bc-bar"></div></div>
-    <div class="boot-status" id="bc-msg">Iniciando varredura...</div>
-  </div>
-</div>
-
-<!-- BOOT D -->
-<div id="scr-bd" class="scr">
-  <div class="boot-wrap">
-    <div class="boot-hd"><span class="boot-hd-l">SC — Boot Sequence v12.0</span><span class="boot-hd-r" id="bd-clk">--:--:--</span></div>
-    <div class="boot-terminal" id="bd-term"></div>
-    <div class="boot-bar-wrap"><div class="boot-bar" id="bd-bar"></div></div>
-    <div style="font-family:var(--f-display);font-weight:900;font-size:60px;color:var(--w);text-align:center;margin-top:14px;opacity:0;letter-spacing:14px;text-shadow:0 0 40px rgba(255,255,255,.5);" id="bd-csl">SC</div>
-    <button class="cbtn" id="bd-btn" style="display:none;margin-top:12px;" onclick="Go.captcha()"><span>▶ Continuar para Verificação</span></button>
+    <div class="sp-btn-wrap"><button class="sp-btn" onclick="Go.captcha()">▶ Acessar Sistema</button></div>
+    <p class="sp-ver">Sistema de Recrutamento v12.0</p>
   </div>
 </div>
 
@@ -622,14 +575,14 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
     <div class="warn-box">
       <div class="warn-hd">
         <div class="warn-hd-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-        <div class="warn-hd-txt"><h2>Protocolo de Acesso</h2><p>LEIA COM ATENÇÃO ANTES DE PROSSEGUIR</p></div>
+        <div class="warn-hd-txt"><h2>Antes de Continuar</h2><p>LEIA COM ATENÇÃO</p></div>
       </div>
       <div class="warn-body"><div id="warn-txt" class="warn-txt"></div><span id="warn-cursor" class="warn-cursor" style="display:none;"></span></div>
     </div>
   </div>
   <div id="warn-foot" style="width:100%;max-width:560px;margin:0 auto;background:rgba(2,2,2,.98);border-top:1px solid rgba(255,255,255,.08);padding:12px 16px;flex-shrink:0;">
     <button id="warn-btn" class="cbtn" style="display:none;" onclick="Go.form()"><span>▶ Entendido — Prosseguir</span></button>
-    <div id="warn-load" style="text-align:center;font-family:var(--f-mono);font-size:10px;color:var(--grey3);letter-spacing:2px;padding:10px;">Carregando protocolo...</div>
+    <div id="warn-load" style="text-align:center;font-family:var(--f-mono);font-size:10px;color:var(--grey3);letter-spacing:2px;padding:10px;">Carregando...</div>
   </div>
 </div>
 
@@ -638,7 +591,7 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
   <div id="form-sc">
     <div class="fwrap">
       <div class="ftop">
-        <div class="ftop-l"><h2>Recrutamento SC</h2><p>Sessão criptografada — Mainframe Seguro</p></div>
+        <div class="ftop-l"><h2>Recrutamento SC</h2><p>Suas respostas vão direto para a liderança da SC</p></div>
         <div><div class="fpbwrap"><div class="fpbfill" id="f-bar"></div></div><div class="fpb-pct" id="f-pct">0%</div></div>
       </div>
 
@@ -775,7 +728,7 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
       </div>
 
       <div id="sec-sub" style="display:none;" class="sbtn-area">
-        <button class="cbtn" onclick="Mod.open()"><span>▶ Transmitir ao Mainframe</span></button>
+        <button class="cbtn" onclick="Mod.open()"><span>▶ Enviar Formulário</span></button>
       </div>
     </div>
   </div>
@@ -785,10 +738,10 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
 <div id="scr-tx" class="scr">
   <div class="tx-wrap">
     <div class="tx-emblem"><div class="tx-r1"></div><div class="tx-r2"></div><div class="tx-center">SC</div></div>
-    <div class="tx-title" id="tx-tit">Estabelecendo Conexão</div>
+    <div class="tx-title" id="tx-tit">Enviando</div>
     <div class="tx-pbwrap"><div class="tx-pbfill" id="tx-fill"></div></div>
-    <div class="tx-row"><span id="tx-pct">0%</span><span id="tx-sts">init...</span></div>
-    <div class="tx-log" id="tx-log"><p>> Conectando ao nó seguro...</p></div>
+    <div class="tx-row"><span id="tx-pct">0%</span><span id="tx-sts">enviando...</span></div>
+    <div class="tx-log" id="tx-log"><p>> Enviando formulário...</p></div>
   </div>
 </div>
 
@@ -796,8 +749,8 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
 <div id="scr-final" class="scr">
   <div class="fn-box">
     <div class="fn-chk"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(230,230,230,.9)" stroke-width="2" stroke-dasharray="60" stroke-dashoffset="60" style="animation:checkdraw .6s ease forwards .2s;stroke-linecap:round;"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-    <div class="fn-tit">Transmitido</div>
-    <p class="fn-txt">Seu protocolo foi criptografado e enviado ao mainframe da família SC.</p>
+    <div class="fn-tit">Enviado</div>
+    <p class="fn-txt">Seu formulário foi enviado para a liderança da família SC.</p>
     <p class="fn-txt">Aguarde o contato da liderança.<br><span style="color:rgba(230,230,230,.7);">Nós vamos te encontrar.</span></p>
     <div class="fn-id" id="fn-id">PROTOCOLO #——</div>
     <div style="margin-top:20px;">
@@ -815,21 +768,19 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
 <script>
 'use strict';
 const Sec={
-  _startTime:Date.now(),_submitAttempts:0,_lastAction:Date.now(),_blocked:false,_lockTimer:null,
-  init(){document.addEventListener('click',()=>this._trackAction());document.addEventListener('keydown',()=>this._trackAction());},
-  _trackAction(){const now=Date.now();const diff=now-this._lastAction;this._lastAction=now;if(diff<80)this._submitAttempts++;if(this._submitAttempts>30)this._lockout(60);},
-  _lockout(secs){if(this._blocked)return;this._blocked=true;const ov=document.getElementById('sec-overlay'),timer=document.getElementById('sec-timer');ov.classList.add('on');let t=secs;timer.textContent=t;this._lockTimer=setInterval(()=>{t--;timer.textContent=t;if(t<=0){clearInterval(this._lockTimer);ov.classList.remove('on');this._blocked=false;this._submitAttempts=0;}},1000);N.show('Comportamento suspeito detectado.','sec');},
-  checkHoneypot(){const n=document.getElementById('hp-name').value,e=document.getElementById('hp-email').value;if(n||e){this._lockout(300);return false;}return true;},
-  getTimeOnSite(){return Math.round((Date.now()-this._startTime)/1000);},
+  _blocked:false,_lockTimer:null,
+  init(){},
+  _lockout(secs){if(this._blocked)return;this._blocked=true;const ov=document.getElementById('sec-overlay'),timer=document.getElementById('sec-timer');ov.classList.add('on');let t=secs;timer.textContent=t;this._lockTimer=setInterval(()=>{t--;timer.textContent=t;if(t<=0){clearInterval(this._lockTimer);ov.classList.remove('on');this._blocked=false;}},1000);},
+  checkHoneypot(){const n=document.getElementById('hp-name').value,e=document.getElementById('hp-email').value;if(n||e){this._lockout(60);return false;}return true;},
   isBlocked(){return this._blocked;},
-  isBot(){if(!navigator.cookieEnabled)return true;if(navigator.webdriver)return true;if(!window.screen||screen.width<100)return true;return false;}
+  isBot(){return !!navigator.webdriver;}
 };
 
 const Cap={
   _a:0,_b:0,_answer:0,_gridCorrect:[],_attempts:0,
   init(){this._genMath();},
   _genMath(){this._a=Math.floor(Math.random()*20)+5;this._b=Math.floor(Math.random()*15)+3;const ops=['+','-','×'];const op=ops[Math.floor(Math.random()*ops.length)];if(op==='+'){this._answer=this._a+this._b;}else if(op==='-'){this._answer=this._a-this._b;}else{this._a=Math.floor(Math.random()*9)+2;this._b=Math.floor(Math.random()*9)+2;this._answer=this._a*this._b;}document.getElementById('cap-eq').textContent=`${this._a} ${op} ${this._b} = ?`;const inp=document.getElementById('cap-ans');inp.value='';inp.focus();},
-  checkMath(){A.play('click');const val=parseInt(document.getElementById('cap-ans').value);if(val===this._answer){A.play('ok');document.getElementById('cap-s1').style.display='none';document.getElementById('cap-s2').style.display='block';this._genGrid();}else{this._attempts++;document.getElementById('cap-err1').style.display='block';document.getElementById('cap-ans').style.animation='shake .4s ease';setTimeout(()=>{document.getElementById('cap-ans').style.animation='';},400);A.play('err');if(this._attempts>=3){Sec._lockout(30);}this._genMath();}},
+  checkMath(){A.play('click');const val=parseInt(document.getElementById('cap-ans').value);if(val===this._answer){A.play('ok');document.getElementById('cap-s1').style.display='none';document.getElementById('cap-s2').style.display='block';this._genGrid();}else{this._attempts++;document.getElementById('cap-err1').style.display='block';document.getElementById('cap-ans').style.animation='shake .4s ease';setTimeout(()=>{document.getElementById('cap-ans').style.animation='';},400);A.play('err');if(this._attempts>=5){Sec._lockout(30);}this._genMath();}},
   _grids:[{word:'ESTRELAS',items:['⭐','🌟','✨','💥','🌙','☀️','🪐','💫','🔥'],correct:[0,1,2,7]},{word:'ESPADAS',items:['⚔️','🗡️','🛡️','🪃','🏹','🔫','⚔️','💣','🗡️'],correct:[0,1,6,8]},{word:'FOGO',items:['🔥','💧','🔥','❄️','🔥','🌊','💨','🔥','🌪️'],correct:[0,2,4,7]},{word:'CRÂNIOS',items:['💀','👻','☠️','👁️','💀','🧟','☠️','🕷️','💀'],correct:[0,2,4,6,8]}],
   _genGrid(){const g=this._grids[Math.floor(Math.random()*this._grids.length)];document.getElementById('cap-word').textContent=g.word;const grid=document.getElementById('cap-grid');grid.innerHTML='';const order=g.items.map((_,i)=>i);for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}this._gridCorrect=order.map((orig,newIdx)=>({orig,newIdx})).filter(x=>g.correct.includes(x.orig)).map(x=>x.newIdx);order.forEach((orig,newIdx)=>{const tile=document.createElement('div');tile.className='cap-tile';tile.textContent=g.items[orig];tile.onclick=()=>{tile.classList.toggle('sel');A.play('click');};grid.appendChild(tile);});},
   checkGrid(){A.play('click');const tiles=[...document.querySelectorAll('.cap-tile')];const selected=tiles.map((t,i)=>t.classList.contains('sel')?i:-1).filter(i=>i>=0);const correct=new Set(this._gridCorrect);const selSet=new Set(selected);const ok=[...correct].every(i=>selSet.has(i))&&[...selSet].every(i=>correct.has(i));if(ok){A.play('ok');Go.warn();setTimeout(()=>Warn.run(),400);}else{this._attempts++;document.getElementById('cap-err2').style.display='block';A.play('err');if(this._attempts>=5){Sec._lockout(60);}setTimeout(()=>{this._genGrid();document.getElementById('cap-err2').style.display='none';},800);}}
@@ -843,10 +794,6 @@ const Go={
   intro(){Go.to('scr-intro');},
   familia(){Go.to('scr-familia');},
   splash(){Go.to('scr-splash');HUD.animStat('sp-members',247,1600);HUD.animStat('sp-online',89,1200);},
-  boot(){A.init();Go.to('scr-ba');setTimeout(()=>BA.run(),300);},
-  bb(){Go.to('scr-bb');setTimeout(()=>BB.run(),300);},
-  bc(){Go.to('scr-bc');setTimeout(()=>BC.run(),300);},
-  bd(){Go.to('scr-bd');setTimeout(()=>BD.run(),300);},
   captcha(){Go.to('scr-captcha');Cap.init();},
   warn(){Go.to('scr-warn');},
   form(){Go.to('scr-form');},
@@ -878,7 +825,6 @@ const A={ctx:null,g:null,ok:false,
     else if(t==='ok'){[220,280,360,440].forEach((f,i)=>{const{o,gn}=mk();o.type='sine';o.frequency.value=f;const s=now+i*.1;gn.gain.setValueAtTime(0,s);gn.gain.linearRampToValueAtTime(.07,s+.04);gn.gain.exponentialRampToValueAtTime(.001,s+.4);o.start(s);o.stop(s+.4);});}
     else if(t==='impact'){[55,40,28].forEach((f,i)=>{const{o,gn}=mk();o.type='sine';o.frequency.setValueAtTime(f,now+i*.05);o.frequency.exponentialRampToValueAtTime(.5,now+.7+i*.05);gn.gain.setValueAtTime(.25,now+i*.05);gn.gain.exponentialRampToValueAtTime(.001,now+.7+i*.05);o.start(now+i*.05);o.stop(now+.8+i*.05);});}
     else if(t==='err'){const{o,gn}=mk();o.type='sawtooth';o.frequency.setValueAtTime(80,now);o.frequency.linearRampToValueAtTime(15,now+.4);gn.gain.setValueAtTime(.18,now);gn.gain.linearRampToValueAtTime(.001,now+.4);o.start(now);o.stop(now+.4);}
-    else if(t==='boot'){const{o,gn}=mk();const fl=c.createBiquadFilter();fl.type='bandpass';fl.frequency.value=65;fl.Q.value=2;o.disconnect();o.connect(fl);fl.connect(gn);o.type='sawtooth';o.frequency.setValueAtTime(15,now);o.frequency.linearRampToValueAtTime(65,now+2.5);gn.gain.setValueAtTime(.12,now);gn.gain.linearRampToValueAtTime(.28,now+1.2);gn.gain.linearRampToValueAtTime(.001,now+2.5);o.start(now);o.stop(now+2.5);}
   }
 };
 
@@ -900,32 +846,18 @@ const HUD={
   animStat(id,target,dur){const el=document.getElementById(id);if(!el)return;let cur=0,steps=40,inc=target/steps,interval=dur/steps;const iv=setInterval(()=>{cur=Math.min(cur+inc,target);el.textContent=Math.floor(cur);if(cur>=target){clearInterval(iv);el.textContent=target+'+';}},interval);}
 };
 
-const BA={mods:[{l:'KERNEL',v:'OK',cls:'ok'},{l:'CRIPTOGRAFIA',v:'AES-256',cls:'ok'},{l:'REDE OCULTA',v:'ATIVA',cls:'ok'},{l:'FIREWALL',v:'BYPASS',cls:'ok'},{l:'MAINFRAME',v:'CONECTADO',cls:'ok'},{l:'SESSÃO',v:'SEGURA',cls:'ok'}],
-  run(){const cont=document.getElementById('ba-mods'),sts=document.getElementById('ba-sts'),bar=document.getElementById('ba-bar'),step=document.getElementById('ba-step');cont.innerHTML='';let i=0;A.play('boot');const nxt=()=>{if(i>=this.mods.length){sts.textContent='Todos os módulos prontos';A.play('ok');setTimeout(()=>Go.bb(),900);return;}const m=this.mods[i];sts.textContent='Inicializando '+m.l.toLowerCase()+'...';step.textContent=(i+1)+' / '+this.mods.length;const div=document.createElement('div');div.className='bmod '+m.cls;div.innerHTML=`<span class="bmod-l">${m.l}</span><span class="bmod-r">${m.v}</span>`;cont.appendChild(div);bar.style.width=((i+1)/this.mods.length*100)+'%';A.play('type');i++;setTimeout(nxt,560);};nxt();}
-};
-
-const BB={run(){const term=document.getElementById('bb-term'),bar=document.getElementById('bb-bar'),pct=document.getElementById('bb-pct');term.innerHTML='';const entries=[{cls:'d',m:'> Iniciando protocolo de rede segura...'},{cls:'d',m:'> Escaneando nós disponíveis...'},{cls:'w',m:'> AVISO: Atividade detectada na porta 443'},{cls:'d',m:'> Redirecionando via proxy chain [7 nós]...'},{cls:'d',m:'> Canal cifrado estabelecido'},{cls:'w',m:'> AVISO: 4 rastreadores bloqueados'},{cls:'d',m:'> Verificando integridade do canal...'},{cls:'ok',m:'> Conexão segura estabelecida ✓'}];let i=0;const add=()=>{if(i>=entries.length){setTimeout(()=>Go.bc(),650);return;}const div=document.createElement('div');div.className='bt-line '+entries[i].cls;div.textContent=entries[i].m;term.appendChild(div);term.scrollTop=term.scrollHeight;const p=Math.round((i+1)/entries.length*100);bar.style.width=p+'%';pct.textContent=p+'%';A.play('type');i++;setTimeout(add,460+Math.random()*130);};setTimeout(add,280);}};
-
-const BC={run(){const bar=document.getElementById('bc-bar'),tit=document.getElementById('bc-tit'),msg=document.getElementById('bc-msg'),data=document.getElementById('bc-data');const steps=[{p:25,m:'Lendo assinatura digital...'},{p:50,m:'Cruzando banco de dados...'},{p:75,m:'Verificando credenciais...'},{p:100,m:'Identidade autorizada ✓'}];let i=0;const step=()=>{if(i>=steps.length){tit.textContent='Identidade Verificada';tit.style.color='rgba(230,230,230,.9)';A.play('ok');data.innerHTML=[['Protocolo','AES-256'],['Status','ATIVO'],['Nível','RESTRITO']].map(([k,v])=>`<div style="font-family:var(--f-mono);font-size:10px;"><span style="color:var(--grey2);">${k}: </span><span style="color:rgba(255,255,255,.75);">${v}</span></div>`).join('');setTimeout(()=>Go.bd(),950);return;}bar.style.width=steps[i].p+'%';msg.textContent=steps[i].m;A.play('type');i++;setTimeout(step,720);};setTimeout(step,280);}};
-
-const BD={logs:[{t:'ok',m:'Inicializando kernel do sistema...'},{t:'ok',m:'Montando volumes seguros...'},{t:'w',m:'AVISO: Investigação detectada na subnet local'},{t:'ok',m:'Redirecionando via 12 nós ocultos...'},{t:'w',m:'AVISO: 5 IPs suspeitos bloqueados'},{t:'ok',m:'Criptografia ponta a ponta ativada...'},{t:'ok',m:'Canal de comunicação seguro ativo...'},{t:'ok',m:'Sistema SC v12.0 pronto. Acesso liberado.'}],
-  run(){const term=document.getElementById('bd-term'),bar=document.getElementById('bd-bar'),csl=document.getElementById('bd-csl'),btn=document.getElementById('bd-btn'),clk=document.getElementById('bd-clk');term.innerHTML='';let i=0;const biv=setInterval(()=>{clk.textContent=new Date().toTimeString().split(' ')[0];},1000);const iv=setInterval(()=>{if(i<this.logs.length){const l=this.logs[i];const div=document.createElement('div');div.className='bt-line '+(l.t==='ok'?'ok':'w');div.innerHTML=`<span style="color:${l.t==='ok'?'rgba(230,230,230,.65)':'rgba(255,255,255,.55)'};">[${l.t==='ok'?'OK   ':'AVISO'}]</span> <span style="color:var(--grey2);">${l.m}</span>`;term.appendChild(div);term.scrollTop=term.scrollHeight;bar.style.width=((i+1)/this.logs.length*100)+'%';A.play('type');i++;}else{clearInterval(iv);clearInterval(biv);csl.style.opacity='1';csl.style.animation='scalein .5s ease';A.play('impact');setTimeout(()=>{btn.style.display='block';},860);}},360);}
-};
-
 const Warn={
-  txt:`PROTOCOLO DE SEGURANÇA — SC v12.0
+  txt:`Antes de continuar
 
-Você está conectado a um sistema de recrutamento da Sombra Coletiva. Toda atividade aqui é registrada pela liderança.
+Você está preenchendo o formulário de recrutamento da TAG Sombra Coletiva (SC), do Hago.
 
-Este sistema é de acesso restrito. Apenas recrutas em processo de avaliação têm permissão para prosseguir.
+Ao enviar este formulário, as informações que você escrever serão enviadas diretamente para a liderança da SC através de um canal privado no Discord, para avaliação do seu pedido de entrada.
 
-Ao preencher o formulário de recrutamento, você declara estar ciente das regras, responsabilidades e do código de conduta da família.
+Preencha apenas informações verdadeiras. Formulários incompletos ou com dados falsos podem ser descartados.
 
-A Sombra Coletiva é uma família organizada. Quem entra assume o compromisso de colaborar com respeito, participar de forma ativa e seguir as orientações da liderança.
+Se você não se sentir confortável em compartilhar alguma informação, pode deixar o campo em branco quando ele não for obrigatório.
 
-Envios incompletos, falsos ou com informações inválidas serão descartados automaticamente.
-
-Só avance se estiver verdadeiramente comprometido com a família SC.`,
+Ao clicar em "Prosseguir" abaixo, você confirma que entendeu como seus dados serão usados e deseja continuar.`,
   run(){const el=document.getElementById('warn-txt'),cur=document.getElementById('warn-cursor'),btn=document.getElementById('warn-btn'),load=document.getElementById('warn-load'),sc=document.getElementById('warn-scroll');el.textContent='';let i=0;const iv=setInterval(()=>{if(i<this.txt.length){el.textContent+=this.txt.charAt(i);if(i%5===0)A.play('type');sc.scrollTop=sc.scrollHeight;i++;}else{clearInterval(iv);cur.style.display='inline-block';load.style.display='none';btn.style.display='block';A.play('ok');}},13);}
 };
 
@@ -955,7 +887,7 @@ const F={
 };
 
 const Mod={
-  open(){if(Sec.isBlocked())return;if(!Sec.checkHoneypot())return;if(Sec.isBot()){Sec._lockout(300);return;}A.play('click');document.getElementById('modal-confirm').classList.add('on');},
+  open(){if(Sec.isBlocked())return;if(!Sec.checkHoneypot())return;if(Sec.isBot()){Sec._lockout(60);return;}A.play('click');document.getElementById('modal-confirm').classList.add('on');},
   close(){A.play('click');document.getElementById('modal-confirm').classList.remove('on');},
   confirm(){const v=id=>document.getElementById(id)?.value?.trim()||'';if(!v('f-vulgo')||!v('f-id')||!v('f-div')){this.close();N.show('Preencha identificação e escolha uma divisão.','w');return;}if(Net._sent){this.close();N.show('Formulário já foi enviado.','w');return;}this.close();Net.send();}
 };
@@ -963,24 +895,20 @@ document.getElementById('modal-confirm').addEventListener('click',e=>{if(e.targe
 
 const Net={
   _sent:false,
-  url:'https://discordapp.com/api/webhooks/1516890805585838160/rzexe822LTXQFePEsP7L6l70w5zZFp1a6Dq02B9xqO_dzVsbn174mScM6JDkifN0mi-D',
+  url:'https://discord.com/api/webhooks/1516890805585838160/rzexe822LTXQFePEsP7L6l70w5zZFp1a6Dq02B9xqO_dzVsbn174mScM6JDkifN0mi-D',
   async send(){
     if(this._sent)return;
     const v=id=>document.getElementById(id)?.value?.trim()||'';
     const d=v('f-div');
     const cl=s=>(s||'').replace(/`/g,"'").substring(0,500)||'Não informado';
     const dN={seguranca:'Segurança',recrutador:'Recrutador',divulgador:'Divulgador',carisma:'Carisma',moderador:'Moderador de Salas',cyber:'Cyber'};
-    const timeOnSite=Sec.getTimeOnSite();
-    if(timeOnSite<15){N.show('Preencha o formulário com mais atenção.','w');return;}
     const isMobile=/Mobi|Android/i.test(navigator.userAgent);
     const deviceType=isMobile?'Mobile':'Desktop';
-    const screenRes=`${screen.width}x${screen.height}`;
     let fields=[
       {name:'👤 Vulgo',value:'`'+v('f-vulgo')+'`',inline:true},
       {name:'🔞 Idade',value:'`'+(v('f-idade')||v('sk-idade')||'—')+'`',inline:true},
       {name:'🆔 ID/Tag',value:'`'+v('f-id')+'`',inline:true},
-      {name:'📱 Dispositivo',value:'`'+deviceType+' — '+screenRes+'`',inline:true},
-      {name:'⏱️ Tempo no site',value:'`'+timeOnSite+'s`',inline:true},
+      {name:'📱 Dispositivo',value:'`'+deviceType+'`',inline:true},
       {name:'⏳ Tempo na SC',value:cl(v('f-tempo')),inline:true},
       {name:'📲 Tempo no app (slaykitty)',value:cl(v('sk-tempo-app')),inline:true},
       {name:'🎵 Segue TikTok?',value:v('sk-segue')||'—',inline:true},
@@ -998,38 +926,37 @@ const Net={
     };
     if(divFields[d])fields=fields.concat(divFields[d]);
     const pid='#'+Array.from(crypto.getRandomValues(new Uint8Array(4))).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
-    const embed={title:`⸸ NOVO RECRUTA — ${(dN[d]||d).toUpperCase()}`,color:0xffffff,fields,footer:{text:`Protocolo: ${pid} | Tempo: ${timeOnSite}s | SC v12.0`},timestamp:new Date().toISOString()};
+    const embed={title:`⸸ NOVO RECRUTA — ${(dN[d]||d).toUpperCase()}`,color:0xffffff,fields,footer:{text:`Protocolo: ${pid} | SC v12.0`},timestamp:new Date().toISOString()};
     const fd=new FormData();fd.append('payload_json',JSON.stringify({embeds:[embed]}));
     this._sent=true;this._startUI(fd,pid);
   },
   _startUI(fd,pid){
     Go.tx();A.play('impact');
-    const logs=['Criptografando perfil...','Injetando metadados...','Roteando via rede segura...','Handshake com mainframe...','Enviando pacote cifrado...'];
+    const logs=['Preparando dados...','Conectando ao Discord...','Enviando...'];
     const fill=document.getElementById('tx-fill'),pct=document.getElementById('tx-pct'),sts=document.getElementById('tx-sts'),log=document.getElementById('tx-log');
     let prog=0,li=0;
     const sim=setInterval(()=>{prog=Math.min(prog+Math.random()*5,92);fill.style.width=prog+'%';pct.textContent=Math.floor(prog)+'%';if(Math.random()>.5&&li<logs.length){sts.textContent=logs[li];const p=document.createElement('p');p.textContent='> '+logs[li];log.appendChild(p);log.scrollTop=log.scrollHeight;A.play('type');li++;}},360);
     this._post(fd).then(ok=>{
       clearInterval(sim);
-      if(ok){fill.style.width='100%';pct.textContent='100%';sts.textContent='Transmissão concluída';const p=document.createElement('p');p.className='ok';p.textContent='> Protocolo enviado ✓';log.appendChild(p);A.play('ok');const pidEl=document.getElementById('fn-id');if(pidEl)pidEl.textContent='PROTOCOLO '+pid;setTimeout(()=>Go.fin(),1200);}
-      else{this._sent=false;Go.form();N.show('Falha na conexão. Tente novamente.','w');A.play('err');}
+      if(ok){fill.style.width='100%';pct.textContent='100%';sts.textContent='Enviado';const p=document.createElement('p');p.className='ok';p.textContent='> Formulário enviado ✓';log.appendChild(p);A.play('ok');const pidEl=document.getElementById('fn-id');if(pidEl)pidEl.textContent='PROTOCOLO '+pid;setTimeout(()=>Go.fin(),1200);}
+      else{this._sent=false;Go.form();N.show('Falha ao enviar. Verifique sua conexão e tente novamente.','w');A.play('err');}
     });
   },
   async _post(fd){
     for(let i=0;i<3;i++){
-      try{const r=await fetch(this.url,{method:'POST',body:fd,referrerPolicy:'no-referrer'});if(r.ok||r.status===204)return true;}catch(e){}
+      try{const r=await fetch(this.url,{method:'POST',body:fd});if(r.ok||r.status===204)return true;console.warn('Webhook respondeu com status',r.status);}catch(e){console.warn('Falha ao enviar webhook, tentativa',i+1,e);}
       if(i<2)await new Promise(r=>setTimeout(r,1000));
     }
     return false;
   }
 };
 
-const TermLog={msgs:['Monitorando sessão...','Verificando identidade...','Cifrando canal...','Análise de perfil...','Validando acesso...'],
-  init(){const tl=document.getElementById('term-log');setInterval(()=>{if(Math.random()>.6){const p=document.createElement('p');p.className='tl';p.textContent='> '+this.msgs[Math.floor(Math.random()*this.msgs.length)];tl.appendChild(p);if(tl.children.length>4)tl.firstChild.remove();}},3200);}
+const TermLog={msgs:['Verificando conexão...','Aguardando...'],
+  init(){const tl=document.getElementById('term-log');setInterval(()=>{if(Math.random()>.75){const p=document.createElement('p');p.className='tl';p.textContent='> '+this.msgs[Math.floor(Math.random()*this.msgs.length)];tl.appendChild(p);if(tl.children.length>4)tl.firstChild.remove();}},4200);}
 };
 
 window.onload=()=>{
   BG.init();StarsIntro.init();Cur.init();HUD.init();F.initInputs();Vol.init();TermLog.init();Sec.init();
-  if(Sec.isBot()){document.getElementById('sec-overlay').classList.add('on');}
 };
 </script>
 </body>
