@@ -141,6 +141,8 @@ canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .btn-recrut::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.05);transform:translateX(-101%);transition:.4s;}
 .btn-recrut:hover::before{transform:translateX(0);}
 .btn-recrut:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.6);box-shadow:0 0 28px rgba(255,255,255,.18);}
+.btn-os{display:flex;align-items:center;gap:10px;background:transparent;border:1px solid rgba(255,255,255,.15);padding:11px 32px;font-family:var(--f-mono);font-weight:400;font-size:11px;color:rgba(255,255,255,.55);letter-spacing:3px;transition:all .35s;cursor:pointer;width:100%;justify-content:center;}
+.btn-os:hover{border-color:rgba(255,255,255,.5);color:var(--w);background:rgba(255,255,255,.04);}
 
 .intro-stats{display:flex;gap:40px;opacity:0;animation:fadeup .6s ease forwards 2.7s;z-index:1;margin-top:4px;}
 .istat-n{font-family:var(--f-display);font-weight:700;font-size:22px;color:var(--w);text-align:center;letter-spacing:2px;}
@@ -385,6 +387,82 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
   .cap-box{padding:24px 16px;}
   .gothic-tl,.gothic-tr,.gothic-bl,.gothic-br{width:60px;height:60px;}
 }
+
+/* ===== PAINEL SC — DESKTOP/OS ===== */
+#scr-os{padding:0;justify-content:flex-start;align-items:stretch;overflow:hidden;}
+.os-root{position:relative;width:100%;height:100%;overflow:hidden;}
+.os-taskbar{position:absolute;top:0;left:0;right:0;height:46px;background:rgba(4,4,4,.96);border-bottom:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:50;backdrop-filter:blur(10px);}
+.os-tb-l{display:flex;align-items:center;gap:10px;}
+.os-tb-back{font-family:var(--f-mono);font-size:10px;color:rgba(255,255,255,.5);letter-spacing:2px;cursor:pointer;padding:6px 10px;border:1px solid rgba(255,255,255,.12);transition:.25s;}
+.os-tb-back:hover{color:var(--w);border-color:rgba(255,255,255,.4);}
+.os-tb-title{font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--w);letter-spacing:3px;}
+.os-tb-r{display:flex;align-items:center;gap:14px;}
+.os-tb-clock{font-family:var(--f-mono);font-size:11px;color:rgba(255,255,255,.55);letter-spacing:1px;}
+.os-tb-id{font-family:var(--f-mono);font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;}
+
+.os-desktop{position:absolute;top:46px;left:0;right:0;bottom:0;overflow-y:auto;padding:26px 18px 40px;}
+.os-desktop-inner{max-width:920px;margin:0 auto;}
+.os-hero{text-align:center;margin-bottom:26px;}
+.os-hero-eyebrow{font-family:var(--f-mono);font-size:8px;color:rgba(255,255,255,.4);letter-spacing:6px;margin-bottom:8px;}
+.os-hero-title{font-family:var(--f-display);font-weight:900;font-size:clamp(22px,5vw,34px);color:var(--w);letter-spacing:3px;}
+.os-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px;}
+.os-icon{background:rgba(8,8,8,.85);border:1px solid rgba(255,255,255,.1);padding:20px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all .3s;position:relative;}
+.os-icon:hover{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.05);transform:translateY(-3px);}
+.os-icon-ico{font-size:26px;}
+.os-icon-name{font-family:var(--f-display);font-weight:600;font-size:11.5px;color:rgba(255,255,255,.8);letter-spacing:1.5px;text-align:center;}
+.os-icon-tag{font-family:var(--f-mono);font-size:7px;color:rgba(255,255,255,.3);letter-spacing:1px;}
+.os-icon-badge{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--w);border-radius:50%;box-shadow:0 0 6px var(--w);animation:blink 1.8s step-end infinite;}
+
+.win{position:absolute;width:min(440px,92vw);background:rgba(6,6,6,.98);border:1px solid rgba(255,255,255,.22);border-top:2px solid rgba(255,255,255,.5);box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:100;display:none;flex-direction:column;max-height:80vh;animation:scalein .25s ease;}
+.win.on{display:flex;}
+.win-hd{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.02);cursor:move;user-select:none;flex-shrink:0;}
+.win-hd-t{font-family:var(--f-display);font-weight:600;font-size:12.5px;color:var(--w);letter-spacing:2px;display:flex;align-items:center;gap:8px;}
+.win-x{width:22px;height:22px;border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.6);font-size:12px;transition:.25s;flex-shrink:0;}
+.win-x:hover{border-color:rgba(255,255,255,.7);color:var(--w);background:rgba(255,255,255,.08);}
+.win-body{padding:16px;overflow-y:auto;font-family:var(--f-bask);font-size:13px;color:rgba(210,210,210,.8);line-height:1.8;}
+
+/* Cartão de membro */
+.mcard{background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(0,0,0,.4));border:1px solid rgba(255,255,255,.25);padding:18px;text-align:center;margin-bottom:12px;}
+.mcard-em{font-family:var(--f-display);font-weight:900;font-size:20px;color:var(--w);letter-spacing:4px;}
+.mcard-id{font-family:var(--f-mono);font-size:11px;color:rgba(255,255,255,.55);letter-spacing:2px;margin-top:6px;}
+.mcard-row{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:9px;color:var(--grey2);letter-spacing:1px;margin-top:14px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;}
+
+/* Regras */
+.rules-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.rules-list li{display:flex;gap:10px;font-family:var(--f-bask);font-size:12.5px;color:rgba(210,210,210,.78);line-height:1.7;}
+.rules-list li b{color:var(--w);flex-shrink:0;font-family:var(--f-mono);font-size:11px;}
+
+/* Jogo */
+.game-area{background:rgba(0,0,0,.9);border:1px solid rgba(255,255,255,.14);height:200px;position:relative;overflow:hidden;margin-bottom:12px;}
+.game-target{position:absolute;width:38px;height:38px;background:rgba(255,255,255,.9);clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);cursor:pointer;box-shadow:0 0 14px rgba(255,255,255,.5);transition:transform .1s;}
+.game-target:active{transform:scale(.85);}
+.game-hud{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10px;color:var(--grey2);letter-spacing:1px;margin-bottom:10px;}
+.game-hud b{color:var(--w);}
+.game-msg{text-align:center;font-family:var(--f-mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1px;padding:8px 0;}
+
+/* Mural de recados */
+.board-form{display:flex;gap:8px;margin-bottom:14px;}
+.board-form input{flex:1;background:rgba(8,8,8,.85);border:1px solid rgba(255,255,255,.15);color:var(--w);font-family:var(--f-oswald);font-size:13px;padding:9px 10px;outline:none;}
+.board-form button{background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.85);font-family:var(--f-display);font-size:11px;letter-spacing:1px;padding:0 14px;cursor:pointer;transition:.25s;}
+.board-form button:hover{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);}
+.board-list{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;}
+.board-msg{background:rgba(10,10,10,.85);border-left:2px solid rgba(255,255,255,.25);padding:9px 11px;font-family:var(--f-bask);font-size:12px;color:rgba(210,210,210,.8);}
+.board-msg .bm-meta{font-family:var(--f-mono);font-size:8px;color:rgba(255,255,255,.32);letter-spacing:1px;margin-bottom:3px;}
+.board-empty{font-family:var(--f-mono);font-size:10px;color:rgba(255,255,255,.3);text-align:center;padding:20px 0;}
+.board-note{font-family:var(--f-mono);font-size:8px;color:rgba(255,255,255,.28);letter-spacing:.5px;line-height:1.6;margin-top:10px;text-align:center;}
+
+/* Terminal */
+.term-box{background:#000;border:1px solid rgba(255,255,255,.15);padding:12px;font-family:var(--f-mono);font-size:11.5px;color:rgba(220,220,220,.85);height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;}
+.term-box p{white-space:pre-wrap;line-height:1.6;}
+.term-box .tc-in{color:var(--w);}
+.term-box .tc-out{color:rgba(180,180,180,.75);}
+.term-in-row{display:flex;align-items:center;gap:6px;margin-top:10px;border-top:1px solid rgba(255,255,255,.1);padding-top:10px;}
+.term-in-row span{font-family:var(--f-mono);font-size:11px;color:var(--w);}
+.term-in-row input{flex:1;background:transparent;border:none;color:var(--w);font-family:var(--f-mono);font-size:11.5px;outline:none;}
+
+@media(max-width:580px){
+  .win{width:94vw;max-height:82vh;}
+}
 </style>
 </head>
 <body>
@@ -490,6 +568,7 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
         ENTRAR NA FAMÍLIA
       </a>
       <button class="btn-recrut" onclick="Go.familia();A.init();"><span>CONTINUAR PARA O RECRUTAMENTO</span><span style="font-size:10px;opacity:.55;">▶</span></button>
+      <button class="btn-os" onclick="Go.os();A.init();"><span>◆</span><span>PAINEL SC — ÁREA DA FAMÍLIA</span></button>
     </div>
     <div class="intro-stats">
       <div><div class="istat-n" id="intro-m">247+</div><div class="istat-l">MEMBROS</div></div>
@@ -524,6 +603,101 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
       <div class="div-card"><div class="dc-top"><span class="dc-ico">🖥️</span><span class="dc-name">Moderador de Salas</span><span class="dc-tag">ORGANIZAÇÃO</span></div><div class="dc-sep"></div><p class="dc-desc">Cuida da organização das salas, mantendo atividade e regras básicas sendo respeitadas.</p></div>
       <div class="div-card hard"><div class="dc-top"><span class="dc-ico">💻</span><span class="dc-name">Cyber</span><span class="dc-tag" style="color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.3);">DIFÍCIL</span></div><div class="dc-sep"></div><p class="dc-desc">A divisão mais difícil de entrar. Exige domínio real de tecnologia, internet e automação. Acesso por avaliação da liderança.</p></div>
       <div class="fam-cta"><button class="fam-cta-btn" onclick="Go.splash()"><span>▶</span><span>INICIAR PROCESSO DE RECRUTAMENTO</span></button></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAINEL SC (OS) -->
+<div id="scr-os" class="scr">
+  <div class="os-root">
+    <div class="os-taskbar">
+      <div class="os-tb-l">
+        <div class="os-tb-back" onclick="Go.intro()">← SAIR</div>
+        <div class="os-tb-title">PAINEL SC</div>
+      </div>
+      <div class="os-tb-r">
+        <span class="os-tb-id" id="os-visitor">ID: —</span>
+        <span class="os-tb-clock" id="os-clock">--:--:--</span>
+      </div>
+    </div>
+    <div class="os-desktop">
+      <div class="os-desktop-inner">
+        <div class="os-hero">
+          <p class="os-hero-eyebrow">ÁREA DA FAMÍLIA · ACESSO LIVRE</p>
+          <h2 class="os-hero-title">Painel <span style="opacity:.55;">Sombra Coletiva</span></h2>
+        </div>
+        <div class="os-icons">
+          <div class="os-icon" onclick="Win.open('win-carteira')"><span class="os-icon-ico">🪪</span><span class="os-icon-name">Carteirinha</span><span class="os-icon-tag">seu perfil</span></div>
+          <div class="os-icon" onclick="Win.open('win-regras')"><span class="os-icon-ico">📜</span><span class="os-icon-name">Regras</span><span class="os-icon-tag">leia antes</span></div>
+          <div class="os-icon" onclick="Win.open('win-jogo')"><span class="os-icon-ico">🎯</span><span class="os-icon-name">Reflexo SC</span><span class="os-icon-tag">recorde local</span></div>
+          <div class="os-icon" onclick="Win.open('win-mural')"><span class="os-icon-ico">💬</span><span class="os-icon-name">Mural</span><span class="os-icon-tag">deixe um recado</span><span class="os-icon-badge"></span></div>
+          <div class="os-icon" onclick="Win.open('win-terminal')"><span class="os-icon-ico">⌨️</span><span class="os-icon-name">Terminal</span><span class="os-icon-tag">digite help</span></div>
+          <div class="os-icon" onclick="Go.familia()"><span class="os-icon-ico">⸸</span><span class="os-icon-name">Sobre a SC</span><span class="os-icon-tag">divisões</span></div>
+          <div class="os-icon" onclick="Go.splash()"><span class="os-icon-ico">▶</span><span class="os-icon-name">Recrutamento</span><span class="os-icon-tag">quero entrar</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Janela: Carteirinha -->
+    <div class="win" id="win-carteira" style="top:80px;left:6%;">
+      <div class="win-hd"><span class="win-hd-t">🪪 Carteirinha de Visitante</span><span class="win-x" onclick="Win.close('win-carteira')">✕</span></div>
+      <div class="win-body">
+        <div class="mcard">
+          <div class="mcard-em">SC · SOMBRA COLETIVA</div>
+          <div class="mcard-id" id="mcard-codename">CODINOME: —</div>
+          <div class="mcard-row"><span id="mcard-since">visto desde: —</span><span id="mcard-visits">visitas: —</span></div>
+        </div>
+        <p style="font-family:var(--f-mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.5px;line-height:1.7;">Esse codinome é gerado e salvo só no seu navegador — não é um registro oficial de membro. Para entrar de verdade na família, use o Recrutamento.</p>
+      </div>
+    </div>
+
+    <!-- Janela: Regras -->
+    <div class="win" id="win-regras" style="top:100px;left:32%;">
+      <div class="win-hd"><span class="win-hd-t">📜 Regras da Família</span><span class="win-x" onclick="Win.close('win-regras')">✕</span></div>
+      <div class="win-body">
+        <ul class="rules-list">
+          <li><b>01</b> Respeito acima de tudo, dentro e fora das salas.</li>
+          <li><b>02</b> Nada de discurso de ódio, assédio ou preconceito.</li>
+          <li><b>03</b> Divulgação com qualidade — nunca spam.</li>
+          <li><b>04</b> Conflitos se resolvem com a liderança, não em público.</li>
+          <li><b>05</b> Informações da família não saem do grupo.</li>
+          <li><b>06</b> Cada divisão cumpre o combinado com responsabilidade.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Janela: Jogo -->
+    <div class="win" id="win-jogo" style="top:120px;left:10%;">
+      <div class="win-hd"><span class="win-hd-t">🎯 Reflexo SC</span><span class="win-x" onclick="Win.close('win-jogo')">✕</span></div>
+      <div class="win-body">
+        <div class="game-hud"><span>PONTOS: <b id="game-score">0</b></span><span>TEMPO: <b id="game-time">15</b>s</span><span>RECORDE: <b id="game-best">0</b></span></div>
+        <div class="game-area" id="game-area">
+          <div class="game-msg" id="game-msg" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">Clique em ▶ Iniciar para jogar</div>
+        </div>
+        <button class="cap-btn" onclick="Game.start()">▶ Iniciar</button>
+      </div>
+    </div>
+
+    <!-- Janela: Mural -->
+    <div class="win" id="win-mural" style="top:90px;left:20%;">
+      <div class="win-hd"><span class="win-hd-t">💬 Mural de Recados</span><span class="win-x" onclick="Win.close('win-mural')">✕</span></div>
+      <div class="win-body">
+        <div class="board-form">
+          <input type="text" id="board-input" placeholder="Deixe um recado pra família..." maxlength="140">
+          <button onclick="Board.post()">ENVIAR</button>
+        </div>
+        <div class="board-list" id="board-list"><div class="board-empty">Nenhum recado ainda. Seja o primeiro!</div></div>
+        <p class="board-note">Recados ficam salvos neste navegador e também são encaminhados à liderança. Não é um chat em tempo real com outros visitantes.</p>
+      </div>
+    </div>
+
+    <!-- Janela: Terminal -->
+    <div class="win" id="win-terminal" style="top:110px;left:4%;">
+      <div class="win-hd"><span class="win-hd-t">⌨️ SC Terminal</span><span class="win-x" onclick="Win.close('win-terminal')">✕</span></div>
+      <div class="win-body">
+        <div class="term-box" id="term-box"><p class="tc-out">SC Terminal v12.0 — digite "help" para ver comandos.</p></div>
+        <div class="term-in-row"><span>&gt;</span><input type="text" id="term-input" placeholder="digite um comando..." autocomplete="off"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -798,7 +972,8 @@ const Go={
   warn(){Go.to('scr-warn');},
   form(){Go.to('scr-form');},
   tx(){Go.to('scr-tx');},
-  fin(){Go.to('scr-final');}
+  fin(){Go.to('scr-final');},
+  os(){Go.to('scr-os');OS.init();}
 };
 
 const BG={c:document.getElementById('bg'),ctx:null,w:0,h:0,stars:[],
@@ -955,8 +1130,175 @@ const TermLog={msgs:['Verificando conexão...','Aguardando...'],
   init(){const tl=document.getElementById('term-log');setInterval(()=>{if(Math.random()>.75){const p=document.createElement('p');p.className='tl';p.textContent='> '+this.msgs[Math.floor(Math.random()*this.msgs.length)];tl.appendChild(p);if(tl.children.length>4)tl.firstChild.remove();}},4200);}
 };
 
+/* ===== PAINEL SC — armazenamento local ===== */
+const LS={
+  get(key,fallback){try{const v=localStorage.getItem('sc_'+key);return v===null?fallback:JSON.parse(v);}catch(e){return fallback;}},
+  set(key,val){try{localStorage.setItem('sc_'+key,JSON.stringify(val));return true;}catch(e){return false;}}
+};
+
+/* Gerenciador de janelas arrastáveis */
+const Win={
+  z:200,
+  open(id){A.play('click');const w=document.getElementById(id);if(!w)return;w.classList.add('on');this._front(w);this._makeDraggable(w);
+    if(id==='win-carteira')MCard.render();
+    if(id==='win-jogo')Game.reset();
+    if(id==='win-mural')Board.render();
+  },
+  close(id){A.play('click');const w=document.getElementById(id);if(w)w.classList.remove('on');},
+  _front(w){this.z++;w.style.zIndex=this.z;},
+  _makeDraggable(w){
+    if(w._dragInit)return;w._dragInit=true;
+    const hd=w.querySelector('.win-hd');let ox=0,oy=0,drag=false;
+    const down=e=>{drag=true;this._front(w);const t=e.touches?e.touches[0]:e;const r=w.getBoundingClientRect();ox=t.clientX-r.left;oy=t.clientY-r.top;};
+    const move=e=>{if(!drag)return;const t=e.touches?e.touches[0]:e;let nx=t.clientX-ox,ny=t.clientY-oy;nx=Math.max(4,Math.min(nx,window.innerWidth-60));ny=Math.max(50,Math.min(ny,window.innerHeight-40));w.style.left=nx+'px';w.style.top=ny+'px';};
+    const up=()=>{drag=false;};
+    hd.addEventListener('mousedown',down);document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);
+    hd.addEventListener('touchstart',down,{passive:true});document.addEventListener('touchmove',move,{passive:true});document.addEventListener('touchend',up);
+    hd.addEventListener('mousedown',()=>this._front(w));
+  }
+};
+
+/* Painel SC — visitante / carteirinha */
+const OS={
+  _codenames:['SOMBRA','ECLIPSE','CINZA','NEVOA','ORVALHO','CORVO','LUA-NOVA','BRUMA','FANTASMA','VESPER'],
+  init(){
+    this._visitor();
+    if(!this._clockIv){this._clockIv=setInterval(()=>{const el=document.getElementById('os-clock');if(el)el.textContent=new Date().toTimeString().split(' ')[0];},1000);}
+  },
+  _visitor(){
+    let id=LS.get('visitor_id',null);
+    if(!id){id=Array.from(crypto.getRandomValues(new Uint8Array(3))).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();LS.set('visitor_id',id);}
+    let codename=LS.get('codename',null);
+    if(!codename){codename=this._codenames[Math.floor(Math.random()*this._codenames.length)]+'-'+Math.floor(Math.random()*90+10);LS.set('codename',codename);}
+    let since=LS.get('since',null);
+    if(!since){since=new Date().toLocaleDateString('pt-BR');LS.set('since',since);}
+    let visits=LS.get('visits',0)+1;
+    LS.set('visits',visits);
+    const idEl=document.getElementById('os-visitor');if(idEl)idEl.textContent='ID: '+id;
+    this._codename=codename;this._since=since;this._visits=visits;
+  }
+};
+const MCard={
+  render(){
+    const c=document.getElementById('mcard-codename'),s=document.getElementById('mcard-since'),v=document.getElementById('mcard-visits');
+    if(c)c.textContent='CODINOME: '+(OS._codename||'—');
+    if(s)s.textContent='visto desde: '+(OS._since||'—');
+    if(v)v.textContent='visitas: '+(OS._visits||1);
+  }
+};
+
+/* Jogo — Reflexo SC (recorde salvo localmente) */
+const Game={
+  running:false,score:0,timeLeft:15,tIv:null,spawnTimeout:null,
+  reset(){
+    this.running=false;this.score=0;this.timeLeft=15;
+    clearInterval(this.tIv);clearTimeout(this.spawnTimeout);
+    const area=document.getElementById('game-area');
+    area.innerHTML='<div class="game-msg" id="game-msg" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">Clique em ▶ Iniciar para jogar</div>';
+    document.getElementById('game-score').textContent='0';
+    document.getElementById('game-time').textContent='15';
+    document.getElementById('game-best').textContent=LS.get('game_best',0);
+  },
+  start(){
+    if(this.running)return;
+    this.running=true;this.score=0;this.timeLeft=15;
+    document.getElementById('game-score').textContent='0';
+    document.getElementById('game-time').textContent='15';
+    const area=document.getElementById('game-area');area.innerHTML='';
+    A.play('impact');
+    this._spawn();
+    this.tIv=setInterval(()=>{
+      this.timeLeft--;
+      document.getElementById('game-time').textContent=this.timeLeft;
+      if(this.timeLeft<=0)this._end();
+    },1000);
+  },
+  _spawn(){
+    if(!this.running)return;
+    const area=document.getElementById('game-area');
+    area.querySelectorAll('.game-target').forEach(t=>t.remove());
+    const t=document.createElement('div');t.className='game-target';
+    const maxX=area.clientWidth-42,maxY=area.clientHeight-42;
+    t.style.left=Math.max(0,Math.random()*maxX)+'px';
+    t.style.top=Math.max(0,Math.random()*maxY)+'px';
+    t.onclick=()=>{if(!this.running)return;this.score++;document.getElementById('game-score').textContent=this.score;A.play('click');t.remove();this._spawn();};
+    area.appendChild(t);
+    this.spawnTimeout=setTimeout(()=>{if(this.running&&t.parentNode){t.remove();this._spawn();}},1400);
+  },
+  _end(){
+    this.running=false;clearInterval(this.tIv);clearTimeout(this.spawnTimeout);
+    const area=document.getElementById('game-area');
+    area.innerHTML='<div class="game-msg" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">Fim de jogo — ' + this.score + ' pontos</div>';
+    const best=LS.get('game_best',0);
+    if(this.score>best){LS.set('game_best',this.score);document.getElementById('game-best').textContent=this.score;N.show('Novo recorde local: '+this.score+' pts!','ok');A.play('ok');}
+    else{A.play('err');}
+  }
+};
+
+/* Mural de recados — local + encaminhado à liderança via Discord */
+const Board={
+  url:'https://discord.com/api/webhooks/1516890805585838160/rzexe822LTXQFePEsP7L6l70w5zZFp1a6Dq02B9xqO_dzVsbn174mScM6JDkifN0mi-D',
+  render(){
+    const list=document.getElementById('board-list');
+    const msgs=LS.get('board_msgs',[]);
+    if(!msgs.length){list.innerHTML='<div class="board-empty">Nenhum recado ainda. Seja o primeiro!</div>';return;}
+    list.innerHTML=msgs.slice().reverse().map(m=>`<div class="board-msg"><div class="bm-meta">${m.who} · ${m.when}</div>${m.txt}</div>`).join('');
+  },
+  async post(){
+    const inp=document.getElementById('board-input');
+    const txt=(inp.value||'').trim().replace(/</g,'&lt;').substring(0,140);
+    if(!txt)return;
+    A.play('click');
+    const who=OS._codename||'Visitante';
+    const when=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    const msgs=LS.get('board_msgs',[]);
+    msgs.push({who,when,txt});
+    LS.set('board_msgs',msgs);
+    inp.value='';
+    this.render();
+    N.show('Recado salvo!','ok');
+    try{
+      const fd=new FormData();
+      fd.append('payload_json',JSON.stringify({embeds:[{title:'💬 Novo recado no Mural',description:txt,color:0xffffff,footer:{text:`${who} · Painel SC`},timestamp:new Date().toISOString()}]}));
+      await fetch(this.url,{method:'POST',body:fd});
+    }catch(e){/* falha silenciosa — recado já ficou salvo localmente */}
+  }
+};
+
+/* Terminal — easter eggs e comandos */
+const Term={
+  init(){
+    const inp=document.getElementById('term-input');
+    if(!inp||inp._bound)return;inp._bound=true;
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')this.run(inp.value);});
+  },
+  _print(txt,cls){
+    const box=document.getElementById('term-box');
+    const p=document.createElement('p');p.className=cls||'tc-out';p.textContent=txt;box.appendChild(p);box.scrollTop=box.scrollHeight;
+  },
+  run(raw){
+    const inp=document.getElementById('term-input');
+    const cmd=(raw||'').trim();
+    if(!cmd)return;
+    this._print('> '+cmd,'tc-in');
+    A.play('type');
+    const low=cmd.toLowerCase();
+    if(low==='help'){this._print('comandos: help, sobre, membros, divisoes, codinome, recorde, clear');}
+    else if(low==='sobre'){this._print('SC — Sombra Coletiva. Organização do Hago focada em salas ativas, respeito e crescimento em conjunto.');}
+    else if(low==='membros'){this._print('Membros ativos: 247+ (contagem aproximada exibida publicamente)');}
+    else if(low==='divisoes'){this._print('Segurança · Recrutador · Divulgador · Carisma · Moderador de Salas · Cyber (restrita)');}
+    else if(low==='codinome'){this._print('Seu codinome salvo neste navegador: '+(OS._codename||'—'));}
+    else if(low==='recorde'){this._print('Seu recorde no Reflexo SC: '+LS.get('game_best',0)+' pts');}
+    else if(low==='clear'){document.getElementById('term-box').innerHTML='';}
+    else if(low==='sombra'){this._print('...ela está sempre olhando.');}
+    else{this._print('comando não reconhecido — digite "help"');}
+    if(inp)inp.value='';
+  }
+};
+document.addEventListener('DOMContentLoaded',()=>{const ti=document.getElementById('term-input');if(ti){ti.addEventListener('keydown',()=>{});}});
+
 window.onload=()=>{
-  BG.init();StarsIntro.init();Cur.init();HUD.init();F.initInputs();Vol.init();TermLog.init();Sec.init();
+  BG.init();StarsIntro.init();Cur.init();HUD.init();F.initInputs();Vol.init();TermLog.init();Sec.init();Term.init();
 };
 </script>
 </body>
