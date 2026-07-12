@@ -101,6 +101,16 @@ canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 .scr.out{opacity:0;transform:translateY(-12px);pointer-events:none;}
 .scr.scroll-scr{justify-content:flex-start;overflow-y:auto;overflow-x:hidden;padding:0;-webkit-overflow-scrolling:touch;}
 
+/* GATE — tela de entrada */
+#scr-gate{background:transparent;z-index:70;}
+.gate-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;}
+.gate-emblem{position:relative;width:120px;height:120px;opacity:0;animation:fadein 1s ease forwards .2s;}
+.gate-o1{position:absolute;inset:0;border:1px solid rgba(255,255,255,.14);border-radius:50%;animation:rtt 26s linear infinite;}
+.gate-o2{position:absolute;inset:14px;border:1px solid rgba(255,255,255,.24);border-radius:50%;animation:rtt2 18s linear infinite;}
+.gate-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:700;font-size:26px;color:var(--w);letter-spacing:3px;animation:redpulse 4s ease-in-out infinite;}
+.gate-btn{opacity:0;animation:fadeup .8s ease forwards .8s;font-family:var(--f-display);font-weight:600;font-size:17px;color:rgba(255,255,255,.9);background:transparent;border:1px solid rgba(255,255,255,.3);padding:16px 62px;letter-spacing:6px;cursor:pointer;transition:all .4s;animation:fadeup .8s ease forwards .8s,borderpulse 3s ease-in-out infinite .8s;}
+.gate-btn:hover{border-color:rgba(255,255,255,.7);color:var(--w);box-shadow:0 0 30px rgba(255,255,255,.18);background:rgba(255,255,255,.05);}
+
 /* INTRO */
 #scr-intro{background:transparent;z-index:60;}
 .intro-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;position:relative;}
@@ -472,6 +482,8 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
   <input type="email" id="hp-email" name="email_confirm" tabindex="-1" autocomplete="off">
 </div>
 
+<audio id="site-audio" src="https://cdn.pixabay.com/download/audio/2025/03/18/audio_831443b0f4.mp3?filename=echobeats-timeless-playboi-carti-x-the-weeknd-type-beat-315481.mp3" loop preload="auto" crossorigin="anonymous"></audio>
+
 <canvas id="bg"></canvas>
 <div class="vhs-noise"></div>
 <div class="vhs-lines"></div>
@@ -533,8 +545,16 @@ textarea.inp:focus{border-color:rgba(255,255,255,.35);}
 
 <div id="app">
 
+<!-- GATE -->
+<div id="scr-gate" class="scr on">
+  <div class="gate-wrap">
+    <div class="gate-emblem"><div class="gate-o1"></div><div class="gate-o2"></div><div class="gate-center">SC</div></div>
+    <button class="gate-btn" onclick="Go.enter()">▶ ENTRAR</button>
+  </div>
+</div>
+
 <!-- INTRO -->
-<div id="scr-intro" class="scr on">
+<div id="scr-intro" class="scr">
   <canvas id="stars-canvas"></canvas>
   <div class="intro-wrap" style="position:relative;z-index:1;">
     <div class="intro-emblem">
@@ -963,8 +983,14 @@ const Cap={
 const Vol={steps:[.07,.12,.2,.3,.42,.56,.7],cur:0,init(){},up(){if(this.cur<this.steps.length-1){this.cur++;const m=document.getElementById('bg-music');if(m)m.volume=this.steps[this.cur];const b=document.getElementById('vol-btn');b.textContent=this.cur+1;setTimeout(()=>{b.textContent='▲';},700);}}};
 
 const Go={
-  cur:'scr-intro',
+  cur:'scr-gate',
   to(id){if(Sec.isBlocked())return;const prev=document.getElementById(Go.cur),next=document.getElementById(id);if(!next||next===prev)return;prev.classList.remove('on');prev.classList.add('out');setTimeout(()=>prev.classList.remove('out'),650);setTimeout(()=>next.classList.add('on'),150);Go.cur=id;},
+  enter(){
+    const aud=document.getElementById('site-audio');
+    if(aud){aud.volume=.55;aud.play().catch(err=>{console.warn('Falha ao tocar áudio:',err);});}
+    A.init();
+    Go.to('scr-intro');
+  },
   intro(){Go.to('scr-intro');},
   familia(){Go.to('scr-familia');},
   splash(){Go.to('scr-splash');HUD.animStat('sp-members',247,1600);HUD.animStat('sp-online',89,1200);},
@@ -993,7 +1019,7 @@ const Cur={el:document.getElementById('cur'),r:document.getElementById('cur2'),m
 };
 
 const A={ctx:null,g:null,ok:false,
-  init(){if(this.ctx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();this.g=this.ctx.createGain();this.g.gain.value=.065;this.g.connect(this.ctx.destination);this.ok=true;Music.start();},
+  init(){if(this.ctx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();this.g=this.ctx.createGain();this.g.gain.value=.065;this.g.connect(this.ctx.destination);this.ok=true;},
   play(t){if(!this.ok||!this.ctx)return;const c=this.ctx,now=c.currentTime;const mk=()=>{const o=c.createOscillator(),gn=c.createGain();o.connect(gn);gn.connect(this.g);return{o,gn};};
     if(t==='click'){const{o,gn}=mk();o.type='sine';o.frequency.setValueAtTime(200,now);o.frequency.exponentialRampToValueAtTime(50,now+.08);gn.gain.setValueAtTime(.1,now);gn.gain.exponentialRampToValueAtTime(.001,now+.08);o.start(now);o.stop(now+.08);}
     else if(t==='type'){const{o,gn}=mk();o.type='sine';o.frequency.value=500+Math.random()*300;gn.gain.setValueAtTime(.015,now);gn.gain.exponentialRampToValueAtTime(.001,now+.05);o.start(now);o.stop(now+.05);}
@@ -1006,7 +1032,7 @@ const A={ctx:null,g:null,ok:false,
 const Music={on:false,nodes:[],btn:document.getElementById('mbtn'),
   start(){if(this.on||!A.ctx)return;this.on=true;this.btn.textContent='♫';this.btn.classList.add('pl');this._pad();this._drone();this._hb();this._arp();},
   stop(){this.on=false;this.btn.textContent='♪';this.btn.classList.remove('pl');this.nodes.forEach(n=>{try{n.stop();}catch(e){}});this.nodes=[];},
-  toggle(){if(A.ok){if(this.on)this.stop();else this.start();}else A.init();},
+  toggle(){if(!A.ok){A.init();this.start();}else{if(this.on)this.stop();else this.start();}},
   _osc(type,freq,gain,delay=0){const c=A.ctx,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=freq;g.gain.value=0;o.connect(g);g.connect(A.g);o.start(c.currentTime+delay);const now=c.currentTime+delay;g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(gain,now+2);this.nodes.push(o);return{o,g};},
   _pad(){if(!this.on)return;[27.5,32.7,36.7,41.2].forEach((f,i)=>{const{o}=this._osc('sine',f,.016,i*.28);const lfo=A.ctx.createOscillator(),lg=A.ctx.createGain();lfo.type='sine';lfo.frequency.value=.04+i*.018;lg.gain.value=.35;lfo.connect(lg);lg.connect(o.frequency);lfo.start();this.nodes.push(lfo);});},
   _drone(){if(!this.on||!A.ctx)return;const c=A.ctx,buf=c.createBuffer(1,c.sampleRate*6,c.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*.35;const src=c.createBufferSource();src.buffer=buf;src.loop=true;const fl=c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=75;fl.Q.value=1.4;const g=c.createGain();g.gain.value=.012;src.connect(fl);fl.connect(g);g.connect(A.g);src.start();this.nodes.push(src);},
